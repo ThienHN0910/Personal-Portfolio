@@ -1,0 +1,182 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+@use 'components/navbar';
+@use 'components/hero';
+@use 'components/card';
+@use 'components/button';
+@use 'components/footer';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+// Global reset and base styles
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: $dark;
+  color: $text-primary;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+a {
+  color: inherit;
+  @include transition(color);
+}
+
+// Scrollbar
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: $dark;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba($primary, 0.5);
+  border-radius: $radius-full;
+
+  &:hover {
+    background: $primary;
+  }
+}
+
+// Container utility
+.container {
+  @include container;
+}
+
+// Section utility
+.section {
+  @include section-padding;
+}
+
+.section-title {
+  font-size: $font-3xl;
+  font-weight: 800;
+  color: $white;
+  margin-bottom: $spacing-md;
+
+  @include respond-to('md') {
+    font-size: $font-4xl;
+  }
+
+  .highlight {
+    @include gradient-text;
+  }
+}
+
+.section-subtitle {
+  font-size: $font-lg;
+  color: $text-secondary;
+  max-width: 600px;
+  line-height: 1.8;
+}
+
+// Skill badge
+.skill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: $spacing-xs;
+  background: rgba($primary, 0.08);
+  border: 1px solid rgba($primary, 0.15);
+  color: $text-secondary;
+  padding: $spacing-xs $spacing-md;
+  border-radius: $radius-full;
+  font-size: $font-sm;
+  font-weight: 500;
+  @include transition;
+
+  &:hover {
+    background: rgba($primary, 0.15);
+    color: $white;
+    border-color: rgba($primary, 0.3);
+  }
+}
+
+// Form styles
+.form-group {
+  margin-bottom: $spacing-lg;
+
+  label {
+    display: block;
+    font-size: $font-sm;
+    font-weight: 500;
+    color: $text-secondary;
+    margin-bottom: $spacing-sm;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    padding: $spacing-sm $spacing-md;
+    background: rgba($white, 0.05);
+    border: 1px solid rgba($white, 0.1);
+    border-radius: $radius-lg;
+    color: $white;
+    font-size: $font-sm;
+    @include transition(border-color);
+    font-family: inherit;
+
+    &::placeholder {
+      color: $text-secondary;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $primary;
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 120px;
+  }
+}
+
+// Loading overlay
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba($dark, 0.8);
+  @include flex-center;
+  z-index: $z-overlay;
+  backdrop-filter: blur(4px);
+}
+
+// Page transition
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
