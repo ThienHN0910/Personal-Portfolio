@@ -1,0 +1,86 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-xl;
+  border-radius: $radius-lg;
+  font-size: $font-sm;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  @include transition;
+  white-space: nowrap;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: $gradient-primary;
+    color: $white;
+    box-shadow: 0 4px 15px rgba($primary, 0.3);
+
+    &:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba($primary, 0.4);
+    }
+  }
+
+  &--secondary {
+    background: transparent;
+    color: $white;
+    border-color: rgba($white, 0.2);
+
+    &:hover:not(:disabled) {
+      border-color: $primary;
+      color: $primary;
+      background: rgba($primary, 0.05);
+    }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $primary;
+    border-color: $primary;
+
+    &:hover:not(:disabled) {
+      background: $primary;
+      color: $white;
+    }
+  }
+
+  &--danger {
+    background: $error;
+    color: $white;
+
+    &:hover:not(:disabled) {
+      background: darken($error, 8%);
+      transform: translateY(-1px);
+    }
+  }
+
+  &--sm {
+    padding: $spacing-xs $spacing-md;
+    font-size: $font-xs;
+    border-radius: $radius-md;
+  }
+
+  &--lg {
+    padding: $spacing-md $spacing-2xl;
+    font-size: $font-base;
+    border-radius: $radius-xl;
+  }
+
+  &--icon {
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border-radius: $radius-full;
+  }
+}

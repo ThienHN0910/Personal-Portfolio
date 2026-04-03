@@ -1,0 +1,84 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.card {
+  background: rgba($white, 0.04);
+  border: 1px solid rgba($white, 0.08);
+  border-radius: $radius-xl;
+  overflow: hidden;
+  @include card-hover;
+
+  &__image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    @include transition(transform);
+  }
+
+  &:hover &__image {
+    transform: scale(1.03);
+  }
+
+  &__body {
+    padding: $spacing-lg;
+  }
+
+  &__title {
+    font-size: $font-lg;
+    font-weight: 700;
+    color: $white;
+    margin-bottom: $spacing-sm;
+    @include truncate(2);
+  }
+
+  &__description {
+    font-size: $font-sm;
+    color: $text-secondary;
+    line-height: 1.7;
+    margin-bottom: $spacing-md;
+    @include truncate(3);
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-xs;
+    margin-bottom: $spacing-md;
+  }
+
+  &__tag {
+    background: rgba($primary, 0.1);
+    color: $primary;
+    border: 1px solid rgba($primary, 0.2);
+    padding: 2px $spacing-sm;
+    border-radius: $radius-full;
+    font-size: $font-xs;
+    font-weight: 500;
+  }
+
+  &__footer {
+    @include flex-between;
+    padding: $spacing-md $spacing-lg;
+    border-top: 1px solid rgba($white, 0.06);
+  }
+
+  &__link {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-xs;
+    font-size: $font-sm;
+    font-weight: 500;
+    color: $primary;
+    text-decoration: none;
+    @include transition(color);
+
+    &:hover {
+      color: lighten($primary, 10%);
+    }
+  }
+
+  &--featured {
+    border-color: rgba($primary, 0.2);
+    background: rgba($primary, 0.03);
+  }
+}
