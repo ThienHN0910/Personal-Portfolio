@@ -15,11 +15,51 @@
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/$1"
+      "source": "/api/about",
+      "destination": "/api/about.ts"
     },
     {
-      "source": "/(.*)",
+      "source": "/api/blog",
+      "destination": "/api/blog.ts"
+    },
+    {
+      "source": "/api/blog/(.*)",
+      "destination": "/api/blog/[id].ts"
+    },
+    {
+      "source": "/api/contact",
+      "destination": "/api/contact.ts"
+    },
+    {
+      "source": "/api/contact/(.*)",
+      "destination": "/api/contact/[id].ts"
+    },
+    {
+      "source": "/api/home",
+      "destination": "/api/home.ts"
+    },
+    {
+      "source": "/api/projects",
+      "destination": "/api/projects.ts"
+    },
+    {
+      "source": "/api/projects/(.*)",
+      "destination": "/api/projects/[id].ts"
+    },
+    {
+      "source": "/api/upload",
+      "destination": "/api/upload.ts"
+    },
+    {
+      "source": "/api/auth/google",
+      "destination": "/api/auth/google.ts"
+    },
+    {
+      "source": "/api/auth/callback",
+      "destination": "/api/auth/callback.ts"
+    },
+    {
+      "source": "/((?!api/).*)",
       "destination": "/index.html"
     }
   ]

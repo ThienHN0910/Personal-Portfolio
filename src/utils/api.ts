@@ -1,7 +1,21 @@
 import axios from 'axios'
 import { getToken } from './auth'
 
-const baseURL = import.meta.env.VITE_API_BASE_URL || '/api'
+function resolveApiBaseUrl(): string {
+  const configuredBase = import.meta.env.VITE_API_BASE_URL || '/api'
+  if (configuredBase.startsWith('http://') || configuredBase.startsWith('https://')) {
+    return configuredBase
+  }
+
+  // In local Vite dev (5173), API runs on Vercel dev (3000).
+  if (typeof window !== 'undefined' && window.location.hostname === 'localhost' && window.location.port === '5173') {
+    return `http://localhost:3000${configuredBase}`
+  }
+
+  return configuredBase
+}
+
+const baseURL = resolveApiBaseUrl()
 
 const api = axios.create({
   baseURL,

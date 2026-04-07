@@ -2,7 +2,6 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { User } from '@/types'
 import { setToken, setUser, clearAuth, getToken, getUser } from '@/utils/auth'
-import api from '@/utils/api'
 
 export const useAuthStore = defineStore('auth', () => {
   const token = ref<string | null>(getToken())
@@ -18,22 +17,56 @@ export const useAuthStore = defineStore('auth', () => {
     setUser(newUser as unknown as Record<string, unknown>)
   }
 
+  function resolveApiBaseUrl(): string {
+    const configuredBase = import.meta.env.VITE_API_BASE_URL || '/api'
+    if (configuredBase.startsWith('http://') || configuredBase.startsWith('https://')) {
+      return configuredBase
+    }
+
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost' && window.location.port === '5173') {
+      return `http://localhost:3000${configuredBase}`
+    }
+
+    return configuredBase
+  }
+
   function loginWithGoogle() {
-    window.location.href = `${import.meta.env.VITE_API_BASE_URL || '/api'}/auth/google`
+    window.location.href = `${resolveApiBaseUrl()}/auth/google`
+  }
+
+  function decodeJwtPayload(payloadPart: string): string {
+    const base64 = payloadPart.replace(/-/g, '+').replace(/_/g, '/')
+    const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')
+    const binary = atob(padded)
+    const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
+    return new TextDecoder().decode(bytes)
+  }
+
+  function parseUserFromToken(jwtToken: string): User {
+    const parts = jwtToken.split('.')
+    if (parts.length < 2) {
+      throw new Error('Invalid auth token format')
+    }
+
+    const decoded = decodeJwtPayload(parts[1])
+    const parsed = JSON.parse(decoded) as Partial<User>
+
+    if (!parsed.id || !parsed.email || !parsed.name) {
+      throw new Error('Missing required user fields in auth token')
+    }
+
+    return {
+      id: parsed.id,
+      email: parsed.email,
+      name: parsed.name,
+      role: parsed.role === 'admin' ? 'admin' : 'user',
+      avatar: parsed.avatar,
+    }
   }
 
   async function handleCallback(callbackToken: string) {
-    try {
-      const response = await api.get<{ success: boolean; data: { token: string; user: User } }>(
-        `/auth/callback?token=${callbackToken}`,
-      )
-      if (response.data.success && response.data.data) {
-        setAuthData(response.data.data.token, response.data.data.user)
-      }
-    } catch (error) {
-      console.error('Auth callback error:', error)
-      throw error
-    }
+    const parsedUser = parseUserFromToken(callbackToken)
+    setAuthData(callbackToken, parsedUser)
   }
 
   function logout() {

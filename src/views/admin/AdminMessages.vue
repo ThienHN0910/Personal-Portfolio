@@ -16,7 +16,10 @@
               <h3 class="font-bold text-white">{{ msg.name }}</h3>
               <a :href="`mailto:${msg.email}`" class="text-blue-400 text-sm hover:underline">{{ msg.email }}</a>
             </div>
-            <span class="text-gray-500 text-xs">{{ formatDate(msg.createdAt) }}</span>
+            <div class="flex items-center gap-3">
+              <span class="text-gray-500 text-xs">{{ formatDate(msg.createdAt) }}</span>
+              <button class="btn btn--danger btn--sm" @click="handleDelete(msg._id!)">Delete</button>
+            </div>
           </div>
           <p class="text-purple-400 font-medium text-sm mb-3">{{ msg.subject }}</p>
           <p class="text-gray-400 leading-relaxed">{{ msg.message }}</p>
@@ -38,6 +41,12 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 const contactStore = useContactStore()
 const loading = computed(() => contactStore.loading)
 const messages = computed(() => contactStore.messages)
+
+async function handleDelete(id: string) {
+  if (confirm('Delete this message?')) {
+    await contactStore.deleteMessage(id)
+  }
+}
 
 function formatDate(date?: string): string {
   if (!date) return ''

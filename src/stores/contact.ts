@@ -43,5 +43,20 @@ export const useContactStore = defineStore('contact', () => {
     }
   }
 
-  return { messages, loading, error, success, sendMessage, fetchMessages }
+  async function deleteMessage(id: string) {
+    loading.value = true
+    error.value = null
+    try {
+      await api.delete(`/contact/${id}`)
+      messages.value = messages.value.filter((m) => m._id !== id)
+    } catch (err) {
+      error.value = 'Failed to delete message'
+      console.error(err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
+  return { messages, loading, error, success, sendMessage, fetchMessages, deleteMessage }
 })
