@@ -1,0 +1,104 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.footer {
+  background: rgba($dark, 0.95);
+  border-top: 1px solid rgba($white, 0.08);
+  padding: $spacing-3xl $spacing-xl $spacing-xl;
+
+  &__container {
+    @include container;
+  }
+
+  &__top {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-2xl;
+    margin-bottom: $spacing-2xl;
+
+    @include respond-to('md') {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+
+  &__brand {
+    .footer__logo {
+      font-size: $font-xl;
+      font-weight: 700;
+      @include gradient-text;
+      display: block;
+      margin-bottom: $spacing-md;
+    }
+
+    p {
+      color: $text-secondary;
+      font-size: $font-sm;
+      line-height: 1.8;
+      max-width: 300px;
+    }
+  }
+
+  &__nav-title {
+    font-size: $font-sm;
+    font-weight: 700;
+    color: $white;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: $spacing-md;
+  }
+
+  &__nav-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  &__nav-link {
+    color: $text-secondary;
+    text-decoration: none;
+    font-size: $font-sm;
+    @include transition(color);
+
+    &:hover {
+      color: $primary;
+    }
+  }
+
+  &__bottom {
+    @include flex-between;
+    padding-top: $spacing-xl;
+    border-top: 1px solid rgba($white, 0.06);
+    flex-wrap: wrap;
+    gap: $spacing-md;
+  }
+
+  &__copyright {
+    color: $text-secondary;
+    font-size: $font-sm;
+  }
+
+  &__social {
+    display: flex;
+    gap: $spacing-md;
+
+    a {
+      width: 36px;
+      height: 36px;
+      @include flex-center;
+      border-radius: $radius-full;
+      border: 1px solid rgba($white, 0.1);
+      color: $text-secondary;
+      text-decoration: none;
+      @include transition;
+
+      &:hover {
+        border-color: $primary;
+        color: $primary;
+        background: rgba($primary, 0.1);
+      }
+    }
+  }
+}

@@ -1,0 +1,146 @@
+@use '../variables' as *;
+@use '../mixins' as *;
+
+.hero {
+  min-height: 100vh;
+  @include flex-center;
+  position: relative;
+  overflow: hidden;
+  background: $dark;
+  padding-top: 80px;
+
+  &__bg {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top left, rgba($primary, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba($secondary, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  &__container {
+    @include container;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: $spacing-3xl;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+
+    @include respond-to('lg') {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__content {
+    text-align: center;
+
+    @include respond-to('lg') {
+      text-align: left;
+    }
+  }
+
+  &__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: $spacing-sm;
+    background: rgba($primary, 0.1);
+    border: 1px solid rgba($primary, 0.3);
+    color: $primary;
+    padding: $spacing-xs $spacing-md;
+    border-radius: $radius-full;
+    font-size: $font-sm;
+    margin-bottom: $spacing-lg;
+  }
+
+  &__title {
+    font-size: $font-4xl;
+    font-weight: 800;
+    color: $white;
+    line-height: 1.1;
+    margin-bottom: $spacing-md;
+
+    @include respond-to('md') {
+      font-size: $font-5xl;
+    }
+
+    @include respond-to('xl') {
+      font-size: $font-6xl;
+    }
+
+    .highlight {
+      @include gradient-text;
+    }
+  }
+
+  &__subtitle {
+    font-size: $font-xl;
+    color: $text-secondary;
+    margin-bottom: $spacing-md;
+    font-weight: 500;
+  }
+
+  &__description {
+    font-size: $font-lg;
+    color: $text-secondary;
+    line-height: 1.8;
+    margin-bottom: $spacing-2xl;
+    max-width: 560px;
+    margin-left: auto;
+    margin-right: auto;
+
+    @include respond-to('lg') {
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  &__cta {
+    @include flex-center;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+
+    @include respond-to('lg') {
+      justify-content: flex-start;
+    }
+  }
+
+  &__image-wrapper {
+    @include flex-center;
+    position: relative;
+  }
+
+  &__image {
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba($primary, 0.3);
+    box-shadow: 0 0 60px rgba($primary, 0.2), $shadow-xl;
+    position: relative;
+    z-index: 1;
+
+    @include respond-to('lg') {
+      width: 400px;
+      height: 400px;
+    }
+  }
+
+  &__image-glow {
+    position: absolute;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba($primary, 0.2) 0%, transparent 70%);
+    animation: pulse 3s ease-in-out infinite;
+
+    @include respond-to('lg') {
+      width: 450px;
+      height: 450px;
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.05); opacity: 1; }
+}

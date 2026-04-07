@@ -1,0 +1,22 @@
+{
+  "name": "@portfolio/backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vercel dev --local --listen 3000",
+    "typecheck": "tsc -p tsconfig.api.json --noEmit",
+    "vercel-build": "node -e \"const fs=require('fs');fs.mkdirSync('dist',{recursive:true});fs.writeFileSync('dist/.keep','ok')\""
+  },
+  "dependencies": {
+    "mongoose": "^8.3.0",
+    "jsonwebtoken": "^9.0.0",
+    "cloudinary": "^2.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "@types/node": "^20.12.0",
+    "@types/jsonwebtoken": "^9.0.0",
+    "@vercel/node": "^3.0.0"
+  }
+}
