@@ -20,7 +20,17 @@ const authStore = useAuthStore()
 const errorMessage = ref('')
 
 onMounted(async () => {
+  const error = route.query.error as string
   const token = route.query.token as string
+
+  if (error) {
+    errorMessage.value = `Login failed: ${error}`
+    setTimeout(() => {
+      router.push(`/?error=${encodeURIComponent(error)}`)
+    }, 1800)
+    return
+  }
+
   if (token) {
     try {
       await authStore.handleCallback(token)

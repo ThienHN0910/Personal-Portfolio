@@ -28,10 +28,14 @@ interface GoogleUserInfo {
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  const { code } = req.query
+  const { code, error } = req.query
+
+  if (typeof error === 'string') {
+    return res.redirect(`${BASE_URL}/auth/callback?error=${encodeURIComponent(error)}`)
+  }
 
   if (!code || typeof code !== 'string') {
-    return res.redirect(`${BASE_URL}/?error=auth_failed`)
+    return res.redirect(`${BASE_URL}/auth/callback?error=auth_code_missing`)
   }
 
   try {
@@ -50,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const tokens = await tokenResponse.json() as GoogleTokenResponse
     if (tokens.error) {
-      return res.redirect(`${BASE_URL}/?error=token_exchange_failed`)
+      return res.redirect(`${BASE_URL}/auth/callback?error=${encodeURIComponent(tokens.error)}`)
     }
 
     // Get user info
@@ -70,6 +74,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.redirect(`${BASE_URL}/auth/callback?token=${token}`)
   } catch {
-    return res.redirect(`${BASE_URL}/?error=auth_failed`)
+    return res.redirect(`${BASE_URL}/auth/callback?error=auth_failed`)
   }
 }
