@@ -62,7 +62,7 @@
             </div>
             <div class="form-group">
               <label>Content</label>
-              <Ckeditor :editor="editor" v-model="form.content" :config="editorConfig" />
+              <Ckeditor :key="editorInstanceKey" :editor="editor" v-model="form.content" :config="editorConfig" />
             </div>
             <div class="form-group">
               <label>Cover Image URL</label>
@@ -106,10 +106,12 @@ const loading = computed(() => blogStore.loading)
 const showModal = ref(false)
 const editingPost = ref<BlogPost | null>(null)
 const tagsInput = ref('')
+const editorRenderKey = ref(0)
 const Ckeditor = CKEditor.component
 const editor = ClassicEditor as unknown as {
   create(...args: any[]): Promise<any>
 }
+const editorInstanceKey = computed(() => `${editingPost.value?._id || 'new'}-${editorRenderKey.value}`)
 const editorConfig = {
   placeholder: 'Write your post content here...',
   toolbar: {
@@ -170,6 +172,7 @@ function openModal(post?: BlogPost) {
     form.published = false
     tagsInput.value = ''
   }
+  editorRenderKey.value += 1
   showModal.value = true
 }
 

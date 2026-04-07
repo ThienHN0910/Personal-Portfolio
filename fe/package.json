@@ -11,7 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^41.0.0",
+    "@ckeditor/ckeditor5-build-classic": "^42.0.0",
     "@ckeditor/ckeditor5-vue": "^6.0.0",
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.0",

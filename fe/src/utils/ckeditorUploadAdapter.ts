@@ -63,7 +63,7 @@ class CloudinaryUploadAdapter {
 }
 
 export function createCloudinaryUploadAdapterPlugin(folder = 'portfolio/blog/content') {
-  return (editor: any): void => {
+  return function CloudinaryUploadAdapterPlugin(editor: any): void {
     const fileRepository = editor.plugins.get('FileRepository')
     fileRepository.createUploadAdapter = (loader: any) => new CloudinaryUploadAdapter(loader, folder)
   }
