@@ -44,7 +44,7 @@
           </div>
           <div class="form-group">
             <label>Profile Image URL</label>
-            <input v-model="homeForm.profileImage" type="url" placeholder="https://..." />
+            <ImageDropUpload v-model="homeForm.profileImage" folder="portfolio/home" />
           </div>
           <button type="submit" class="btn btn--primary" :disabled="homeStore.loading">Save Home</button>
         </form>
@@ -72,7 +72,7 @@
           </div>
           <div class="form-group">
             <label>Avatar URL</label>
-            <input v-model="aboutForm.avatarUrl" type="url" placeholder="https://..." />
+            <ImageDropUpload v-model="aboutForm.avatarUrl" folder="portfolio/about" />
           </div>
           <div class="form-group">
             <label>Resume URL</label>
@@ -104,6 +104,7 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 import { useHomeStore } from '@/stores/home'
 import { useAboutStore } from '@/stores/about'
+import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 
 const homeStore = useHomeStore()

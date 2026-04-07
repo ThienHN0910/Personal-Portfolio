@@ -63,8 +63,20 @@
               <textarea v-model="form.description" rows="3" required placeholder="Project description" />
             </div>
             <div class="form-group">
-              <label>Technologies (comma separated)</label>
-              <input v-model="techInput" type="text" placeholder="Vue, TypeScript, Node.js" />
+              <label>Technologies (select from Skills)</label>
+              <p v-if="!technologyOptions.length" class="text-xs text-amber-300 mb-2">
+                Chua co skills trong Admin About. Hay cap nhat Skills truoc.
+              </p>
+              <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                <label
+                  v-for="tech in technologyOptions"
+                  :key="tech"
+                  class="flex items-center gap-2 text-sm text-gray-300 border border-white/10 rounded-lg px-2 py-1"
+                >
+                  <input v-model="selectedTechnologies" :value="tech" type="checkbox" class="w-4 h-4 accent-blue-500" />
+                  <span>{{ tech }}</span>
+                </label>
+              </div>
             </div>
             <div class="form-group">
               <label>GitHub URL</label>
@@ -76,7 +88,7 @@
             </div>
             <div class="form-group">
               <label>Image URL</label>
-              <input v-model="form.imageUrl" type="url" placeholder="https://..." />
+              <ImageDropUpload v-model="form.imageUrl" folder="portfolio/projects" />
             </div>
             <div class="flex items-center gap-3 mb-6">
               <input id="featured" v-model="form.featured" type="checkbox" class="w-4 h-4 accent-blue-500" />
@@ -97,16 +109,26 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
+
+import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
+import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { useAboutStore } from '@/stores/about'
 import { useProjectsStore } from '@/stores/projects'
 import type { Project } from '@/types'
-import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 
 const projectsStore = useProjectsStore()
+const aboutStore = useAboutStore()
 const loading = computed(() => projectsStore.loading)
 const showModal = ref(false)
 const editingProject = ref<Project | null>(null)
-const techInput = ref('')
+const selectedTechnologies = ref<string[]>([])
+
+const technologyOptions = computed(() => {
+  const skills = aboutStore.aboutData?.skills || []
+  const editingTech = editingProject.value?.technologies || []
+  return Array.from(new Set([...skills, ...editingTech]))
+})
 
 const form = reactive({
   title: '',
@@ -126,7 +148,7 @@ function openModal(project?: Project) {
     form.liveUrl = project.liveUrl || ''
     form.imageUrl = project.imageUrl || ''
     form.featured = project.featured
-    techInput.value = project.technologies.join(', ')
+    selectedTechnologies.value = [...project.technologies]
   } else {
     form.title = ''
     form.description = ''
@@ -134,13 +156,18 @@ function openModal(project?: Project) {
     form.liveUrl = ''
     form.imageUrl = ''
     form.featured = false
-    techInput.value = ''
+    selectedTechnologies.value = []
   }
   showModal.value = true
 }
 
 async function handleSubmit() {
-  const technologies = techInput.value.split(',').map((t) => t.trim()).filter(Boolean)
+  const technologies = selectedTechnologies.value
+  if (technologies.length === 0) {
+    alert('Hay chon it nhat 1 technology tu Skills.')
+    return
+  }
+
   const data = { ...form, technologies }
 
   if (editingProject.value?._id) {
@@ -157,5 +184,7 @@ async function handleDelete(id: string) {
   }
 }
 
-projectsStore.fetchProjects()
+onMounted(async () => {
+  await Promise.all([projectsStore.fetchProjects(), aboutStore.fetchAboutData()])
+})
 </script>

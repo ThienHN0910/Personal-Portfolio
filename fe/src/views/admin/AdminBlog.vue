@@ -66,7 +66,7 @@
             </div>
             <div class="form-group">
               <label>Cover Image URL</label>
-              <input v-model="form.coverImage" type="url" placeholder="https://..." />
+              <ImageDropUpload v-model="form.coverImage" folder="portfolio/blog" />
             </div>
             <div class="form-group">
               <label>Tags (comma separated)</label>
@@ -92,6 +92,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
+
+import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
 import { useBlogStore } from '@/stores/blog'
 import type { BlogPost } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
