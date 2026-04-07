@@ -10,21 +10,8 @@
 
 <script setup lang="ts">
 import CKEditor from '@ckeditor/ckeditor5-vue'
-import { Bold, Italic } from '@ckeditor/ckeditor5-basic-styles'
-import { ClassicEditor } from '@ckeditor/ckeditor5-editor-classic'
-import { Essentials } from '@ckeditor/ckeditor5-essentials'
-import { Heading } from '@ckeditor/ckeditor5-heading'
-import { Image, ImageUpload } from '@ckeditor/ckeditor5-image'
-import { Link } from '@ckeditor/ckeditor5-link'
-import { List } from '@ckeditor/ckeditor5-list'
-import { Paragraph } from '@ckeditor/ckeditor5-paragraph'
-import '@ckeditor/ckeditor5-theme-lark/dist/index-editor.css'
-import '@ckeditor/ckeditor5-editor-classic/dist/index.css'
-import '@ckeditor/ckeditor5-basic-styles/dist/index.css'
-import '@ckeditor/ckeditor5-heading/dist/index.css'
-import '@ckeditor/ckeditor5-image/dist/index.css'
-import '@ckeditor/ckeditor5-link/dist/index.css'
-import '@ckeditor/ckeditor5-list/dist/index.css'
+import { Bold, ClassicEditor, Essentials, Heading, Image, ImageUpload, Italic, Link, List, Paragraph } from 'ckeditor5'
+import 'ckeditor5/ckeditor5.css'
 
 import { createCloudinaryUploadAdapterPlugin } from '@/utils/ckeditorUploadAdapter'
 
