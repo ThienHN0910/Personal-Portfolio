@@ -8,11 +8,13 @@ export const useBlogStore = defineStore('blog', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  async function fetchPosts() {
+  async function fetchPosts(includeAll = false) {
     loading.value = true
     error.value = null
     try {
-      const response = await api.get<{ success: boolean; data: BlogPost[] }>('/blog')
+      const response = await api.get<{ success: boolean; data: BlogPost[] }>('/blog', {
+        params: includeAll ? { all: 'true' } : undefined,
+      })
       if (response.data.success && response.data.data) {
         posts.value = response.data.data
       }

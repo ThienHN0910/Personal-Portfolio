@@ -1,13 +1,13 @@
 <template>
-  <div class="section min-h-screen pt-24">
+  <div class="section admin-shell min-h-screen pt-24">
     <div class="container">
-      <h1 class="section-title mb-8">Admin <span class="highlight">Dashboard</span></h1>
+      <AdminSectionHeader kicker="Mission Control" title-before="Admin " title-highlight="Dashboard" />
 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-        <div v-for="stat in stats" :key="stat.label" class="card p-6">
+        <div v-for="stat in stats" :key="stat.label" class="admin-panel p-6">
           <div class="flex items-center justify-between mb-4">
             <div class="w-12 h-12 rounded-xl flex items-center justify-center" :class="stat.iconBg">
-              <component :is="stat.icon" class="w-6 h-6" :class="stat.iconColor" />
+              <IconGlyph :name="stat.iconName" :size="24" class="w-6 h-6" :class="stat.iconColor" />
             </div>
             <span class="text-3xl font-bold text-white">{{ stat.value }}</span>
           </div>
@@ -20,7 +20,7 @@
           v-for="link in adminLinks"
           :key="link.to"
           :to="link.to"
-          class="card p-6 text-center hover:border-blue-500/30 transition-colors no-underline"
+          class="admin-panel p-6 text-center hover:border-blue-500/30 transition-colors no-underline"
         >
           <p class="text-blue-400 font-semibold mb-1">{{ link.label }}</p>
           <p class="text-gray-500 text-sm">{{ link.description }}</p>
@@ -32,9 +32,39 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
+
+import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
+import IconGlyph from '@/components/ui/IconGlyph.vue'
 import { useProjectsStore } from '@/stores/projects'
 import { useBlogStore } from '@/stores/blog'
 import { useContactStore } from '@/stores/contact'
+
+const statsMeta = [
+  {
+    label: 'Total Projects',
+    iconBg: 'bg-blue-500/10',
+    iconColor: 'text-blue-400',
+    iconName: 'projects' as const,
+  },
+  {
+    label: 'Blog Posts',
+    iconBg: 'bg-purple-500/10',
+    iconColor: 'text-purple-400',
+    iconName: 'blog' as const,
+  },
+  {
+    label: 'Messages',
+    iconBg: 'bg-amber-500/10',
+    iconColor: 'text-amber-400',
+    iconName: 'messages' as const,
+  },
+  {
+    label: 'Featured',
+    iconBg: 'bg-green-500/10',
+    iconColor: 'text-green-400',
+    iconName: 'featured' as const,
+  },
+]
 
 const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
@@ -42,38 +72,26 @@ const contactStore = useContactStore()
 
 onMounted(() => {
   projectsStore.fetchProjects()
-  blogStore.fetchPosts()
+  blogStore.fetchPosts(true)
   contactStore.fetchMessages()
 })
 
 const stats = computed(() => [
   {
-    label: 'Total Projects',
+    ...statsMeta[0],
     value: projectsStore.projects.length,
-    iconBg: 'bg-blue-500/10',
-    iconColor: 'text-blue-400',
-    icon: 'div',
   },
   {
-    label: 'Blog Posts',
+    ...statsMeta[1],
     value: blogStore.posts.length,
-    iconBg: 'bg-purple-500/10',
-    iconColor: 'text-purple-400',
-    icon: 'div',
   },
   {
-    label: 'Messages',
+    ...statsMeta[2],
     value: contactStore.messages.length,
-    iconBg: 'bg-amber-500/10',
-    iconColor: 'text-amber-400',
-    icon: 'div',
   },
   {
-    label: 'Featured',
+    ...statsMeta[3],
     value: projectsStore.projects.filter((p) => p.featured).length,
-    iconBg: 'bg-green-500/10',
-    iconColor: 'text-green-400',
-    icon: 'div',
   },
 ])
 

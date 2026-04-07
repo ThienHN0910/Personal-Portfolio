@@ -1,44 +1,53 @@
 <template>
-  <div class="section min-h-screen pt-24">
+  <div class="section admin-shell min-h-screen pt-24">
     <div class="container">
-      <div class="flex items-center justify-between mb-8">
-        <h1 class="section-title mb-0">Manage <span class="highlight">Blog</span></h1>
-        <button class="btn btn--primary" @click="openModal()">+ New Post</button>
-      </div>
+      <AdminSectionHeader kicker="Content Lab" title-before="Manage " title-highlight="Blog">
+        <template #actions>
+          <button class="btn btn--primary inline-flex items-center gap-2" @click="openModal()">
+            <IconGlyph name="add" :size="14" />
+            New Post
+          </button>
+        </template>
+      </AdminSectionHeader>
 
       <LoadingSpinner v-if="loading" />
 
-      <div v-else class="overflow-x-auto">
-        <table class="w-full">
+      <div v-else class="admin-panel overflow-x-auto p-2">
+        <table class="admin-table">
           <thead>
-            <tr class="border-b border-white/10">
-              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-400">Title</th>
-              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-400 hidden md:table-cell">Tags</th>
-              <th class="text-left py-3 px-4 text-sm font-semibold text-gray-400 hidden sm:table-cell">Status</th>
-              <th class="text-right py-3 px-4 text-sm font-semibold text-gray-400">Actions</th>
+            <tr>
+              <th>Title</th>
+              <th class="hidden md:table-cell">Tags</th>
+              <th class="hidden sm:table-cell">Status</th>
+              <th class="text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-for="post in blogStore.posts"
               :key="post._id"
-              class="border-b border-white/5 hover:bg-white/[0.02] transition-colors"
             >
-              <td class="py-4 px-4 text-white font-medium">{{ post.title }}</td>
-              <td class="py-4 px-4 hidden md:table-cell">
+              <td class="text-white font-medium">{{ post.title }}</td>
+              <td class="hidden md:table-cell">
                 <div class="flex flex-wrap gap-1">
                   <span v-for="tag in post.tags.slice(0, 2)" :key="tag" class="card__tag">{{ tag }}</span>
                 </div>
               </td>
-              <td class="py-4 px-4 hidden sm:table-cell">
+              <td class="hidden sm:table-cell">
                 <span :class="post.published ? 'text-green-400' : 'text-amber-400'" class="text-sm">
                   {{ post.published ? '● Published' : '○ Draft' }}
                 </span>
               </td>
-              <td class="py-4 px-4 text-right">
+              <td class="text-right">
                 <div class="flex items-center justify-end gap-2">
-                  <button class="btn btn--secondary btn--sm" @click="openModal(post)">Edit</button>
-                  <button class="btn btn--danger btn--sm" @click="handleDelete(post._id!)">Delete</button>
+                  <button class="btn btn--secondary btn--sm inline-flex items-center gap-1.5" @click="openModal(post)">
+                    <IconGlyph name="edit" :size="12" />
+                    Edit
+                  </button>
+                  <button class="btn btn--danger btn--sm inline-flex items-center gap-1.5" @click="handleDelete(post._id!)">
+                    <IconGlyph name="trash" :size="12" />
+                    Delete
+                  </button>
                 </div>
               </td>
             </tr>
@@ -47,136 +56,125 @@
       </div>
 
       <!-- Modal -->
-      <div v-if="showModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-        <div class="bg-slate-900 border border-white/10 rounded-2xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-          <h2 class="text-xl font-bold text-white mb-6">{{ editingPost ? 'Edit' : 'New' }} Post</h2>
+      <Transition name="admin-fade-scale">
+        <div v-if="showModal" class="admin-modal-backdrop">
+          <div class="admin-modal">
+            <p class="admin-kicker mb-2">Blog Builder</p>
+            <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'New' }} Post</h2>
+            <p class="admin-modal__desc mb-5">Cover image will be taken from the first image inside content.</p>
 
-          <form @submit.prevent="handleSubmit">
-            <div class="form-group">
-              <label>Title</label>
-              <input v-model="form.title" type="text" required placeholder="Post title" />
-            </div>
-            <div class="form-group">
-              <label>Excerpt</label>
-              <textarea v-model="form.excerpt" rows="2" placeholder="Brief description... (auto generated if empty)" />
-            </div>
-            <div class="form-group">
-              <label>Content</label>
-              <Ckeditor :key="editorInstanceKey" :editor="editor" v-model="form.content" :config="editorConfig" />
-            </div>
-            <div class="form-group">
-              <label>Cover Image URL</label>
-              <ImageDropUpload v-model="form.coverImage" folder="portfolio/blog" />
-            </div>
-            <div class="form-group">
-              <label>Tags (comma separated)</label>
-              <input v-model="tagsInput" type="text" placeholder="Vue, TypeScript, Tutorial" />
-            </div>
-            <div class="flex items-center gap-3 mb-6">
-              <input id="published" v-model="form.published" type="checkbox" class="w-4 h-4 accent-blue-500" />
-              <label for="published" class="text-gray-400 text-sm cursor-pointer">Publish post</label>
-            </div>
+            <form @submit.prevent="handleSubmit">
+              <div class="form-group">
+                <label>Title</label>
+                <input v-model="form.title" type="text" required placeholder="Post title" />
+              </div>
+              <div class="form-group">
+                <label>Content</label>
+                <BlogRichEditor v-model="form.content" :editor-key="editorInstanceKey" />
+              </div>
+              <div class="form-group">
+                <label>Tags (comma separated)</label>
+                <input v-model="tagsInput" type="text" placeholder="Vue, TypeScript, Tutorial" />
+              </div>
+              <div class="flex items-center gap-3 mb-6">
+                <input id="published" v-model="form.published" type="checkbox" class="w-4 h-4 accent-blue-500" />
+                <label for="published" class="text-gray-400 text-sm cursor-pointer">Publish post</label>
+              </div>
 
-            <div class="flex gap-3 justify-end">
-              <button type="button" class="btn btn--secondary" @click="showModal = false">Cancel</button>
-              <button type="submit" class="btn btn--primary" :disabled="blogStore.loading">
-                {{ editingPost ? 'Update' : 'Publish' }}
-              </button>
-            </div>
-          </form>
+              <div class="admin-modal__actions">
+                <button type="button" class="btn btn--secondary" @click="showModal = false">Cancel</button>
+                <button type="submit" class="btn btn--primary" :disabled="blogStore.loading">
+                  {{ isEditing ? 'Update' : 'Publish' }}
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
-      </div>
+      </Transition>
+
+      <ConfirmDialog
+        :open="isDeleteDialogOpen"
+        title="Delete post"
+        message="This post will be permanently removed. This action cannot be undone."
+        confirm-text="Delete"
+        @cancel="cancelDelete"
+        @confirm="confirmDelete"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
-import CKEditor from '@ckeditor/ckeditor5-vue'
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+import { ref, reactive, computed, onMounted, defineAsyncComponent } from 'vue'
 
-import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
+import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
+import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
+import EditorLoadingSkeleton from '@/components/ui/EditorLoadingSkeleton.vue'
+import IconGlyph from '@/components/ui/IconGlyph.vue'
+import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useBlogStore } from '@/stores/blog'
 import type { BlogPost } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
-import { createCloudinaryUploadAdapterPlugin } from '@/utils/ckeditorUploadAdapter'
+
+interface BlogFormState {
+  title: string
+  content: string
+  published: boolean
+}
+
+const EXCERPT_MAX_LENGTH = 180
+
+function createInitialFormState(): BlogFormState {
+  return {
+    title: '',
+    content: '',
+    published: false,
+  }
+}
+
+const BlogRichEditor = defineAsyncComponent({
+  loader: () => import('@/components/admin/BlogRichEditor.vue'),
+  loadingComponent: EditorLoadingSkeleton,
+  delay: 120,
+  timeout: 15000,
+})
 
 const blogStore = useBlogStore()
 const loading = computed(() => blogStore.loading)
 const showModal = ref(false)
 const editingPost = ref<BlogPost | null>(null)
+const { isOpen: isDeleteDialogOpen, request: requestDelete, cancel: cancelDelete, consume: consumeDelete } = useConfirmDialog()
 const tagsInput = ref('')
 const editorRenderKey = ref(0)
-const Ckeditor = CKEditor.component
-const editor = ClassicEditor as unknown as {
-  create(...args: any[]): Promise<any>
-}
+const isEditing = computed(() => Boolean(editingPost.value?._id))
 const editorInstanceKey = computed(() => `${editingPost.value?._id || 'new'}-${editorRenderKey.value}`)
-const editorConfig = {
-  placeholder: 'Write your post content here...',
-  toolbar: {
-    items: [
-      'heading',
-      '|',
-      'bold',
-      'italic',
-      'link',
-      '|',
-      'bulletedList',
-      'numberedList',
-      'blockQuote',
-      '|',
-      'insertTable',
-      'uploadImage',
-      '|',
-      'undo',
-      'redo',
-    ],
-    shouldNotGroupWhenFull: true,
-  },
-  link: {
-    addTargetToExternalLinks: true,
-    defaultProtocol: 'https://',
-  },
-  table: {
-    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
-  },
-  image: {
-    toolbar: ['imageTextAlternative', 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side'],
-  },
-  extraPlugins: [createCloudinaryUploadAdapterPlugin('portfolio/blog/content')],
+
+const form = reactive<BlogFormState>(createInitialFormState())
+
+function resetForm(): void {
+  Object.assign(form, createInitialFormState())
+  tagsInput.value = ''
 }
 
-const form = reactive({
-  title: '',
-  excerpt: '',
-  content: '',
-  coverImage: '',
-  published: false,
-})
+function fillFormFromPost(post: BlogPost): void {
+  form.title = post.title
+  form.content = post.content
+  form.published = post.published
+  tagsInput.value = post.tags.join(', ')
+}
 
 function openModal(post?: BlogPost) {
   editingPost.value = post || null
   if (post) {
-    form.title = post.title
-    form.excerpt = post.excerpt
-    form.content = post.content
-    form.coverImage = post.coverImage || ''
-    form.published = post.published
-    tagsInput.value = post.tags.join(', ')
+    fillFormFromPost(post)
   } else {
-    form.title = ''
-    form.excerpt = ''
-    form.content = ''
-    form.coverImage = ''
-    form.published = false
-    tagsInput.value = ''
+    resetForm()
   }
   editorRenderKey.value += 1
   showModal.value = true
 }
 
-function htmlToText(html: string): string {
+function htmlToPlainText(html: string): string {
   return html
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
@@ -186,26 +184,38 @@ function htmlToText(html: string): string {
     .trim()
 }
 
-function buildExcerpt(rawExcerpt: string, htmlContent: string): string {
-  const provided = rawExcerpt.trim()
-  if (provided) return provided
+function buildExcerpt(htmlContent: string): string {
+  const plainText = htmlToPlainText(htmlContent)
+  if (plainText.length <= EXCERPT_MAX_LENGTH) return plainText
+  return `${plainText.slice(0, EXCERPT_MAX_LENGTH - 3).trim()}...`
+}
 
-  const plainText = htmlToText(htmlContent)
-  if (plainText.length <= 180) return plainText
-  return `${plainText.slice(0, 177).trim()}...`
+function extractFirstImageUrl(html: string): string {
+  const matched = html.match(/<img[^>]+src=["']([^"']+)["']/i)
+  return matched?.[1] || ''
+}
+
+function parseTags(value: string): string[] {
+  const tags = value
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+
+  return Array.from(new Set(tags))
 }
 
 async function handleSubmit() {
-  const contentText = htmlToText(form.content)
+  const contentText = htmlToPlainText(form.content)
   if (!contentText) {
     alert('Post content cannot be empty.')
     return
   }
 
-  const tags = tagsInput.value.split(',').map((t) => t.trim()).filter(Boolean)
+  const tags = parseTags(tagsInput.value)
   const data = {
     ...form,
-    excerpt: buildExcerpt(form.excerpt, form.content),
+    excerpt: buildExcerpt(form.content),
+    coverImage: extractFirstImageUrl(form.content),
     tags,
   }
 
@@ -218,28 +228,16 @@ async function handleSubmit() {
 }
 
 async function handleDelete(id: string) {
-  if (confirm('Are you sure you want to delete this post?')) {
-    await blogStore.deletePost(id)
-  }
+  requestDelete(id)
 }
 
-blogStore.fetchPosts()
+async function confirmDelete() {
+  const id = consumeDelete()
+  if (!id) return
+  await blogStore.deletePost(id)
+}
+
+onMounted(() => {
+  blogStore.fetchPosts(true)
+})
 </script>
-
-<style scoped lang="scss">
-:deep(.ck.ck-editor__main > .ck-editor__editable) {
-  min-height: 280px;
-  max-height: 520px;
-  color: #111827;
-}
-
-:deep(.ck.ck-toolbar) {
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
-}
-
-:deep(.ck.ck-editor__main > .ck-editor__editable) {
-  border-bottom-left-radius: 0.75rem;
-  border-bottom-right-radius: 0.75rem;
-}
-</style>

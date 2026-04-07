@@ -1,5 +1,21 @@
 import api from '@/utils/api'
 
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024
+
+interface CkLoader {
+  file: Promise<File | null>
+}
+
+interface CkFileRepository {
+  createUploadAdapter: (loader: CkLoader) => CloudinaryUploadAdapter
+}
+
+interface CkEditorWithPlugins {
+  plugins: {
+    get: (name: 'FileRepository') => CkFileRepository
+  }
+}
+
 interface UploadResponse {
   success: boolean
   data?: {
@@ -18,11 +34,11 @@ function fileToDataUrl(file: File): Promise<string> {
 }
 
 class CloudinaryUploadAdapter {
-  private loader: any
-  private folder: string
-  private abortController = new AbortController()
+  private readonly loader: CkLoader
+  private readonly folder: string
+  private readonly abortController = new AbortController()
 
-  constructor(loader: any, folder: string) {
+  constructor(loader: CkLoader, folder: string) {
     this.loader = loader
     this.folder = folder
   }
@@ -38,7 +54,7 @@ class CloudinaryUploadAdapter {
     }
 
     // Keep payload safely under backend JSON body limit.
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
       throw new Error('Image size must be <= 5MB')
     }
 
@@ -63,8 +79,8 @@ class CloudinaryUploadAdapter {
 }
 
 export function createCloudinaryUploadAdapterPlugin(folder = 'portfolio/blog/content') {
-  return function CloudinaryUploadAdapterPlugin(editor: any): void {
+  return function CloudinaryUploadAdapterPlugin(editor: CkEditorWithPlugins): void {
     const fileRepository = editor.plugins.get('FileRepository')
-    fileRepository.createUploadAdapter = (loader: any) => new CloudinaryUploadAdapter(loader, folder)
+    fileRepository.createUploadAdapter = (loader: CkLoader) => new CloudinaryUploadAdapter(loader, folder)
   }
 }

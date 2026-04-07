@@ -32,6 +32,16 @@
     </div>
 
     <div class="card__footer">
+      <RouterLink
+        v-if="project.relatedBlogId"
+        :to="`/blog/${project.relatedBlogId}`"
+        class="card__link"
+      >
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 7.5v9A1.5 1.5 0 0 1 18 18H6a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 6 6h12a1.5 1.5 0 0 1 1.5 1.5Zm0 0L12 13.5 4.5 7.5" />
+        </svg>
+        Related Blog
+      </RouterLink>
       <a
         v-if="project.githubUrl"
         :href="project.githubUrl"

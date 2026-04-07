@@ -6,16 +6,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vue-tsc --noEmit -p tsconfig.json && vite build",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-build-classic": "^42.0.0",
     "@ckeditor/ckeditor5-vue": "^6.0.0",
     "@vueuse/core": "^10.9.0",
     "axios": "^1.6.0",
+    "ckeditor5": "^42.0.2",
     "dompurify": "^3.3.3",
+    "personal-portfolio-workspace": "file:..",
     "pinia": "^2.1.0",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0"

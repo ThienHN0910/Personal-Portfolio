@@ -1,10 +1,10 @@
 <template>
-  <div class="section min-h-screen pt-24">
+  <div class="section admin-shell min-h-screen pt-24">
     <div class="container max-w-3xl">
-      <h1 class="section-title mb-8">Edit <span class="highlight">Content</span></h1>
+      <AdminSectionHeader kicker="Site Identity" title-before="Edit " title-highlight="Content" />
 
       <!-- Tab navigation -->
-      <div class="flex gap-3 mb-8 border-b border-white/10 pb-4">
+      <div class="admin-panel flex gap-3 mb-8 border-b border-white/10 pb-4 px-4 pt-4">
         <button
           v-for="tab in tabs"
           :key="tab.id"
@@ -19,7 +19,7 @@
       <LoadingSpinner v-if="loading" />
 
       <!-- Home Tab -->
-      <div v-else-if="activeTab === 'home'" class="card p-6">
+      <div v-else-if="activeTab === 'home'" class="admin-panel p-6">
         <h2 class="text-xl font-bold text-white mb-6">Home Page</h2>
         <form @submit.prevent="saveHome">
           <div class="form-group">
@@ -51,7 +51,7 @@
       </div>
 
       <!-- About Tab -->
-      <div v-else-if="activeTab === 'about'" class="card p-6">
+      <div v-else-if="activeTab === 'about'" class="admin-panel p-6">
         <h2 class="text-xl font-bold text-white mb-6">About Page</h2>
         <form @submit.prevent="saveAbout">
           <div class="form-group">
@@ -102,6 +102,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, watch } from 'vue'
+
+import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
 import { useHomeStore } from '@/stores/home'
 import { useAboutStore } from '@/stores/about'
 import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'

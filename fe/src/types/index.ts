@@ -6,6 +6,7 @@ export interface Project {
   imageUrl?: string
   githubUrl?: string
   liveUrl?: string
+  relatedBlogId?: string
   featured: boolean
   createdAt?: string
   updatedAt?: string
