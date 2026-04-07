@@ -29,7 +29,7 @@
         />
 
         <!-- eslint-disable-next-line vue/no-v-html -->
-        <div class="prose prose-invert max-w-none" v-html="post.content" />
+        <div class="blog-content max-w-none" v-html="sanitizedContent" />
       </div>
 
       <div v-else class="text-center py-20">
@@ -41,7 +41,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import DOMPurify from 'dompurify'
 import { useRoute } from 'vue-router'
 import { useBlogStore } from '@/stores/blog'
 import type { BlogPost } from '@/types'
@@ -51,6 +52,12 @@ const route = useRoute()
 const blogStore = useBlogStore()
 const post = ref<BlogPost | null>(null)
 const loading = ref(true)
+const sanitizedContent = computed(() => {
+  const html = post.value?.content || ''
+  return DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true },
+  })
+})
 
 function formatDate(date?: string): string {
   if (!date) return ''
@@ -63,3 +70,88 @@ onMounted(async () => {
   loading.value = false
 })
 </script>
+
+<style scoped lang="scss">
+.blog-content {
+  color: #d1d5db;
+  line-height: 1.8;
+}
+
+.blog-content :deep(h1),
+.blog-content :deep(h2),
+.blog-content :deep(h3),
+.blog-content :deep(h4) {
+  color: #f8fafc;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.blog-content :deep(p) {
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(ul),
+.blog-content :deep(ol) {
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(ul) {
+  list-style: disc;
+}
+
+.blog-content :deep(ol) {
+  list-style: decimal;
+}
+
+.blog-content :deep(blockquote) {
+  margin: 1.25rem 0;
+  border-left: 3px solid rgba(59, 130, 246, 0.75);
+  padding-left: 1rem;
+  color: #93c5fd;
+}
+
+.blog-content :deep(pre) {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(a) {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.blog-content :deep(.image) {
+  display: table;
+  margin: 1.25rem auto;
+}
+
+.blog-content :deep(.image img) {
+  border-radius: 0.75rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.blog-content :deep(.image-style-side) {
+  float: right;
+  margin-left: 1rem;
+  max-width: 50%;
+}
+
+.blog-content :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(th),
+.blog-content :deep(td) {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 0.75rem;
+}
+</style>

@@ -58,11 +58,11 @@
             </div>
             <div class="form-group">
               <label>Excerpt</label>
-              <textarea v-model="form.excerpt" rows="2" required placeholder="Brief description..." />
+              <textarea v-model="form.excerpt" rows="2" placeholder="Brief description... (auto generated if empty)" />
             </div>
             <div class="form-group">
               <label>Content</label>
-              <textarea v-model="form.content" rows="10" required placeholder="Post content (HTML supported)..." />
+              <Ckeditor :editor="editor" v-model="form.content" :config="editorConfig" />
             </div>
             <div class="form-group">
               <label>Cover Image URL</label>
@@ -92,17 +92,58 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
+import CKEditor from '@ckeditor/ckeditor5-vue'
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 
 import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
 import { useBlogStore } from '@/stores/blog'
 import type { BlogPost } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { createCloudinaryUploadAdapterPlugin } from '@/utils/ckeditorUploadAdapter'
 
 const blogStore = useBlogStore()
 const loading = computed(() => blogStore.loading)
 const showModal = ref(false)
 const editingPost = ref<BlogPost | null>(null)
 const tagsInput = ref('')
+const Ckeditor = CKEditor.component
+const editor = ClassicEditor as unknown as {
+  create(...args: any[]): Promise<any>
+}
+const editorConfig = {
+  placeholder: 'Write your post content here...',
+  toolbar: {
+    items: [
+      'heading',
+      '|',
+      'bold',
+      'italic',
+      'link',
+      '|',
+      'bulletedList',
+      'numberedList',
+      'blockQuote',
+      '|',
+      'insertTable',
+      'uploadImage',
+      '|',
+      'undo',
+      'redo',
+    ],
+    shouldNotGroupWhenFull: true,
+  },
+  link: {
+    addTargetToExternalLinks: true,
+    defaultProtocol: 'https://',
+  },
+  table: {
+    contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
+  },
+  image: {
+    toolbar: ['imageTextAlternative', 'imageStyle:inline', 'imageStyle:block', 'imageStyle:side'],
+  },
+  extraPlugins: [createCloudinaryUploadAdapterPlugin('portfolio/blog/content')],
+}
 
 const form = reactive({
   title: '',
@@ -132,9 +173,38 @@ function openModal(post?: BlogPost) {
   showModal.value = true
 }
 
+function htmlToText(html: string): string {
+  return html
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function buildExcerpt(rawExcerpt: string, htmlContent: string): string {
+  const provided = rawExcerpt.trim()
+  if (provided) return provided
+
+  const plainText = htmlToText(htmlContent)
+  if (plainText.length <= 180) return plainText
+  return `${plainText.slice(0, 177).trim()}...`
+}
+
 async function handleSubmit() {
+  const contentText = htmlToText(form.content)
+  if (!contentText) {
+    alert('Post content cannot be empty.')
+    return
+  }
+
   const tags = tagsInput.value.split(',').map((t) => t.trim()).filter(Boolean)
-  const data = { ...form, tags }
+  const data = {
+    ...form,
+    excerpt: buildExcerpt(form.excerpt, form.content),
+    tags,
+  }
 
   if (editingPost.value?._id) {
     await blogStore.updatePost(editingPost.value._id, data)
@@ -152,3 +222,21 @@ async function handleDelete(id: string) {
 
 blogStore.fetchPosts()
 </script>
+
+<style scoped lang="scss">
+:deep(.ck.ck-editor__main > .ck-editor__editable) {
+  min-height: 280px;
+  max-height: 520px;
+  color: #111827;
+}
+
+:deep(.ck.ck-toolbar) {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+:deep(.ck.ck-editor__main > .ck-editor__editable) {
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+}
+</style>
