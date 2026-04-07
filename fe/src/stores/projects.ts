@@ -24,6 +24,24 @@ export const useProjectsStore = defineStore('projects', () => {
     }
   }
 
+  async function fetchProject(id: string): Promise<Project | null> {
+    loading.value = true
+    error.value = null
+    try {
+      const response = await api.get<{ success: boolean; data: Project }>(`/projects/${id}`)
+      if (response.data.success && response.data.data) {
+        return response.data.data
+      }
+      return null
+    } catch (err) {
+      error.value = 'Failed to fetch project'
+      console.error(err)
+      return null
+    } finally {
+      loading.value = false
+    }
+  }
+
   async function createProject(data: Omit<Project, '_id' | 'createdAt' | 'updatedAt'>) {
     loading.value = true
     error.value = null
@@ -74,5 +92,5 @@ export const useProjectsStore = defineStore('projects', () => {
     }
   }
 
-  return { projects, loading, error, fetchProjects, createProject, updateProject, deleteProject }
+  return { projects, loading, error, fetchProjects, fetchProject, createProject, updateProject, deleteProject }
 })

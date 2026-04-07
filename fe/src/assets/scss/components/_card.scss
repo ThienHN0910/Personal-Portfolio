@@ -38,6 +38,22 @@
     line-height: 1.7;
     margin-bottom: $spacing-md;
     @include truncate(3);
+
+    &--expanded {
+      display: block;
+      overflow: visible;
+      text-overflow: unset;
+      -webkit-line-clamp: unset;
+      -webkit-box-orient: initial;
+    }
+  }
+
+  &__toggle {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin-bottom: $spacing-md;
+    cursor: pointer;
   }
 
   &__tags {

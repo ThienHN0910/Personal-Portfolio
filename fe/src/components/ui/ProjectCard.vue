@@ -19,7 +19,15 @@
 
     <div class="card__body">
       <h3 class="card__title">{{ project.title }}</h3>
-      <p class="card__description">{{ project.description }}</p>
+      <p class="card__description" :class="{ 'card__description--expanded': isExpanded }">{{ project.description }}</p>
+      <button
+        v-if="canToggleDescription"
+        type="button"
+        class="card__link card__toggle"
+        @click="toggleDescription"
+      >
+        {{ isExpanded ? 'View Less' : 'Read more' }}
+      </button>
 
       <div class="card__tags">
         <span v-for="tech in project.technologies.slice(0, 4)" :key="tech" class="card__tag">
@@ -32,6 +40,13 @@
     </div>
 
     <div class="card__footer">
+      <RouterLink
+        v-if="project._id"
+        :to="`/projects/${project._id}`"
+        class="card__link"
+      >
+        Project Detail
+      </RouterLink>
       <RouterLink
         v-if="project.relatedBlogId"
         :to="`/blog/${project.relatedBlogId}`"
@@ -71,9 +86,21 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
+
 import type { Project } from '@/types'
 
-defineProps<{
+const props = defineProps<{
   project: Project
 }>()
+
+const DESCRIPTION_TOGGLE_THRESHOLD = 120
+
+const isExpanded = ref(false)
+
+const canToggleDescription = computed(() => props.project.description.length > DESCRIPTION_TOGGLE_THRESHOLD)
+
+function toggleDescription(): void {
+  isExpanded.value = !isExpanded.value
+}
 </script>
