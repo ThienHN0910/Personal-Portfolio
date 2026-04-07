@@ -1,23 +1,21 @@
 {
-  "name": "personal-portfolio",
-  "version": "1.0.0",
-  "description": "Monorepo for personal portfolio frontend and backend",
+  "name": "personal-portfolio-workspace",
   "private": true,
-  "type": "module",
-  "workspaces": [
-    "apps/frontend",
-    "apps/backend"
-  ],
+  "version": "1.0.0",
   "scripts": {
-    "dev": "npm run dev:frontend",
-    "dev:frontend": "npm run dev -w @portfolio/frontend",
-    "dev:backend": "npm run dev -w @portfolio/backend",
-    "build": "npm run build:frontend",
-    "build:frontend": "npm run build -w @portfolio/frontend",
-    "typecheck:backend": "npm run typecheck -w @portfolio/backend",
-    "preview": "npm run preview -w @portfolio/frontend",
-    "deploy:backend": "vercel deploy --prod --yes --scope thiens-projects-2041d8cd --cwd apps/backend",
-    "deploy:frontend": "vercel deploy --prod --yes --scope thiens-projects-2041d8cd --cwd apps/frontend"
+    "dev": "concurrently \"npm run dev:fe\" \"npm run dev:be\"",
+    "dev:fe": "npm --prefix fe run dev",
+    "dev:be": "npm --prefix backend run dev",
+    "build": "npm run build:fe && npm run build:be",
+    "build:fe": "npm --prefix fe run build",
+    "build:be": "npm --prefix backend run build",
+    "typecheck": "npm run typecheck:fe && npm run typecheck:be",
+    "typecheck:fe": "npm --prefix fe run typecheck",
+    "typecheck:be": "npm --prefix backend run typecheck",
+    "preview:fe": "npm --prefix fe run preview",
+    "start:be": "npm --prefix backend run start"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
 }
