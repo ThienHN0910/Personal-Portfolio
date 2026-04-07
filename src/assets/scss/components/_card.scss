@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../variables' as *;
 @use '../mixins' as *;
 
@@ -73,7 +74,7 @@
     @include transition(color);
 
     &:hover {
-      color: lighten($primary, 10%);
+      color: color.adjust($primary, $lightness: 10%);
     }
   }
 
