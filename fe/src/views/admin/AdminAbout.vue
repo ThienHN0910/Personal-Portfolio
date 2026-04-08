@@ -66,18 +66,92 @@
             <label>Bio</label>
             <textarea v-model="aboutForm.bio" rows="5" placeholder="Tell your story..." />
           </div>
+
+          <h3 class="text-white font-semibold mb-4 mt-2">Contact Info</h3>
+          <div class="form-group">
+            <label>Email</label>
+            <input v-model="aboutForm.contactInfo.email" type="email" placeholder="you@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input v-model="aboutForm.contactInfo.phone" type="text" placeholder="+84 ..." />
+          </div>
+          <div class="form-group">
+            <label>Location</label>
+            <input v-model="aboutForm.contactInfo.location" type="text" placeholder="Ho Chi Minh City, Vietnam" />
+          </div>
+          <div class="form-group">
+            <label>Website</label>
+            <input v-model="aboutForm.contactInfo.website" type="url" placeholder="https://yourdomain.com" />
+          </div>
+
           <div class="form-group">
             <label>Skills (comma separated)</label>
             <input v-model="skillsInput" type="text" placeholder="Vue, TypeScript, Node.js, MongoDB" />
           </div>
+
+          <h3 class="text-white font-semibold mb-4 mt-2">Experience</h3>
+          <div class="space-y-5 mb-5">
+            <div
+              v-for="(exp, index) in aboutForm.experience"
+              :key="exp._editorId"
+              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div class="form-group mb-0">
+                  <label>Company</label>
+                  <input v-model="exp.company" type="text" placeholder="Company" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Position</label>
+                  <input v-model="exp.position" type="text" placeholder="Position" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Start Date</label>
+                  <input v-model="exp.startDate" type="text" placeholder="Jan 2022" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>End Date</label>
+                  <input v-model="exp.endDate" type="text" placeholder="Present" />
+                </div>
+              </div>
+
+              <div class="form-group mb-0">
+                <label>Description</label>
+                <FullRichEditor v-model="exp.description" :editor-key="exp._editorId" />
+              </div>
+
+              <div class="mt-3 flex justify-end">
+                <button
+                  type="button"
+                  class="btn btn--danger btn--sm"
+                  :disabled="aboutForm.experience.length === 1"
+                  @click="removeExperience(index)"
+                >
+                  Remove Experience
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--secondary mb-5" @click="addExperience">+ Add Experience</button>
+
           <div class="form-group">
             <label>Avatar URL</label>
             <ImageDropUpload v-model="aboutForm.avatarUrl" folder="portfolio/about" />
           </div>
           <div class="form-group">
-            <label>Resume URL</label>
-            <input v-model="aboutForm.resumeUrl" type="url" placeholder="https://..." />
+            <label>Resume PDF</label>
+            <FileDropUpload
+              v-model="aboutForm.resumeUrl"
+              folder="portfolio/cv"
+              resource-type="raw"
+              accept="application/pdf"
+              title="Keo tha CV PDF vao day hoac bam de chon file"
+              hint="PDF, toi da 8MB"
+            />
           </div>
+
           <h3 class="text-white font-semibold mb-4 mt-2">Social Links</h3>
           <div class="form-group">
             <label>GitHub</label>
@@ -90,6 +164,10 @@
           <div class="form-group">
             <label>Twitter</label>
             <input v-model="aboutForm.socialLinks.twitter" type="url" placeholder="https://twitter.com/..." />
+          </div>
+          <div class="form-group">
+            <label>Social Email (optional)</label>
+            <input v-model="aboutForm.socialLinks.email" type="email" placeholder="you@email.com" />
           </div>
           <button type="submit" class="btn btn--primary" :disabled="aboutStore.loading">Save About</button>
         </form>
@@ -104,10 +182,13 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 
 import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
+import FullRichEditor from '@/components/admin/FullRichEditor.vue'
+import FileDropUpload from '@/components/ui/FileDropUpload.vue'
 import { useHomeStore } from '@/stores/home'
 import { useAboutStore } from '@/stores/about'
 import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import type { Experience } from '@/types'
 
 const homeStore = useHomeStore()
 const aboutStore = useAboutStore()
@@ -122,6 +203,23 @@ const tabs = [
   { id: 'about', label: 'About Page' },
 ]
 
+type ExperienceForm = Experience & { _editorId: string }
+
+function createEditorId(): string {
+  return `exp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+function createEmptyExperience(): ExperienceForm {
+  return {
+    _editorId: createEditorId(),
+    company: '',
+    position: '',
+    startDate: '',
+    endDate: '',
+    description: '',
+  }
+}
+
 const homeForm = reactive({
   heroTitle: '',
   heroSubtitle: '',
@@ -135,6 +233,13 @@ const aboutForm = reactive({
   name: '',
   title: '',
   bio: '',
+  contactInfo: {
+    email: '',
+    phone: '',
+    location: '',
+    website: '',
+  },
+  experience: [createEmptyExperience()] as ExperienceForm[],
   avatarUrl: '',
   resumeUrl: '',
   socialLinks: {
@@ -167,6 +272,20 @@ watch(
       aboutForm.name = data.name || ''
       aboutForm.title = data.title || ''
       aboutForm.bio = data.bio || ''
+      aboutForm.contactInfo = {
+        email: data.contactInfo?.email || '',
+        phone: data.contactInfo?.phone || '',
+        location: data.contactInfo?.location || '',
+        website: data.contactInfo?.website || '',
+      }
+      aboutForm.experience = (data.experience?.length ? data.experience : [createEmptyExperience()]).map((exp) => ({
+        _editorId: createEditorId(),
+        company: exp.company || '',
+        position: exp.position || '',
+        startDate: exp.startDate || '',
+        endDate: exp.endDate || '',
+        description: exp.description || '',
+      }))
       aboutForm.avatarUrl = data.avatarUrl || ''
       aboutForm.resumeUrl = data.resumeUrl || ''
       aboutForm.socialLinks = {
@@ -188,8 +307,28 @@ async function saveHome() {
 
 async function saveAbout() {
   const skills = skillsInput.value.split(',').map((s) => s.trim()).filter(Boolean)
-  await aboutStore.updateAboutData({ ...aboutForm, skills })
+  const experience = aboutForm.experience
+    .map(({ _editorId: _id, ...exp }) => ({
+      ...exp,
+      company: exp.company.trim(),
+      position: exp.position.trim(),
+      startDate: exp.startDate.trim(),
+      endDate: exp.endDate?.trim() || '',
+      description: exp.description,
+    }))
+    .filter((exp) => exp.company || exp.position || exp.description)
+
+  await aboutStore.updateAboutData({ ...aboutForm, skills, experience })
   showSaved()
+}
+
+function addExperience(): void {
+  aboutForm.experience.push(createEmptyExperience())
+}
+
+function removeExperience(index: number): void {
+  if (aboutForm.experience.length === 1) return
+  aboutForm.experience.splice(index, 1)
 }
 
 function showSaved() {

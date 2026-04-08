@@ -15,6 +15,11 @@ const router = createRouter({
       component: () => import('@/views/AboutView.vue'),
     },
     {
+      path: '/cv',
+      name: 'cv-viewer',
+      component: () => import('@/views/CvViewerView.vue'),
+    },
+    {
       path: '/projects',
       name: 'projects',
       component: () => import('@/views/ProjectsView.vue'),

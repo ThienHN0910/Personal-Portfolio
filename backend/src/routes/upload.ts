@@ -10,17 +10,45 @@ router.post('/', async (req, res) => {
   if (!user) return
 
   try {
-    const { data, folder = 'portfolio' } = req.body as { data?: string; folder?: string }
+    const {
+      data,
+      folder = 'portfolio',
+      resourceType = 'image',
+      fileName,
+    } = req.body as {
+      data?: string
+      folder?: string
+      resourceType?: 'image' | 'raw' | 'video' | 'auto'
+      fileName?: string
+    }
 
     if (!data) {
-      return res.status(400).json({ success: false, error: 'No image data provided' })
+      return res.status(400).json({ success: false, error: 'No file data provided' })
     }
 
     const cloudinary = getCloudinary()
-    const result = await cloudinary.uploader.upload(data, {
+    const uploadOptions: {
+      folder: string
+      resource_type?: 'image' | 'raw' | 'video' | 'auto'
+      transformation?: Array<{ quality: string; fetch_format: string }>
+      public_id?: string
+    } = {
       folder,
-      transformation: [{ quality: 'auto', fetch_format: 'auto' }],
-    })
+    }
+
+    if (resourceType) {
+      uploadOptions.resource_type = resourceType
+    }
+
+    if (resourceType === 'image') {
+      uploadOptions.transformation = [{ quality: 'auto', fetch_format: 'auto' }]
+    }
+
+    if (fileName) {
+      uploadOptions.public_id = fileName.replace(/\.[^/.]+$/, '')
+    }
+
+    const result = await cloudinary.uploader.upload(data, uploadOptions)
 
     return res.status(200).json({
       success: true,
@@ -30,7 +58,7 @@ router.post('/', async (req, res) => {
       },
     })
   } catch {
-    return res.status(500).json({ success: false, error: 'Failed to upload image' })
+    return res.status(500).json({ success: false, error: 'Failed to upload file' })
   }
 })
 

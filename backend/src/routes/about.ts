@@ -16,6 +16,7 @@ router.get('/', async (_req, res) => {
         name: 'Your Name',
         title: 'Full Stack Developer',
         bio: 'A passionate developer.',
+        contactInfo: {},
         skills: [],
         experience: [],
         education: [],

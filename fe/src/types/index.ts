@@ -38,6 +38,7 @@ export interface AboutData {
   name: string
   title: string
   bio: string
+  contactInfo: ContactInfo
   skills: string[]
   experience: Experience[]
   education: Education[]
@@ -51,7 +52,15 @@ export interface Experience {
   position: string
   startDate: string
   endDate?: string
+  // Rich text HTML from CKEditor.
   description: string
+}
+
+export interface ContactInfo {
+  email?: string
+  phone?: string
+  location?: string
+  website?: string
 }
 
 export interface Education {

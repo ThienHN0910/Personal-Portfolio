@@ -4,6 +4,12 @@ export interface IAbout extends Document {
   name: string
   title: string
   bio: string
+  contactInfo: {
+    email?: string
+    phone?: string
+    location?: string
+    website?: string
+  }
   skills: string[]
   experience: {
     company: string
@@ -34,6 +40,12 @@ const AboutSchema = new Schema<IAbout>(
     name: { type: String, required: true, default: '' },
     title: { type: String, required: true, default: '' },
     bio: { type: String, default: '' },
+    contactInfo: {
+      email: String,
+      phone: String,
+      location: String,
+      website: String,
+    },
     skills: [{ type: String }],
     experience: [
       {

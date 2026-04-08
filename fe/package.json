@@ -16,6 +16,8 @@
     "axios": "^1.6.0",
     "ckeditor5": "^42.0.2",
     "dompurify": "^3.3.3",
+    "pdfjs-dist": "^4.8.69",
+    "personal-portfolio-workspace": "file:..",
     "pinia": "^2.1.0",
     "vue": "^3.4.0",
     "vue-router": "^4.3.0"
