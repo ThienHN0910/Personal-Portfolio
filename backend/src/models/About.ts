@@ -30,7 +30,6 @@ export interface IAbout extends Document {
   socialLinks: {
     github?: string
     linkedin?: string
-    twitter?: string
     email?: string
   }
 }
@@ -70,7 +69,6 @@ const AboutSchema = new Schema<IAbout>(
     socialLinks: {
       github: String,
       linkedin: String,
-      twitter: String,
       email: String,
     },
   },

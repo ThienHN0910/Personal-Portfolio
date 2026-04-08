@@ -74,7 +74,6 @@ export interface Education {
 export interface SocialLinks {
   github?: string
   linkedin?: string
-  twitter?: string
   email?: string
 }
 

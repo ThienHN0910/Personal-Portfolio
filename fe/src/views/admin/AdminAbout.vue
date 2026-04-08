@@ -162,10 +162,6 @@
             <input v-model="aboutForm.socialLinks.linkedin" type="url" placeholder="https://linkedin.com/in/..." />
           </div>
           <div class="form-group">
-            <label>Twitter</label>
-            <input v-model="aboutForm.socialLinks.twitter" type="url" placeholder="https://twitter.com/..." />
-          </div>
-          <div class="form-group">
             <label>Social Email (optional)</label>
             <input v-model="aboutForm.socialLinks.email" type="email" placeholder="you@email.com" />
           </div>
@@ -189,6 +185,7 @@ import { useAboutStore } from '@/stores/about'
 import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import type { Experience } from '@/types'
+import { sortExperiencesDescending } from '@/utils/experienceSort'
 
 const homeStore = useHomeStore()
 const aboutStore = useAboutStore()
@@ -245,7 +242,6 @@ const aboutForm = reactive({
   socialLinks: {
     github: '',
     linkedin: '',
-    twitter: '',
     email: '',
   },
 })
@@ -278,7 +274,7 @@ watch(
         location: data.contactInfo?.location || '',
         website: data.contactInfo?.website || '',
       }
-      aboutForm.experience = (data.experience?.length ? data.experience : [createEmptyExperience()]).map((exp) => ({
+      const normalizedExperience = (data.experience?.length ? data.experience : [createEmptyExperience()]).map((exp) => ({
         _editorId: createEditorId(),
         company: exp.company || '',
         position: exp.position || '',
@@ -286,12 +282,12 @@ watch(
         endDate: exp.endDate || '',
         description: exp.description || '',
       }))
+      aboutForm.experience = sortExperiencesDescending(normalizedExperience)
       aboutForm.avatarUrl = data.avatarUrl || ''
       aboutForm.resumeUrl = data.resumeUrl || ''
       aboutForm.socialLinks = {
         github: data.socialLinks.github || '',
         linkedin: data.socialLinks.linkedin || '',
-        twitter: data.socialLinks.twitter || '',
         email: data.socialLinks.email || '',
       }
       skillsInput.value = (data.skills || []).join(', ')
@@ -307,7 +303,8 @@ async function saveHome() {
 
 async function saveAbout() {
   const skills = skillsInput.value.split(',').map((s) => s.trim()).filter(Boolean)
-  const experience = aboutForm.experience
+  const experience = sortExperiencesDescending(
+    aboutForm.experience
     .map(({ _editorId: _id, ...exp }) => ({
       ...exp,
       company: exp.company.trim(),
@@ -316,7 +313,8 @@ async function saveAbout() {
       endDate: exp.endDate?.trim() || '',
       description: exp.description,
     }))
-    .filter((exp) => exp.company || exp.position || exp.description)
+    .filter((exp) => exp.company || exp.position || exp.description),
+  )
 
   await aboutStore.updateAboutData({ ...aboutForm, skills, experience })
   showSaved()

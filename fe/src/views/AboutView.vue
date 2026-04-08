@@ -27,7 +27,6 @@
               <div v-if="about?.socialLinks" class="flex gap-4">
                 <a v-if="about.socialLinks.github" :href="about.socialLinks.github" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors">GitHub</a>
                 <a v-if="about.socialLinks.linkedin" :href="about.socialLinks.linkedin" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors">LinkedIn</a>
-                <a v-if="about.socialLinks.twitter" :href="about.socialLinks.twitter" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors">Twitter</a>
               </div>
             </div>
           </div>
@@ -76,7 +75,7 @@
             <h2 class="text-2xl font-bold text-white mb-6">Experience</h2>
             <div class="space-y-6">
               <div
-                v-for="(exp, i) in about.experience"
+                v-for="(exp, i) in sortedExperiences"
                 :key="i"
                 class="border border-white/10 rounded-xl p-6 bg-white/[0.02]"
               >
@@ -130,10 +129,12 @@ import DOMPurify from 'dompurify'
 import { useAboutStore } from '@/stores/about'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import SkillBadge from '@/components/ui/SkillBadge.vue'
+import { sortExperiencesDescending } from '@/utils/experienceSort'
 
 const aboutStore = useAboutStore()
 const loading = computed(() => aboutStore.loading)
 const about = computed(() => aboutStore.aboutData)
+const sortedExperiences = computed(() => sortExperiencesDescending(about.value?.experience || []))
 const hasContactInfo = computed(() => {
   return Boolean(
     about.value?.contactInfo?.email
