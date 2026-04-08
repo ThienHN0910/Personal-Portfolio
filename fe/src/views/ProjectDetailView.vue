@@ -11,59 +11,99 @@
           Back to Projects
         </RouterLink>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <article class="card" :class="project.relatedBlogId ? 'lg:col-span-2' : 'lg:col-span-3'">
+        <header class="space-y-2">
+          <h1 class="text-3xl md:text-4xl font-bold text-white">{{ project.title }}</h1>
+          <p class="text-sm text-gray-400">Project Detail</p>
+        </header>
+
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+          <article class="card xl:col-span-2 overflow-hidden">
             <img
               v-if="project.imageUrl"
               :src="project.imageUrl"
               :alt="project.title"
-              class="card__image h-72"
+              class="card__image h-80 md:h-[26rem]"
             />
 
-            <div class="card__body">
-              <h1 class="text-3xl font-bold text-white mb-4">{{ project.title }}</h1>
-              <p class="text-gray-300 leading-7 mb-5">{{ project.description }}</p>
-
-              <div class="card__tags mb-0">
-                <span v-for="tech in project.technologies" :key="tech" class="card__tag">{{ tech }}</span>
-              </div>
-            </div>
-
-            <div class="card__footer">
-              <a
-                v-if="project.githubUrl"
-                :href="project.githubUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="card__link"
-              >
-                GitHub
-              </a>
-              <a
-                v-if="project.liveUrl"
-                :href="project.liveUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="card__link"
-              >
-                Live Demo
-              </a>
+            <div
+              v-else
+              class="h-80 md:h-[26rem] flex items-center justify-center bg-gradient-to-br from-blue-600/20 to-purple-600/20"
+            >
+              <svg width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-blue-400 opacity-50">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+              </svg>
             </div>
           </article>
 
-          <aside v-if="project.relatedBlogId" class="space-y-4">
-            <h2 class="text-xl font-semibold text-white">Related Blog</h2>
+          <aside class="card p-6 xl:sticky xl:top-28 space-y-6">
+            <section class="space-y-2">
+              <h2 class="text-lg font-semibold text-white">Description</h2>
+              <p class="text-gray-300 leading-7">{{ project.description }}</p>
+            </section>
 
-            <BlogCard
-              v-if="relatedPost"
-              :post="relatedPost"
-            />
+            <section class="space-y-3">
+              <h2 class="text-lg font-semibold text-white">Technologies</h2>
+              <div class="card__tags mb-0">
+                <span v-for="tech in project.technologies" :key="tech" class="card__tag">{{ tech }}</span>
+              </div>
+            </section>
 
-            <div v-else class="card p-5 text-gray-400 text-sm">
-              Related blog is unavailable.
-            </div>
+            <section class="space-y-3">
+              <h2 class="text-lg font-semibold text-white">URLs</h2>
+
+              <div v-if="hasProjectLinks" class="flex flex-col gap-2">
+                <a
+                  v-if="project.githubUrl"
+                  :href="project.githubUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card__link"
+                >
+                  GitHub Repository
+                </a>
+
+                <a
+                  v-if="project.liveUrl"
+                  :href="project.liveUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="card__link"
+                >
+                  Live Demo
+                </a>
+              </div>
+
+              <p v-else class="text-sm text-gray-500">No public URLs available.</p>
+            </section>
           </aside>
         </div>
+
+        <section v-if="relatedPost" class="card p-6 md:p-8 space-y-6">
+          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div>
+              <p class="text-sm uppercase tracking-[0.12em] text-blue-300 mb-2">Related Blog</p>
+              <h2 class="text-2xl font-bold text-white">{{ relatedPost.title }}</h2>
+              <div class="card__tags mt-3 mb-0">
+                <span v-for="tag in relatedPost.tags" :key="tag" class="card__tag">{{ tag }}</span>
+              </div>
+              <p class="text-gray-500 text-sm mt-3">Published {{ formatDate(relatedPost.createdAt) }}</p>
+            </div>
+
+            <RouterLink :to="`/blog/${relatedPost._id}`" class="card__link shrink-0">
+              Open Full Post
+            </RouterLink>
+          </div>
+
+          <img
+            v-if="relatedPost.coverImage"
+            :src="relatedPost.coverImage"
+            :alt="relatedPost.title"
+            class="w-full h-64 object-cover rounded-xl"
+          />
+
+          <!-- eslint-disable-next-line vue/no-v-html -->
+          <div class="blog-content" v-html="sanitizedRelatedContent" />
+        </section>
       </div>
 
       <div v-else class="text-center py-20">
@@ -75,10 +115,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import DOMPurify from 'dompurify'
 import { useRoute } from 'vue-router'
 
-import BlogCard from '@/components/ui/BlogCard.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useBlogStore } from '@/stores/blog'
 import { useProjectsStore } from '@/stores/projects'
@@ -91,6 +131,18 @@ const blogStore = useBlogStore()
 const project = ref<Project | null>(null)
 const relatedPost = ref<BlogPost | null>(null)
 const loading = ref(true)
+const hasProjectLinks = computed(() => Boolean(project.value?.githubUrl || project.value?.liveUrl))
+const sanitizedRelatedContent = computed(() => {
+  const html = relatedPost.value?.content || ''
+  return DOMPurify.sanitize(html, {
+    USE_PROFILES: { html: true },
+  })
+})
+
+function formatDate(date?: string): string {
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+}
 
 onMounted(async () => {
   const id = route.params.id as string
@@ -104,3 +156,82 @@ onMounted(async () => {
   loading.value = false
 })
 </script>
+
+<style scoped lang="scss">
+.blog-content {
+  color: #d1d5db;
+  line-height: 1.8;
+}
+
+.blog-content :deep(h1),
+.blog-content :deep(h2),
+.blog-content :deep(h3),
+.blog-content :deep(h4) {
+  color: #f8fafc;
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+}
+
+.blog-content :deep(p) {
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(ul),
+.blog-content :deep(ol) {
+  margin-left: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(ul) {
+  list-style: disc;
+}
+
+.blog-content :deep(ol) {
+  list-style: decimal;
+}
+
+.blog-content :deep(blockquote) {
+  margin: 1.25rem 0;
+  border-left: 3px solid rgba(59, 130, 246, 0.75);
+  padding-left: 1rem;
+  color: #93c5fd;
+}
+
+.blog-content :deep(pre) {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.75rem;
+  padding: 0.875rem 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(a) {
+  color: #93c5fd;
+  text-decoration: underline;
+}
+
+.blog-content :deep(.image) {
+  display: table;
+  margin: 1.25rem auto;
+}
+
+.blog-content :deep(.image img) {
+  border-radius: 0.75rem;
+  max-width: 100%;
+  height: auto;
+}
+
+.blog-content :deep(table) {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+
+.blog-content :deep(th),
+.blog-content :deep(td) {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 0.75rem;
+}
+</style>
