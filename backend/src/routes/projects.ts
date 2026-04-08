@@ -10,7 +10,7 @@ router.get('/', async (_req, res) => {
   await connectToDatabase()
 
   try {
-    const projects = await Project.find().sort({ createdAt: -1 })
+    const projects = await Project.find().sort({ priority: -1, featured: -1, createdAt: -1 })
     return res.status(200).json({ success: true, data: projects })
   } catch {
     return res.status(500).json({ success: false, error: 'Failed to fetch projects' })

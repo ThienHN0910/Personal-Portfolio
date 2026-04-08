@@ -36,6 +36,20 @@
           </article>
 
           <aside class="card p-6 xl:sticky xl:top-28 space-y-6">
+            <section class="space-y-3">
+              <h2 class="text-lg font-semibold text-white">Overview</h2>
+              <div class="grid grid-cols-2 gap-3">
+                <div class="border border-white/10 rounded-lg px-3 py-2 bg-white/[0.03]">
+                  <p class="text-xs uppercase tracking-wider text-gray-500">Priority</p>
+                  <p class="text-base font-semibold text-blue-300">{{ project.priority || 0 }}</p>
+                </div>
+                <div class="border border-white/10 rounded-lg px-3 py-2 bg-white/[0.03]">
+                  <p class="text-xs uppercase tracking-wider text-gray-500">Duration</p>
+                  <p class="text-base font-semibold text-gray-200">{{ project.duration || 'N/A' }}</p>
+                </div>
+              </div>
+            </section>
+
             <section class="space-y-2">
               <h2 class="text-lg font-semibold text-white">Description</h2>
               <p class="text-gray-300 leading-7">{{ project.description }}</p>

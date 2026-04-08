@@ -8,13 +8,28 @@ export const useProjectsStore = defineStore('projects', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
+  function sortProjects(items: Project[]): Project[] {
+    return [...items].sort((a, b) => {
+      const priorityDiff = (b.priority || 0) - (a.priority || 0)
+      if (priorityDiff !== 0) return priorityDiff
+
+      if (a.featured !== b.featured) {
+        return a.featured ? -1 : 1
+      }
+
+      const timeA = a.createdAt ? Date.parse(a.createdAt) : 0
+      const timeB = b.createdAt ? Date.parse(b.createdAt) : 0
+      return timeB - timeA
+    })
+  }
+
   async function fetchProjects() {
     loading.value = true
     error.value = null
     try {
       const response = await api.get<{ success: boolean; data: Project[] }>('/projects')
       if (response.data.success && response.data.data) {
-        projects.value = response.data.data
+        projects.value = sortProjects(response.data.data)
       }
     } catch (err) {
       error.value = 'Failed to fetch projects'
@@ -48,7 +63,7 @@ export const useProjectsStore = defineStore('projects', () => {
     try {
       const response = await api.post<{ success: boolean; data: Project }>('/projects', data)
       if (response.data.success && response.data.data) {
-        projects.value.unshift(response.data.data)
+        projects.value = sortProjects([...projects.value, response.data.data])
       }
     } catch (err) {
       error.value = 'Failed to create project'
@@ -67,6 +82,7 @@ export const useProjectsStore = defineStore('projects', () => {
       if (response.data.success && response.data.data) {
         const index = projects.value.findIndex((p) => p._id === id)
         if (index !== -1) projects.value[index] = response.data.data
+        projects.value = sortProjects(projects.value)
       }
     } catch (err) {
       error.value = 'Failed to update project'

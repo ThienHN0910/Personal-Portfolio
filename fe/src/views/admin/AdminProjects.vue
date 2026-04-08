@@ -17,6 +17,8 @@
           <thead>
             <tr>
               <th>Title</th>
+              <th class="hidden md:table-cell">Priority</th>
+              <th class="hidden xl:table-cell">Duration</th>
               <th class="hidden md:table-cell">Technologies</th>
               <th class="hidden lg:table-cell">Related Blog</th>
               <th class="hidden sm:table-cell">Featured</th>
@@ -29,6 +31,8 @@
               :key="project._id"
             >
               <td class="text-white font-medium">{{ project.title }}</td>
+              <td class="hidden md:table-cell text-gray-200">{{ project.priority || 0 }}</td>
+              <td class="hidden xl:table-cell text-gray-300 text-sm">{{ project.duration || '-' }}</td>
               <td class="hidden md:table-cell">
                 <div class="flex flex-wrap gap-1">
                   <span v-for="tech in project.technologies.slice(0, 3)" :key="tech" class="card__tag">{{ tech }}</span>
@@ -75,6 +79,16 @@
                 <label>Description</label>
                 <textarea v-model="form.description" rows="3" required placeholder="Project description" />
               </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="form-group">
+                  <label>Duration</label>
+                  <input v-model="form.duration" type="text" placeholder="3 months" />
+                </div>
+                <div class="form-group">
+                  <label>Priority (higher first)</label>
+                  <input v-model.number="form.priority" type="number" min="0" step="1" />
+                </div>
+              </div>
               <div class="form-group">
                 <label>Technologies (select from Skills)</label>
                 <p v-if="!technologyOptions.length" class="text-xs text-amber-300 mb-2">
@@ -93,7 +107,7 @@
               </div>
               <div class="form-group">
                 <label>Related Blog</label>
-                <select v-model="form.relatedBlogId">
+                <select v-model="form.relatedBlogId" class="admin-select">
                   <option value="">No related blog</option>
                   <option v-for="post in blogOptions" :key="post._id" :value="post._id">{{ post.title }}</option>
                 </select>
@@ -155,6 +169,8 @@ import type { Project } from '@/types'
 interface ProjectFormState {
   title: string
   description: string
+  duration: string
+  priority: number
   githubUrl: string
   liveUrl: string
   imageUrl: string
@@ -166,6 +182,8 @@ function createInitialFormState(): ProjectFormState {
   return {
     title: '',
     description: '',
+    duration: '',
+    priority: 0,
     githubUrl: '',
     liveUrl: '',
     imageUrl: '',
@@ -212,6 +230,8 @@ function resetForm(): void {
 function fillFormFromProject(project: Project): void {
   form.title = project.title
   form.description = project.description
+  form.duration = project.duration || ''
+  form.priority = project.priority || 0
   form.githubUrl = project.githubUrl || ''
   form.liveUrl = project.liveUrl || ''
   form.imageUrl = project.imageUrl || ''

@@ -70,7 +70,12 @@
               </div>
               <div class="form-group">
                 <label>Content</label>
-                <BlogRichEditor v-model="form.content" :editor-key="editorInstanceKey" />
+                <FullRichEditor
+                  v-model="form.content"
+                  :editor-key="editorInstanceKey"
+                  upload-folder="portfolio/blog/content"
+                  placeholder="Write your post content here..."
+                />
               </div>
               <div class="form-group">
                 <label>Tags (comma separated)</label>
@@ -132,8 +137,8 @@ function createInitialFormState(): BlogFormState {
   }
 }
 
-const BlogRichEditor = defineAsyncComponent({
-  loader: () => import('@/components/admin/BlogRichEditor.vue'),
+const FullRichEditor = defineAsyncComponent({
+  loader: () => import('@/components/admin/FullRichEditor.vue'),
   loadingComponent: EditorLoadingSkeleton,
   delay: 120,
   timeout: 15000,

@@ -2,6 +2,8 @@ export interface Project {
   _id?: string
   title: string
   description: string
+  duration?: string
+  priority?: number
   technologies: string[]
   imageUrl?: string
   githubUrl?: string
