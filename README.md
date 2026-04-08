@@ -1,154 +1,159 @@
 # Personal Portfolio Workspace
 
-Full-stack portfolio project with separated frontend and backend:
-- Frontend: Vue 3 + Vite + TypeScript (folder `fe`)
-- Backend: Express + TypeScript + MongoDB (folder `backend`)
+Full-stack portfolio monorepo with a Vue frontend and an Express backend.
 
-## Workspace Structure
+## Tech Stack
 
-```
+- Frontend: Vue 3, Vite, TypeScript, Pinia, SCSS, Tailwind
+- Backend: Express, TypeScript, MongoDB (Mongoose), JWT
+- Content: CKEditor 5 (shared editor for admin About and Blog)
+- Media: Cloudinary (images and PDF upload)
+- Auth: Google OAuth callback -> JWT -> admin guards
+
+## Key Features
+
+- Home/About/Projects/Blog/Contact public pages
+- Admin dashboard for About, Projects, Blog, and Contact messages
+- Shared rich text editor for admin content workflows
+- CV upload (PDF) and CV viewer using pdf.js
+- Project ordering by `priority` (desc), then `featured`, then newest
+- Project metadata fields: `duration` and `priority`
+
+## Repository Structure
+
+```text
 Personal-Portfolio/
-├── fe/                     # Frontend app (Vue + Vite)
-│   ├── src/
-│   ├── index.html
-│   ├── package.json
-│   ├── vite.config.ts
-│   ├── tailwind.config.js
-│   ├── postcss.config.js
-│   └── .env.example
-├── backend/                # Backend API (Express + TS)
-│   ├── src/
-│   │   ├── routes/
-│   │   ├── models/
-│   │   └── lib/
-│   ├── package.json
-│   └── .env.example
-├── package.json            # Root orchestrator scripts
-└── README.md
+|-- fe/                 # Vue app
+|   |-- src/
+|   |-- package.json
+|   `-- .env.example
+|-- backend/            # Express API
+|   |-- src/
+|   |   |-- routes/
+|   |   |-- models/
+|   |   `-- lib/
+|   |-- package.json
+|   `-- .env.example
+|-- docs/
+|   |-- ENVIRONMENT.md
+|   |-- API_REFERENCE.md
+|   `-- ADMIN_CONTENT_GUIDE.md
+|-- package.json        # Monorepo orchestration scripts
+`-- README.md
 ```
 
-## Requirements
+## Prerequisites
 
-- Node.js >= 18
-- npm >= 9
-- MongoDB (Atlas or self-hosted)
+- Node.js 18+
+- npm 9+
+- MongoDB instance
 - Cloudinary account
 - Google OAuth credentials
 
-## Setup
+## Quick Start
 
-1) Install dependencies at root (for orchestration scripts)
+1. Install dependencies:
 
 ```bash
 npm install
-```
-
-2) Install frontend dependencies
-
-```bash
 npm --prefix fe install
-```
-
-3) Install backend dependencies
-
-```bash
 npm --prefix backend install
 ```
 
-4) Configure environment variables
+2. Configure env files:
 
-- Backend env: copy `backend/.env.example` to `backend/.env`
-- Frontend env: copy `fe/.env.example` to `fe/.env`
+- Copy `backend/.env.example` -> `backend/.env`
+- Copy `fe/.env.example` -> `fe/.env`
 
-Backend variables (minimum):
-
-```env
-PORT=3000
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/portfolio
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-JWT_SECRET=your_jwt_secret_key_min_32_chars
-ADMIN_EMAIL=your-admin@email.com
-FRONTEND_URL=http://localhost:5173
-API_BASE_URL=http://localhost:3000
-CORS_ORIGIN=http://localhost:5173
-```
-
-Frontend variables:
-
-```env
-VITE_API_BASE_URL=/api
-```
-
-Notes:
-- In local dev, frontend running on 5173 auto-resolves API to `http://localhost:3000/api`.
-- In production, set `VITE_API_BASE_URL` to your backend base URL if FE and BE are on different domains.
-
-## Run
-
-Run both frontend and backend in parallel:
+3. Run development servers:
 
 ```bash
 npm run dev
 ```
 
-Expected local URLs:
+Local URLs:
+
 - Frontend: http://localhost:5173
-- Backend: http://localhost:3000
-- Health check: http://localhost:3000/api/health
+- Backend API: http://localhost:3000
+- Health: http://localhost:3000/api/health
 
 ## Build and Typecheck
 
-Build both apps:
-
 ```bash
 npm run build
-```
-
-Typecheck both apps:
-
-```bash
 npm run typecheck
 ```
 
-## Root Scripts
+## Scripts
 
-- `npm run dev`: run FE + BE concurrently
-- `npm run build`: build FE + BE
-- `npm run typecheck`: typecheck FE + BE
-- `npm run preview:fe`: preview FE production build
-- `npm run start:be`: run built backend
+Root (`package.json`):
 
-## API Overview
+- `npm run dev` - run FE + BE concurrently
+- `npm run build` - build FE + BE
+- `npm run typecheck` - typecheck FE + BE
+- `npm run preview:fe` - preview FE build
+- `npm run start:be` - run built backend
 
-Main backend routes:
+Frontend (`fe/package.json`):
+
+- `npm --prefix fe run dev`
+- `npm --prefix fe run build`
+- `npm --prefix fe run typecheck`
+
+Backend (`backend/package.json`):
+
+- `npm --prefix backend run dev`
+- `npm --prefix backend run build`
+- `npm --prefix backend run typecheck`
+
+## API Summary
+
+Public endpoints:
+
 - `GET /api/health`
-- `GET/PUT /api/home`
-- `GET/PUT /api/about`
-- `GET/POST /api/projects`
-- `GET/PUT/DELETE /api/projects/:id`
-- `GET/POST /api/blog`
-- `GET/PUT/DELETE /api/blog/:id`
-- `GET/POST /api/contact`
+- `GET /api/home`
+- `GET /api/about`
+- `GET /api/projects`
+- `GET /api/projects/:id`
+- `GET /api/blog`
+- `GET /api/blog/:id`
+- `POST /api/contact`
+
+Protected admin endpoints (Bearer JWT required):
+
+- `PUT /api/home`
+- `PUT /api/about`
+- `POST /api/projects`
+- `PUT /api/projects/:id`
+- `DELETE /api/projects/:id`
+- `POST /api/blog`
+- `PUT /api/blog/:id`
+- `DELETE /api/blog/:id`
+- `GET /api/contact`
 - `DELETE /api/contact/:id`
 - `POST /api/upload`
+
+OAuth endpoints:
+
 - `GET /api/auth/google`
 - `GET /api/auth/callback`
 
-## Admin Access
+See full API notes in `docs/API_REFERENCE.md`.
 
-Admin role is granted when Google account email matches `ADMIN_EMAIL`.
-4. From there you can manage projects, blog posts, messages, and page content
+## Admin Access Model
 
----
+- User signs in via Google OAuth.
+- Backend creates JWT in callback.
+- Role is `admin` only when Google email matches `ADMIN_EMAIL`.
+- Admin-only routes are guarded by `requireAdmin` middleware.
 
-## Scripts
+## Documentation
 
-```bash
-npm run dev       # Start development server
-npm run build     # Type-check and build for production
-npm run preview   # Preview production build locally
-```
+- Environment setup: `docs/ENVIRONMENT.md`
+- API details: `docs/API_REFERENCE.md`
+- Admin content workflow: `docs/ADMIN_CONTENT_GUIDE.md`
+
+## Notes
+
+- `POST /api/upload` supports `image` and `raw` resource types (used for both image and PDF flows).
+- Rich text editor is shared for Admin About and Admin Blog to keep a consistent authoring experience.
