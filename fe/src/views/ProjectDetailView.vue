@@ -94,12 +94,12 @@
             </RouterLink>
           </div>
 
-          <img
+          <!-- <img
             v-if="relatedPost.coverImage"
             :src="relatedPost.coverImage"
             :alt="relatedPost.title"
             class="w-full h-64 object-cover rounded-xl"
-          />
+          /> -->
 
           <!-- eslint-disable-next-line vue/no-v-html -->
           <div class="blog-content" v-html="sanitizedRelatedContent" />
