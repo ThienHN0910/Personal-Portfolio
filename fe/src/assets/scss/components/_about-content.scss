@@ -1,0 +1,44 @@
+.experience-content {
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: #f8fafc;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.35;
+  }
+
+  p {
+    margin-bottom: 0.75rem;
+  }
+
+  ul,
+  ol {
+    margin-left: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  blockquote {
+    margin: 0.75rem 0;
+    border-left: 3px solid rgba(59, 130, 246, 0.7);
+    padding-left: 0.75rem;
+    color: #93c5fd;
+  }
+
+  pre {
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    overflow-x: auto;
+  }
+}

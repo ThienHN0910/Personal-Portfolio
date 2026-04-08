@@ -24,9 +24,17 @@
             <div>
               <h1 class="section-title mb-2">{{ about?.name || 'About Me' }}</h1>
               <p class="text-xl text-blue-400 font-medium mb-3">{{ about?.title || 'Full Stack Developer' }}</p>
-              <div v-if="about?.socialLinks" class="flex gap-4">
-                <a v-if="about.socialLinks.github" :href="about.socialLinks.github" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors">GitHub</a>
-                <a v-if="about.socialLinks.linkedin" :href="about.socialLinks.linkedin" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-blue-400 transition-colors">LinkedIn</a>
+              <div v-if="publicSocialLinks.length" class="flex gap-4">
+                <a
+                  v-for="link in publicSocialLinks"
+                  :key="link.label"
+                  :href="link.href"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-gray-400 hover:text-blue-400 transition-colors"
+                >
+                  {{ link.label }}
+                </a>
               </div>
             </div>
           </div>
@@ -129,20 +137,15 @@ import DOMPurify from 'dompurify'
 import { useAboutStore } from '@/stores/about'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import SkillBadge from '@/components/ui/SkillBadge.vue'
+import { hasAnyContactInfo, getPublicSocialLinks } from '@/utils/aboutPresentation'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
 
 const aboutStore = useAboutStore()
 const loading = computed(() => aboutStore.loading)
 const about = computed(() => aboutStore.aboutData)
+const publicSocialLinks = computed(() => getPublicSocialLinks(about.value))
 const sortedExperiences = computed(() => sortExperiencesDescending(about.value?.experience || []))
-const hasContactInfo = computed(() => {
-  return Boolean(
-    about.value?.contactInfo?.email
-      || about.value?.contactInfo?.phone
-      || about.value?.contactInfo?.location
-      || about.value?.contactInfo?.website,
-  )
-})
+const hasContactInfo = computed(() => hasAnyContactInfo(about.value))
 
 function sanitizeHtml(html: string): string {
   return DOMPurify.sanitize(html || '', {
@@ -152,48 +155,3 @@ function sanitizeHtml(html: string): string {
 
 onMounted(() => aboutStore.fetchAboutData())
 </script>
-
-<style scoped lang="scss">
-.experience-content :deep(h1),
-.experience-content :deep(h2),
-.experience-content :deep(h3),
-.experience-content :deep(h4) {
-  color: #f8fafc;
-  margin-top: 0.75rem;
-  margin-bottom: 0.5rem;
-  line-height: 1.35;
-}
-
-.experience-content :deep(p) {
-  margin-bottom: 0.75rem;
-}
-
-.experience-content :deep(ul),
-.experience-content :deep(ol) {
-  margin-left: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.experience-content :deep(ul) {
-  list-style: disc;
-}
-
-.experience-content :deep(ol) {
-  list-style: decimal;
-}
-
-.experience-content :deep(blockquote) {
-  margin: 0.75rem 0;
-  border-left: 3px solid rgba(59, 130, 246, 0.7);
-  padding-left: 0.75rem;
-  color: #93c5fd;
-}
-
-.experience-content :deep(pre) {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 0.75rem;
-  padding: 0.75rem;
-  overflow-x: auto;
-}
-</style>

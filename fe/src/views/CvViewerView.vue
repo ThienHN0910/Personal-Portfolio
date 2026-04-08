@@ -35,12 +35,24 @@
 
 <script setup lang="ts">
 import { nextTick, onMounted, ref } from 'vue'
-import * as pdfjsLib from 'pdfjs-dist'
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useAboutStore } from '@/stores/about'
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).toString()
+type PdfJsModule = typeof import('pdfjs-dist')
+
+let pdfjsModulePromise: Promise<PdfJsModule> | null = null
+
+function getPdfJs(): Promise<PdfJsModule> {
+  if (!pdfjsModulePromise) {
+    pdfjsModulePromise = import('pdfjs-dist').then((module) => {
+      module.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url).toString()
+      return module
+    })
+  }
+
+  return pdfjsModulePromise
+}
 
 const aboutStore = useAboutStore()
 const loading = ref(true)
@@ -56,6 +68,7 @@ async function renderPdf(url: string): Promise<void> {
   pagesContainer.value.innerHTML = ''
 
   try {
+    const pdfjsLib = await getPdfJs()
     const loadingTask = pdfjsLib.getDocument({
       url,
       withCredentials: false,

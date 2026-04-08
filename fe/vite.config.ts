@@ -8,8 +8,16 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (id.includes('node_modules/pdfjs-dist')) {
+            return 'vendor-pdfjs'
+          }
+
           if (id.includes('node_modules/@ckeditor') || id.includes('node_modules/ckeditor5')) {
             return 'vendor-ckeditor'
+          }
+
+          if (id.includes('node_modules/dompurify')) {
+            return 'vendor-dompurify'
           }
         },
       },
