@@ -136,6 +136,104 @@
 
           <button type="button" class="btn btn--secondary mb-5" @click="addExperience">+ Add Experience</button>
 
+          <h3 class="text-white font-semibold mb-4 mt-2">Education</h3>
+          <div class="space-y-5 mb-5">
+            <div
+              v-for="(edu, index) in aboutForm.education"
+              :key="edu._editorId"
+              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="form-group mb-0">
+                  <label>Institution</label>
+                  <input v-model="edu.institution" type="text" placeholder="University / Academy" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Degree</label>
+                  <input v-model="edu.degree" type="text" placeholder="Bachelor / Master / Diploma" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Field</label>
+                  <input v-model="edu.field" type="text" placeholder="Computer Science" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>GPA</label>
+                  <input v-model="edu.gpa" type="text" placeholder="3.75/4.0" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Start Date</label>
+                  <input v-model="edu.startDate" type="text" placeholder="Sep 2018" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>End Date</label>
+                  <input v-model="edu.endDate" type="text" placeholder="Jun 2022" />
+                </div>
+              </div>
+
+              <div class="mt-3 flex justify-end">
+                <button
+                  type="button"
+                  class="btn btn--danger btn--sm"
+                  :disabled="aboutForm.education.length === 1"
+                  @click="removeEducation(index)"
+                >
+                  Remove Education
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--secondary mb-5" @click="addEducation">+ Add Education</button>
+
+          <h3 class="text-white font-semibold mb-4 mt-2">Licenses &amp; Certifications</h3>
+          <div class="space-y-5 mb-5">
+            <div
+              v-for="(item, index) in aboutForm.licensesCertifications"
+              :key="item._editorId"
+              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="form-group mb-0">
+                  <label>Name</label>
+                  <input v-model="item.name" type="text" placeholder="AWS Certified Developer" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Issuer</label>
+                  <input v-model="item.issuer" type="text" placeholder="Amazon Web Services" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Issue Date</label>
+                  <input v-model="item.issueDate" type="text" placeholder="Jan 2025" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Expiration Date</label>
+                  <input v-model="item.expirationDate" type="text" placeholder="Jan 2028" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Credential ID</label>
+                  <input v-model="item.credentialId" type="text" placeholder="ABC-12345" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Credential URL</label>
+                  <input v-model="item.credentialUrl" type="text" placeholder="https://verify.example.com/..." />
+                </div>
+              </div>
+
+              <div class="mt-3 flex justify-end">
+                <button
+                  type="button"
+                  class="btn btn--danger btn--sm"
+                  :disabled="aboutForm.licensesCertifications.length === 1"
+                  @click="removeLicenseCertification(index)"
+                >
+                  Remove Item
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--secondary mb-5" @click="addLicenseCertification">+ Add License/Certification</button>
+
           <div class="form-group">
             <label>Avatar URL</label>
             <ImageDropUpload v-model="aboutForm.avatarUrl" folder="portfolio/about" />
@@ -153,18 +251,37 @@
           </div>
 
           <h3 class="text-white font-semibold mb-4 mt-2">Social Links</h3>
-          <div class="form-group">
-            <label>GitHub</label>
-            <input v-model="aboutForm.socialLinks.github" type="url" placeholder="https://github.com/..." />
+          <div class="space-y-4 mb-5">
+            <div
+              v-for="(link, index) in aboutForm.socialLinks"
+              :key="link._editorId"
+              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="form-group mb-0">
+                  <label>Label</label>
+                  <input v-model="link.label" type="text" placeholder="GitHub, LinkedIn, Portfolio..." />
+                </div>
+                <div class="form-group mb-0">
+                  <label>URL</label>
+                  <input v-model="link.url" type="text" placeholder="https://..." />
+                </div>
+              </div>
+
+              <div class="mt-3 flex justify-end">
+                <button
+                  type="button"
+                  class="btn btn--danger btn--sm"
+                  :disabled="aboutForm.socialLinks.length === 1"
+                  @click="removeSocialLink(index)"
+                >
+                  Remove Link
+                </button>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>LinkedIn</label>
-            <input v-model="aboutForm.socialLinks.linkedin" type="url" placeholder="https://linkedin.com/in/..." />
-          </div>
-          <div class="form-group">
-            <label>Social Email (optional)</label>
-            <input v-model="aboutForm.socialLinks.email" type="email" placeholder="you@email.com" />
-          </div>
+
+          <button type="button" class="btn btn--secondary mb-5" @click="addSocialLink">+ Add Social Link</button>
           <button type="submit" class="btn btn--primary" :disabled="aboutStore.loading">Save About</button>
         </form>
       </div>
@@ -184,7 +301,7 @@ import { useHomeStore } from '@/stores/home'
 import { useAboutStore } from '@/stores/about'
 import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
-import type { Experience } from '@/types'
+import type { Education, Experience, LicenseCertification, SocialLink } from '@/types'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
 
 const homeStore = useHomeStore()
@@ -201,9 +318,12 @@ const tabs = [
 ]
 
 type ExperienceForm = Experience & { _editorId: string }
+type EducationForm = Education & { _editorId: string }
+type LicenseCertificationForm = LicenseCertification & { _editorId: string }
+type SocialLinkForm = SocialLink & { _editorId: string }
 
 function createEditorId(): string {
-  return `exp-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+  return `row-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
 }
 
 function createEmptyExperience(): ExperienceForm {
@@ -214,6 +334,38 @@ function createEmptyExperience(): ExperienceForm {
     startDate: '',
     endDate: '',
     description: '',
+  }
+}
+
+function createEmptySocialLink(): SocialLinkForm {
+  return {
+    _editorId: createEditorId(),
+    label: '',
+    url: '',
+  }
+}
+
+function createEmptyEducation(): EducationForm {
+  return {
+    _editorId: createEditorId(),
+    institution: '',
+    degree: '',
+    field: '',
+    gpa: '',
+    startDate: '',
+    endDate: '',
+  }
+}
+
+function createEmptyLicenseCertification(): LicenseCertificationForm {
+  return {
+    _editorId: createEditorId(),
+    name: '',
+    issuer: '',
+    issueDate: '',
+    expirationDate: '',
+    credentialId: '',
+    credentialUrl: '',
   }
 }
 
@@ -237,13 +389,11 @@ const aboutForm = reactive({
     website: '',
   },
   experience: [createEmptyExperience()] as ExperienceForm[],
+  education: [createEmptyEducation()] as EducationForm[],
+  licensesCertifications: [createEmptyLicenseCertification()] as LicenseCertificationForm[],
   avatarUrl: '',
   resumeUrl: '',
-  socialLinks: {
-    github: '',
-    linkedin: '',
-    email: '',
-  },
+  socialLinks: [createEmptySocialLink()] as SocialLinkForm[],
 })
 
 watch(
@@ -283,13 +433,40 @@ watch(
         description: exp.description || '',
       }))
       aboutForm.experience = sortExperiencesDescending(normalizedExperience)
+      const incomingEducation = Array.isArray(data.education)
+        ? data.education
+        : []
+      aboutForm.education = (incomingEducation.length ? incomingEducation : [createEmptyEducation()]).map((edu) => ({
+        _editorId: createEditorId(),
+        institution: edu.institution || '',
+        degree: edu.degree || '',
+        field: edu.field || '',
+        gpa: edu.gpa || '',
+        startDate: edu.startDate || '',
+        endDate: edu.endDate || '',
+      }))
+      const incomingLicensesCertifications = Array.isArray(data.licensesCertifications)
+        ? data.licensesCertifications
+        : []
+      aboutForm.licensesCertifications = (incomingLicensesCertifications.length ? incomingLicensesCertifications : [createEmptyLicenseCertification()]).map((item) => ({
+        _editorId: createEditorId(),
+        name: item.name || '',
+        issuer: item.issuer || '',
+        issueDate: item.issueDate || '',
+        expirationDate: item.expirationDate || '',
+        credentialId: item.credentialId || '',
+        credentialUrl: item.credentialUrl || '',
+      }))
       aboutForm.avatarUrl = data.avatarUrl || ''
       aboutForm.resumeUrl = data.resumeUrl || ''
-      aboutForm.socialLinks = {
-        github: data.socialLinks.github || '',
-        linkedin: data.socialLinks.linkedin || '',
-        email: data.socialLinks.email || '',
-      }
+      const incomingSocialLinks = Array.isArray(data.socialLinks)
+        ? data.socialLinks
+        : []
+      aboutForm.socialLinks = (incomingSocialLinks.length ? incomingSocialLinks : [createEmptySocialLink()]).map((link) => ({
+        _editorId: createEditorId(),
+        label: link.label || '',
+        url: link.url || '',
+      }))
       skillsInput.value = (data.skills || []).join(', ')
     }
   },
@@ -303,6 +480,38 @@ async function saveHome() {
 
 async function saveAbout() {
   const skills = skillsInput.value.split(',').map((s) => s.trim()).filter(Boolean)
+
+  const normalizeUrl = (value: string): string => {
+    const trimmed = value.trim()
+    if (!trimmed) return ''
+    if (/^(https?:|mailto:|tel:)/i.test(trimmed)) return trimmed
+    return `https://${trimmed}`
+  }
+
+  const socialLinks = aboutForm.socialLinks
+    .map(({ _editorId: _id, ...link }) => {
+      const url = normalizeUrl(link.url)
+      const label = link.label.trim()
+
+      if (!url) return null
+
+      const fallbackLabel = (() => {
+        if (url.startsWith('mailto:')) return 'Email'
+        if (url.startsWith('tel:')) return 'Phone'
+        try {
+          return new URL(url).hostname.replace(/^www\./, '')
+        } catch {
+          return 'Link'
+        }
+      })()
+
+      return {
+        label: label || fallbackLabel,
+        url,
+      }
+    })
+    .filter((link): link is SocialLink => Boolean(link))
+
   const experience = sortExperiencesDescending(
     aboutForm.experience
     .map(({ _editorId: _id, ...exp }) => ({
@@ -316,7 +525,38 @@ async function saveAbout() {
     .filter((exp) => exp.company || exp.position || exp.description),
   )
 
-  await aboutStore.updateAboutData({ ...aboutForm, skills, experience })
+  const education = sortExperiencesDescending(
+    aboutForm.education
+      .map(({ _editorId: _id, ...edu }) => ({
+        institution: edu.institution.trim(),
+        degree: edu.degree.trim(),
+        field: edu.field.trim(),
+        gpa: edu.gpa?.trim() || '',
+        startDate: edu.startDate.trim(),
+        endDate: edu.endDate?.trim() || '',
+      }))
+      .filter((edu) => edu.institution || edu.degree || edu.field || edu.gpa || edu.startDate || edu.endDate),
+  )
+
+  const licensesCertifications = aboutForm.licensesCertifications
+    .map(({ _editorId: _id, ...item }) => ({
+      name: item.name.trim(),
+      issuer: item.issuer.trim(),
+      issueDate: item.issueDate.trim(),
+      expirationDate: item.expirationDate?.trim() || '',
+      credentialId: item.credentialId?.trim() || '',
+      credentialUrl: normalizeUrl(item.credentialUrl || ''),
+    }))
+    .filter((item) => item.name || item.issuer || item.issueDate || item.expirationDate || item.credentialId || item.credentialUrl)
+
+  await aboutStore.updateAboutData({
+    ...aboutForm,
+    skills,
+    experience,
+    education,
+    licensesCertifications,
+    socialLinks,
+  })
   showSaved()
 }
 
@@ -327,6 +567,33 @@ function addExperience(): void {
 function removeExperience(index: number): void {
   if (aboutForm.experience.length === 1) return
   aboutForm.experience.splice(index, 1)
+}
+
+function addSocialLink(): void {
+  aboutForm.socialLinks.push(createEmptySocialLink())
+}
+
+function removeSocialLink(index: number): void {
+  if (aboutForm.socialLinks.length === 1) return
+  aboutForm.socialLinks.splice(index, 1)
+}
+
+function addEducation(): void {
+  aboutForm.education.push(createEmptyEducation())
+}
+
+function removeEducation(index: number): void {
+  if (aboutForm.education.length === 1) return
+  aboutForm.education.splice(index, 1)
+}
+
+function addLicenseCertification(): void {
+  aboutForm.licensesCertifications.push(createEmptyLicenseCertification())
+}
+
+function removeLicenseCertification(index: number): void {
+  if (aboutForm.licensesCertifications.length === 1) return
+  aboutForm.licensesCertifications.splice(index, 1)
 }
 
 function showSaved() {

@@ -22,16 +22,24 @@ export interface IAbout extends Document {
     institution: string
     degree: string
     field: string
+    gpa?: string
     startDate: string
     endDate?: string
+  }[]
+  licensesCertifications: {
+    name: string
+    issuer: string
+    issueDate: string
+    expirationDate?: string
+    credentialId?: string
+    credentialUrl?: string
   }[]
   avatarUrl?: string
   resumeUrl?: string
   socialLinks: {
-    github?: string
-    linkedin?: string
-    email?: string
-  }
+    label: string
+    url: string
+  }[]
 }
 
 const AboutSchema = new Schema<IAbout>(
@@ -60,17 +68,29 @@ const AboutSchema = new Schema<IAbout>(
         institution: String,
         degree: String,
         field: String,
+        gpa: String,
         startDate: String,
         endDate: String,
       },
     ],
+    licensesCertifications: [
+      {
+        name: String,
+        issuer: String,
+        issueDate: String,
+        expirationDate: String,
+        credentialId: String,
+        credentialUrl: String,
+      },
+    ],
     avatarUrl: { type: String },
     resumeUrl: { type: String },
-    socialLinks: {
-      github: String,
-      linkedin: String,
-      email: String,
-    },
+    socialLinks: [
+      {
+        label: { type: String, trim: true },
+        url: { type: String, trim: true },
+      },
+    ],
   },
   { timestamps: true },
 )

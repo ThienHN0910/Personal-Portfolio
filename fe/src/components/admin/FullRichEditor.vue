@@ -1,11 +1,13 @@
 <template>
-  <Ckeditor
-    :key="editorKey"
-    :editor="editor"
-    :model-value="modelValue"
-    :config="editorConfig"
-    @update:model-value="onUpdate"
-  />
+  <div class="full-rich-editor" :style="{ '--editor-sticky-top': `${stickyTop}px` }">
+    <Ckeditor
+      :key="editorKey"
+      :editor="editor"
+      :model-value="modelValue"
+      :config="editorConfig"
+      @update:model-value="onUpdate"
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -59,10 +61,12 @@ const props = withDefaults(
     editorKey?: string
     uploadFolder?: string
     placeholder?: string
+    stickyTop?: number
   }>(),
   {
     uploadFolder: 'portfolio/about/experience',
     placeholder: 'Write content here...',
+    stickyTop: 76,
   },
 )
 
@@ -178,14 +182,30 @@ function onUpdate(value: string): void {
 </script>
 
 <style scoped lang="scss">
+:deep(.full-rich-editor) {
+  --editor-sticky-top: 76px;
+}
+
 :deep(.ck.ck-editor) {
   border-radius: 0.75rem;
-  overflow: hidden;
+  overflow: visible;
+}
+
+:deep(.ck.ck-editor__top) {
+  position: sticky;
+  top: var(--editor-sticky-top);
+  z-index: 12;
+}
+
+:deep(.ck.ck-editor__top .ck-sticky-panel .ck-toolbar) {
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
 }
 
 :deep(.ck.ck-editor__main > .ck-editor__editable) {
   min-height: 220px;
   max-height: 560px;
+  overflow-y: auto;
   color: #111827;
 }
 </style>

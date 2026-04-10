@@ -44,9 +44,10 @@ export interface AboutData {
   skills: string[]
   experience: Experience[]
   education: Education[]
+  licensesCertifications: LicenseCertification[]
   avatarUrl?: string
   resumeUrl?: string
-  socialLinks: SocialLinks
+  socialLinks: SocialLink[]
 }
 
 export interface Experience {
@@ -69,14 +70,23 @@ export interface Education {
   institution: string
   degree: string
   field: string
+  gpa?: string
   startDate: string
   endDate?: string
 }
 
-export interface SocialLinks {
-  github?: string
-  linkedin?: string
-  email?: string
+export interface SocialLink {
+  label: string
+  url: string
+}
+
+export interface LicenseCertification {
+  name: string
+  issuer: string
+  issueDate: string
+  expirationDate?: string
+  credentialId?: string
+  credentialUrl?: string
 }
 
 export interface HomeData {

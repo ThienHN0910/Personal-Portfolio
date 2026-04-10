@@ -56,46 +56,49 @@
       </div>
 
       <!-- Modal -->
-      <Transition name="admin-fade-scale">
-        <div v-if="showModal" class="admin-modal-backdrop">
-          <div class="admin-modal">
-            <p class="admin-kicker mb-2">Blog Builder</p>
-            <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'New' }} Post</h2>
-            <p class="admin-modal__desc mb-5">Cover image will be taken from the first image inside content.</p>
+      <Teleport to="body">
+        <Transition name="admin-fade-scale">
+          <div v-if="showModal" class="admin-modal-backdrop">
+            <div class="admin-modal">
+              <p class="admin-kicker mb-2">Blog Builder</p>
+              <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'New' }} Post</h2>
+              <p class="admin-modal__desc mb-5">Cover image will be taken from the first image inside content.</p>
 
-            <form @submit.prevent="handleSubmit">
-              <div class="form-group">
-                <label>Title</label>
-                <input v-model="form.title" type="text" required placeholder="Post title" />
-              </div>
-              <div class="form-group">
-                <label>Content</label>
-                <FullRichEditor
-                  v-model="form.content"
-                  :editor-key="editorInstanceKey"
-                  upload-folder="portfolio/blog/content"
-                  placeholder="Write your post content here..."
-                />
-              </div>
-              <div class="form-group">
-                <label>Tags (comma separated)</label>
-                <input v-model="tagsInput" type="text" placeholder="Vue, TypeScript, Tutorial" />
-              </div>
-              <div class="flex items-center gap-3 mb-6">
-                <input id="published" v-model="form.published" type="checkbox" class="w-4 h-4 accent-blue-500" />
-                <label for="published" class="text-gray-400 text-sm cursor-pointer">Publish post</label>
-              </div>
+              <form @submit.prevent="handleSubmit">
+                <div class="form-group">
+                  <label>Title</label>
+                  <input v-model="form.title" type="text" required placeholder="Post title" />
+                </div>
+                <div class="form-group">
+                  <label>Content</label>
+                  <FullRichEditor
+                    v-model="form.content"
+                    :editor-key="editorInstanceKey"
+                    :sticky-top="0"
+                    upload-folder="portfolio/blog/content"
+                    placeholder="Write your post content here..."
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Tags (comma separated)</label>
+                  <input v-model="tagsInput" type="text" placeholder="Vue, TypeScript, Tutorial" />
+                </div>
+                <div class="flex items-center gap-3 mb-6">
+                  <input id="published" v-model="form.published" type="checkbox" class="w-4 h-4 accent-blue-500" />
+                  <label for="published" class="text-gray-400 text-sm cursor-pointer">Publish post</label>
+                </div>
 
-              <div class="admin-modal__actions">
-                <button type="button" class="btn btn--secondary" @click="showModal = false">Cancel</button>
-                <button type="submit" class="btn btn--primary" :disabled="blogStore.loading">
-                  {{ isEditing ? 'Update' : 'Publish' }}
-                </button>
-              </div>
-            </form>
+                <div class="admin-modal__actions">
+                  <button type="button" class="btn btn--secondary" @click="showModal = false">Cancel</button>
+                  <button type="submit" class="btn btn--primary" :disabled="blogStore.loading">
+                    {{ isEditing ? 'Update' : 'Publish' }}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      </Transition>
+        </Transition>
+      </Teleport>
 
       <ConfirmDialog
         :open="isDeleteDialogOpen"

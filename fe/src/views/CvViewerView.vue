@@ -20,7 +20,7 @@
       <div v-else class="space-y-4">
         <div class="card p-4 flex flex-wrap items-center justify-between gap-3">
           <p class="text-sm text-gray-400">{{ totalPages }} page(s)</p>
-          <a :href="resumeUrl" target="_blank" rel="noopener noreferrer" class="btn btn--secondary btn--sm">Open in new tab</a>
+          <a :href="resumeUrl" download class="btn btn--secondary btn--sm">Download CV</a>
         </div>
 
         <div v-if="renderError" class="card p-6 text-red-300">
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useAboutStore } from '@/stores/about'
@@ -60,12 +60,62 @@ const resumeUrl = ref('')
 const totalPages = ref(0)
 const renderError = ref('')
 const pagesContainer = ref<HTMLDivElement | null>(null)
+const renderedPages = new Set<number>()
+const renderingPages = new Set<number>()
+let pageObserver: IntersectionObserver | null = null
+let activePdf: any = null
+
+function resetPageState(): void {
+  renderedPages.clear()
+  renderingPages.clear()
+  pageObserver?.disconnect()
+  pageObserver = null
+  activePdf = null
+}
+
+async function renderPage(pageNumber: number, wrapper: HTMLDivElement): Promise<void> {
+  if (!activePdf || renderedPages.has(pageNumber) || renderingPages.has(pageNumber)) return
+
+  renderingPages.add(pageNumber)
+
+  try {
+    const page = await activePdf.getPage(pageNumber)
+    const viewport = page.getViewport({ scale: 1.25 })
+    const contextCanvas = document.createElement('canvas')
+    contextCanvas.width = viewport.width
+    contextCanvas.height = viewport.height
+    contextCanvas.style.maxWidth = '100%'
+    contextCanvas.style.height = 'auto'
+    contextCanvas.style.display = 'block'
+    contextCanvas.style.margin = '0 auto'
+
+    const context = contextCanvas.getContext('2d')
+    if (!context) return
+
+    await page.render({
+      canvasContext: context,
+      viewport,
+    }).promise
+
+    wrapper.innerHTML = ''
+    const title = document.createElement('p')
+    title.className = 'text-xs text-gray-500 mb-3'
+    title.textContent = `Page ${pageNumber}`
+    wrapper.appendChild(title)
+    wrapper.appendChild(contextCanvas)
+
+    renderedPages.add(pageNumber)
+  } finally {
+    renderingPages.delete(pageNumber)
+  }
+}
 
 async function renderPdf(url: string): Promise<void> {
   renderError.value = ''
 
   if (!pagesContainer.value) return
   pagesContainer.value.innerHTML = ''
+  resetPageState()
 
   try {
     const pdfjsLib = await getPdfJs()
@@ -74,39 +124,45 @@ async function renderPdf(url: string): Promise<void> {
       withCredentials: false,
     })
 
-    const pdf = await loadingTask.promise
-    totalPages.value = pdf.numPages
+    activePdf = await loadingTask.promise
+    totalPages.value = activePdf.numPages
 
-    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-      const page = await pdf.getPage(pageNumber)
-      const viewport = page.getViewport({ scale: 1.25 })
+    if ('IntersectionObserver' in window) {
+      pageObserver = new IntersectionObserver((entries) => {
+        entries
+          .filter((entry) => entry.isIntersecting)
+          .forEach((entry) => {
+            const target = entry.target as HTMLDivElement
+            const pageNumber = Number(target.dataset.page)
+            if (!Number.isNaN(pageNumber)) {
+              void renderPage(pageNumber, target)
+            }
+            pageObserver?.unobserve(target)
+          })
+      }, { rootMargin: '400px 0px' })
+    }
 
+    for (let pageNumber = 1; pageNumber <= activePdf.numPages; pageNumber += 1) {
       const wrapper = document.createElement('div')
       wrapper.className = 'card p-3 overflow-x-auto'
+      wrapper.dataset.page = String(pageNumber)
 
       const title = document.createElement('p')
       title.className = 'text-xs text-gray-500 mb-3'
-      title.textContent = `Page ${pageNumber}`
+      title.textContent = `Page ${pageNumber} (loading...)`
 
-      const canvas = document.createElement('canvas')
-      canvas.width = viewport.width
-      canvas.height = viewport.height
-      canvas.style.maxWidth = '100%'
-      canvas.style.height = 'auto'
-      canvas.style.display = 'block'
-      canvas.style.margin = '0 auto'
+      const skeleton = document.createElement('div')
+      skeleton.className = 'h-52 rounded-lg bg-slate-800/70 animate-pulse'
 
       wrapper.appendChild(title)
-      wrapper.appendChild(canvas)
+      wrapper.appendChild(skeleton)
       pagesContainer.value.appendChild(wrapper)
 
-      const context = canvas.getContext('2d')
-      if (!context) continue
-
-      await page.render({
-        canvasContext: context,
-        viewport,
-      }).promise
+      if (pageObserver) {
+        pageObserver.observe(wrapper)
+      } else {
+        await renderPage(pageNumber, wrapper)
+      }
     }
   } catch {
     renderError.value = 'Khong the hien thi file PDF. Vui long thu mo bang tab moi.'
@@ -122,5 +178,9 @@ onMounted(async () => {
     await nextTick()
     await renderPdf(resumeUrl.value)
   }
+})
+
+onBeforeUnmount(() => {
+  resetPageState()
 })
 </script>

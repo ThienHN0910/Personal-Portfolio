@@ -29,17 +29,13 @@ export function hasAnyContactInfo(about: AboutData | null | undefined): boolean 
 }
 
 export function getPublicSocialLinks(about: AboutData | null | undefined): AboutLinkItem[] {
-  const links: AboutLinkItem[] = []
-
-  if (about?.socialLinks?.github) {
-    links.push({ label: 'GitHub', href: about.socialLinks.github })
-  }
-
-  if (about?.socialLinks?.linkedin) {
-    links.push({ label: 'LinkedIn', href: about.socialLinks.linkedin })
-  }
-
+  const links = about?.socialLinks || []
   return links
+    .map((item) => ({
+      label: item.label?.trim() || 'Link',
+      href: item.url?.trim() || '',
+    }))
+    .filter((item) => Boolean(item.href))
 }
 
 export function getFooterConnectLinks(about: AboutData | null | undefined): AboutLinkItem[] {
@@ -49,9 +45,12 @@ export function getFooterConnectLinks(about: AboutData | null | undefined): Abou
     links.push({ label: 'Website', href: about.contactInfo.website })
   }
 
-  const email = about?.socialLinks?.email || about?.contactInfo?.email
+  const email = about?.contactInfo?.email
   if (email) {
-    links.push({ label: 'Email', href: `mailto:${email}` })
+    const normalized = `mailto:${email}`
+    if (!links.some((item) => item.href.toLowerCase() === normalized.toLowerCase())) {
+      links.push({ label: 'Email', href: normalized })
+    }
   }
 
   return links
@@ -86,20 +85,42 @@ export function getFooterContactItems(about: AboutData | null | undefined): Abou
   return items
 }
 
-export function getFooterIconLinks(about: AboutData | null | undefined): Array<AboutLinkItem & { icon: 'github' | 'linkedin' | 'mail' }> {
-  const links: Array<AboutLinkItem & { icon: 'github' | 'linkedin' | 'mail' }> = []
+function inferIcon(label: string, href: string): 'github' | 'linkedin' | 'mail' | 'external' {
+  const lowerLabel = label.toLowerCase()
+  const lowerHref = href.toLowerCase()
 
-  if (about?.socialLinks?.github) {
-    links.push({ label: 'GitHub', href: about.socialLinks.github, icon: 'github' })
+  if (lowerHref.startsWith('mailto:') || lowerLabel.includes('mail') || lowerLabel.includes('email')) {
+    return 'mail'
   }
 
-  if (about?.socialLinks?.linkedin) {
-    links.push({ label: 'LinkedIn', href: about.socialLinks.linkedin, icon: 'linkedin' })
+  if (lowerHref.includes('github.com') || lowerLabel.includes('github')) {
+    return 'github'
   }
 
-  const email = about?.socialLinks?.email || about?.contactInfo?.email
+  if (lowerHref.includes('linkedin.com') || lowerLabel.includes('linkedin')) {
+    return 'linkedin'
+  }
+
+  return 'external'
+}
+
+export function getFooterIconLinks(about: AboutData | null | undefined): Array<AboutLinkItem & { icon: 'github' | 'linkedin' | 'mail' | 'external' }> {
+  const links = getPublicSocialLinks(about)
+    .map((item) => ({
+      ...item,
+      icon: inferIcon(item.label, item.href),
+    }))
+
+  const email = about?.contactInfo?.email
   if (email) {
-    links.push({ label: 'Email', href: `mailto:${email}`, icon: 'mail' })
+    const normalized = `mailto:${email}`
+    if (!links.some((item) => item.href.toLowerCase() === normalized.toLowerCase())) {
+      links.push({
+        label: 'Email',
+        href: normalized,
+        icon: 'mail',
+      })
+    }
   }
 
   return links

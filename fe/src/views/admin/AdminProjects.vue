@@ -64,81 +64,83 @@
       </div>
 
       <!-- Modal -->
-      <Transition name="admin-fade-scale">
-        <div v-if="showModal" class="admin-modal-backdrop">
-          <div class="admin-modal max-w-lg">
-            <p class="admin-kicker mb-2">Project Editor</p>
-            <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'Add' }} Project</h2>
+      <Teleport to="body">
+        <Transition name="admin-fade-scale">
+          <div v-if="showModal" class="admin-modal-backdrop">
+            <div class="admin-modal max-w-lg">
+              <p class="admin-kicker mb-2">Project Editor</p>
+              <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'Add' }} Project</h2>
 
-            <form @submit.prevent="handleSubmit">
-              <div class="form-group">
-                <label>Title</label>
-                <input v-model="form.title" type="text" required placeholder="Project title" />
-              </div>
-              <div class="form-group">
-                <label>Description</label>
-                <textarea v-model="form.description" rows="3" required placeholder="Project description" />
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <form @submit.prevent="handleSubmit">
                 <div class="form-group">
-                  <label>Duration</label>
-                  <input v-model="form.duration" type="text" placeholder="3 months" />
+                  <label>Title</label>
+                  <input v-model="form.title" type="text" required placeholder="Project title" />
                 </div>
                 <div class="form-group">
-                  <label>Priority (higher first)</label>
-                  <input v-model.number="form.priority" type="number" min="0" step="1" />
+                  <label>Description</label>
+                  <textarea v-model="form.description" rows="3" required placeholder="Project description" />
                 </div>
-              </div>
-              <div class="form-group">
-                <label>Technologies (select from Skills)</label>
-                <p v-if="!technologyOptions.length" class="text-xs text-amber-300 mb-2">
-                  Chua co skills trong Admin About. Hay cap nhat Skills truoc.
-                </p>
-                <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                  <label
-                    v-for="tech in technologyOptions"
-                    :key="tech"
-                    class="flex items-center gap-2 text-sm text-gray-300 border border-white/10 rounded-lg px-2 py-1"
-                  >
-                    <input v-model="selectedTechnologies" :value="tech" type="checkbox" class="w-4 h-4 accent-blue-500" />
-                    <span>{{ tech }}</span>
-                  </label>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div class="form-group">
+                    <label>Duration</label>
+                    <input v-model="form.duration" type="text" placeholder="3 months" />
+                  </div>
+                  <div class="form-group">
+                    <label>Priority (higher first)</label>
+                    <input v-model.number="form.priority" type="number" min="0" step="1" />
+                  </div>
                 </div>
-              </div>
-              <div class="form-group">
-                <label>Related Blog</label>
-                <select v-model="form.relatedBlogId" class="admin-select">
-                  <option value="">No related blog</option>
-                  <option v-for="post in blogOptions" :key="post._id" :value="post._id">{{ post.title }}</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>GitHub URL</label>
-                <input v-model="form.githubUrl" type="url" placeholder="https://github.com/..." />
-              </div>
-              <div class="form-group">
-                <label>Live URL</label>
-                <input v-model="form.liveUrl" type="url" placeholder="https://..." />
-              </div>
-              <div class="form-group">
-                <label>Image URL</label>
-                <ImageDropUpload v-model="form.imageUrl" folder="portfolio/projects" />
-              </div>
-              <div class="flex items-center gap-3 mb-6">
-                <input id="featured" v-model="form.featured" type="checkbox" class="w-4 h-4 accent-blue-500" />
-                <label for="featured" class="text-gray-400 text-sm cursor-pointer">Featured project</label>
-              </div>
+                <div class="form-group">
+                  <label>Technologies (select from Skills)</label>
+                  <p v-if="!technologyOptions.length" class="text-xs text-amber-300 mb-2">
+                    Chua co skills trong Admin About. Hay cap nhat Skills truoc.
+                  </p>
+                  <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    <label
+                      v-for="tech in technologyOptions"
+                      :key="tech"
+                      class="flex items-center gap-2 text-sm text-gray-300 border border-white/10 rounded-lg px-2 py-1"
+                    >
+                      <input v-model="selectedTechnologies" :value="tech" type="checkbox" class="w-4 h-4 accent-blue-500" />
+                      <span>{{ tech }}</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Related Blog</label>
+                  <select v-model="form.relatedBlogId" class="admin-select">
+                    <option value="">No related blog</option>
+                    <option v-for="post in blogOptions" :key="post._id" :value="post._id">{{ post.title }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>GitHub URL</label>
+                  <input v-model="form.githubUrl" type="url" placeholder="https://github.com/..." />
+                </div>
+                <div class="form-group">
+                  <label>Live URL</label>
+                  <input v-model="form.liveUrl" type="url" placeholder="https://..." />
+                </div>
+                <div class="form-group">
+                  <label>Image URL</label>
+                  <ImageDropUpload v-model="form.imageUrl" folder="portfolio/projects" />
+                </div>
+                <div class="flex items-center gap-3 mb-6">
+                  <input id="featured" v-model="form.featured" type="checkbox" class="w-4 h-4 accent-blue-500" />
+                  <label for="featured" class="text-gray-400 text-sm cursor-pointer">Featured project</label>
+                </div>
 
-              <div class="admin-modal__actions">
-                <button type="button" class="btn btn--secondary" @click="showModal = false">Cancel</button>
-                <button type="submit" class="btn btn--primary" :disabled="projectsStore.loading">
-                  {{ isEditing ? 'Update' : 'Create' }}
-                </button>
-              </div>
-            </form>
+                <div class="admin-modal__actions">
+                  <button type="button" class="btn btn--secondary" @click="showModal = false">Cancel</button>
+                  <button type="submit" class="btn btn--primary" :disabled="projectsStore.loading">
+                    {{ isEditing ? 'Update' : 'Create' }}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      </Transition>
+        </Transition>
+      </Teleport>
 
       <ConfirmDialog
         :open="isDeleteDialogOpen"
