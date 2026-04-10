@@ -10,6 +10,7 @@ import blogRouter from './routes/blog'
 import contactRouter from './routes/contact'
 import homeRouter from './routes/home'
 import projectsRouter from './routes/projects'
+import themeRouter from './routes/theme'
 import uploadRouter from './routes/upload'
 
 const backendEnvPath = path.resolve(process.cwd(), '.env')
@@ -44,6 +45,7 @@ app.use('/api/blog', blogRouter)
 app.use('/api/contact', contactRouter)
 app.use('/api/home', homeRouter)
 app.use('/api/projects', projectsRouter)
+app.use('/api/theme', themeRouter)
 app.use('/api/upload', uploadRouter)
 
 app.use('/api/*', (_req, res) => {

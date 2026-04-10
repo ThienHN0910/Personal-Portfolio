@@ -51,33 +51,44 @@ const router = createRouter({
     },
     {
       path: '/admin',
-      name: 'admin',
-      component: () => import('@/views/admin/AdminDashboard.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/admin/projects',
-      name: 'admin-projects',
-      component: () => import('@/views/admin/AdminProjects.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/admin/blog',
-      name: 'admin-blog',
-      component: () => import('@/views/admin/AdminBlog.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/admin/messages',
-      name: 'admin-messages',
-      component: () => import('@/views/admin/AdminMessages.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/admin/about',
-      name: 'admin-about',
-      component: () => import('@/views/admin/AdminAbout.vue'),
-      meta: { requiresAuth: true },
+      component: () => import('@/components/admin/AdminLayout.vue'),
+      children: [
+        {
+          path: '',
+          name: 'admin',
+          component: () => import('@/views/admin/AdminDashboard.vue'),
+        },
+        {
+          path: 'projects',
+          name: 'admin-projects',
+          component: () => import('@/views/admin/AdminProjects.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'blog',
+          name: 'admin-blog',
+          component: () => import('@/views/admin/AdminBlog.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'messages',
+          name: 'admin-messages',
+          component: () => import('@/views/admin/AdminMessages.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'about',
+          name: 'admin-about',
+          component: () => import('@/views/admin/AdminAbout.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'appearance',
+          name: 'admin-appearance',
+          component: () => import('@/views/admin/AdminAppearance.vue'),
+          meta: { requiresAuth: true },
+        },
+      ],
     },
   ],
   scrollBehavior(_to, _from, savedPosition) {
@@ -89,7 +100,7 @@ const router = createRouter({
 router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    next('/')
+    next('/admin')
   } else {
     next()
   }

@@ -8,17 +8,6 @@
           {{ link.label }}
         </RouterLink>
       </li>
-      <li v-if="authStore.isAuthenticated">
-        <RouterLink to="/admin" class="navbar__link" @click="menuOpen = false">Admin</RouterLink>
-      </li>
-      <li>
-        <button v-if="authStore.isAuthenticated" class="btn btn--secondary btn--sm" @click="handleLogout">
-          Logout
-        </button>
-        <button v-else class="btn btn--primary btn--sm" @click="authStore.loginWithGoogle">
-          Admin Login
-        </button>
-      </li>
     </ul>
 
     <button class="navbar__toggle" aria-label="Toggle menu" @click="menuOpen = !menuOpen">
@@ -34,11 +23,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
-import { useRouter } from 'vue-router'
 
-const authStore = useAuthStore()
-const router = useRouter()
 const menuOpen = ref(false)
 const scrolled = ref(false)
 
@@ -52,11 +37,6 @@ const navLinks = [
 
 function handleScroll() {
   scrolled.value = window.scrollY > 20
-}
-
-function handleLogout() {
-  authStore.logout()
-  router.push('/')
 }
 
 onMounted(() => window.addEventListener('scroll', handleScroll))

@@ -1,5 +1,5 @@
 <template>
-  <div class="section admin-shell min-h-screen pt-24">
+  <div class="section admin-shell min-h-screen py-8">
     <div class="container">
       <AdminSectionHeader kicker="Mission Control" title-before="Admin " title-highlight="Dashboard" />
 
@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <RouterLink
           v-for="link in adminLinks"
           :key="link.to"
@@ -100,5 +100,6 @@ const adminLinks = [
   { to: '/admin/blog', label: 'Manage Blog', description: 'Write and publish posts' },
   { to: '/admin/messages', label: 'View Messages', description: 'Read contact submissions' },
   { to: '/admin/about', label: 'Edit Content', description: 'Update about & home page' },
+  { to: '/admin/appearance', label: 'Appearance', description: 'Theme gradients and colors' },
 ]
 </script>

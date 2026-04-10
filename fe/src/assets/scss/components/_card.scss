@@ -3,8 +3,12 @@
 @use '../mixins' as *;
 
 .card {
-  background: rgba($white, 0.04);
-  border: 1px solid rgba($white, 0.08);
+  background: linear-gradient(
+    165deg,
+    color-mix(in srgb, var(--theme-surface-from, #111827) 86%, transparent),
+    color-mix(in srgb, var(--theme-surface-to, #0b1220) 82%, transparent)
+  );
+  border: 1px solid color-mix(in srgb, var(--theme-text-muted, #94a3b8) 22%, transparent);
   border-radius: $radius-xl;
   overflow: hidden;
   @include card-hover;
@@ -34,7 +38,7 @@
 
   &__description {
     font-size: $font-sm;
-    color: $text-secondary;
+    color: var(--theme-text-muted, #94a3b8);
     line-height: 1.7;
     margin-bottom: $spacing-md;
     @include truncate(3);
@@ -64,9 +68,9 @@
   }
 
   &__tag {
-    background: rgba($primary, 0.1);
-    color: $primary;
-    border: 1px solid rgba($primary, 0.2);
+    background: color-mix(in srgb, var(--theme-primary, #3b82f6) 12%, transparent);
+    color: var(--theme-primary, #3b82f6);
+    border: 1px solid color-mix(in srgb, var(--theme-primary, #3b82f6) 24%, transparent);
     padding: 2px $spacing-sm;
     border-radius: $radius-full;
     font-size: $font-xs;
@@ -85,17 +89,17 @@
     gap: $spacing-xs;
     font-size: $font-sm;
     font-weight: 500;
-    color: $primary;
+    color: var(--theme-primary, #3b82f6);
     text-decoration: none;
     @include transition(color);
 
     &:hover {
-      color: color.adjust($primary, $lightness: 10%);
+      color: color-mix(in srgb, var(--theme-primary, #3b82f6) 75%, white);
     }
   }
 
   &--featured {
-    border-color: rgba($primary, 0.2);
-    background: rgba($primary, 0.03);
+    border-color: color-mix(in srgb, var(--theme-accent, #f59e0b) 35%, transparent);
+    background: color-mix(in srgb, var(--theme-accent, #f59e0b) 8%, transparent);
   }
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="section admin-shell min-h-screen pt-24">
+  <div class="section admin-shell min-h-screen py-8">
     <div class="container">
       <AdminSectionHeader kicker="Inbox" title-before="Contact " title-highlight="Messages" />
 

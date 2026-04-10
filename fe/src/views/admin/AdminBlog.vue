@@ -1,5 +1,5 @@
 <template>
-  <div class="section admin-shell min-h-screen pt-24">
+  <div class="section admin-shell min-h-screen py-8">
     <div class="container">
       <AdminSectionHeader kicker="Content Lab" title-before="Manage " title-highlight="Blog">
         <template #actions>

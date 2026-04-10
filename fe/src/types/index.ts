@@ -99,6 +99,23 @@ export interface HomeData {
   profileImage?: string
 }
 
+export interface ThemeSettings {
+  _id?: string
+  name: string
+  primaryColor: string
+  secondaryColor: string
+  accentColor: string
+  backgroundFrom: string
+  backgroundTo: string
+  surfaceFrom: string
+  surfaceTo: string
+  headingGradientFrom: string
+  headingGradientTo: string
+  textPrimary: string
+  textMuted: string
+  useAnimatedGlow: boolean
+}
+
 export interface ApiResponse<T> {
   success: boolean
   data?: T

@@ -1,5 +1,5 @@
 <template>
-  <div class="section admin-shell min-h-screen pt-24">
+  <div class="section admin-shell min-h-screen py-8">
     <div class="container max-w-3xl">
       <AdminSectionHeader kicker="Site Identity" title-before="Edit " title-highlight="Content" />
 
