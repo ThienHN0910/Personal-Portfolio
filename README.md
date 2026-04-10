@@ -1,44 +1,37 @@
 # Personal Portfolio Workspace
 
-Full-stack portfolio monorepo with a Vue frontend and an Express backend.
+A full-stack portfolio monorepo with a Vue frontend and an Express backend.
+
+## Highlights
+
+- Public pages: Home, About, Projects, Blog, Contact, CV Viewer
+- Admin CMS: Dashboard, Projects, Blog, Messages, Content, Appearance
+- Dynamic theme system:
+  - Runtime gradient and color variables
+  - Admin-editable appearance settings
+  - Default style first, then cached/fetched theme for smoother loading
+- Shared CKEditor 5 for admin blog and about experience content
+- CV PDF upload and viewer with pdf.js
+- Cloudinary upload flow for images and raw files (for example PDF)
 
 ## Tech Stack
 
-- Frontend: Vue 3, Vite, TypeScript, Pinia, SCSS, Tailwind
+- Frontend: Vue 3, Vite, TypeScript, Pinia, Vue Router, SCSS, Tailwind
 - Backend: Express, TypeScript, MongoDB (Mongoose), JWT
-- Content: CKEditor 5 (shared editor for admin About and Blog)
-- Media: Cloudinary (images and PDF upload)
-- Auth: Google OAuth callback -> JWT -> admin guards
+- Auth: Google OAuth -> JWT
+- Media: Cloudinary
 
-## Key Features
-
-- Home/About/Projects/Blog/Contact public pages
-- Admin dashboard for About, Projects, Blog, and Contact messages
-- Shared rich text editor for admin content workflows
-- CV upload (PDF) and CV viewer using pdf.js
-- Project ordering by `priority` (desc), then `featured`, then newest
-- Project metadata fields: `duration` and `priority`
-
-## Repository Structure
+## Monorepo Structure
 
 ```text
 Personal-Portfolio/
-|-- fe/                 # Vue app
-|   |-- src/
-|   |-- package.json
-|   `-- .env.example
-|-- backend/            # Express API
-|   |-- src/
-|   |   |-- routes/
-|   |   |-- models/
-|   |   `-- lib/
-|   |-- package.json
-|   `-- .env.example
-|-- docs/
+|-- fe/                     # Vue application
+|-- backend/                # Express API
+|-- docs/                   # Project documentation
 |   |-- ENVIRONMENT.md
 |   |-- API_REFERENCE.md
 |   `-- ADMIN_CONTENT_GUIDE.md
-|-- package.json        # Monorepo orchestration scripts
+|-- package.json            # Root orchestration scripts
 `-- README.md
 ```
 
@@ -46,13 +39,13 @@ Personal-Portfolio/
 
 - Node.js 18+
 - npm 9+
-- MongoDB instance
+- MongoDB database
 - Cloudinary account
 - Google OAuth credentials
 
 ## Quick Start
 
-1. Install dependencies:
+1. Install dependencies
 
 ```bash
 npm install
@@ -60,12 +53,12 @@ npm --prefix fe install
 npm --prefix backend install
 ```
 
-2. Configure env files:
+2. Create environment files
 
-- Copy `backend/.env.example` -> `backend/.env`
-- Copy `fe/.env.example` -> `fe/.env`
+- Copy backend env template: backend/.env.example -> backend/.env
+- Copy frontend env template: fe/.env.example -> fe/.env
 
-3. Run development servers:
+3. Run development
 
 ```bash
 npm run dev
@@ -84,76 +77,67 @@ npm run build
 npm run typecheck
 ```
 
-## Scripts
+## Root Scripts
 
-Root (`package.json`):
+- npm run dev: run FE and BE together
+- npm run build: build FE then BE
+- npm run typecheck: typecheck FE then BE
+- npm run preview:fe: preview FE production bundle
+- npm run start:be: start built backend server
 
-- `npm run dev` - run FE + BE concurrently
-- `npm run build` - build FE + BE
-- `npm run typecheck` - typecheck FE + BE
-- `npm run preview:fe` - preview FE build
-- `npm run start:be` - run built backend
+## Admin Access Flow
 
-Frontend (`fe/package.json`):
+- Navbar has an Admin link to /admin.
+- /admin acts as the admin gate screen.
+- If not authenticated, the admin layout shows a login prompt.
+- Login uses Google OAuth via backend auth endpoints.
+- If authenticated with admin role, admin sidebar and all admin routes are accessible.
+- Logout is available in the admin left sidebar.
 
-- `npm --prefix fe run dev`
-- `npm --prefix fe run build`
-- `npm --prefix fe run typecheck`
+## Key Data Behaviors
 
-Backend (`backend/package.json`):
+- Projects are sorted by: priority desc, featured desc, createdAt desc.
+- About social links are dynamic list items (label + url), not fixed fields.
+- Education supports GPA.
+- Licenses and certifications are dynamic list items.
+- Theme settings are dynamic and stored in backend.
 
-- `npm --prefix backend run dev`
-- `npm --prefix backend run build`
-- `npm --prefix backend run typecheck`
+## API Overview
 
-## API Summary
+Public endpoints include:
 
-Public endpoints:
+- GET /api/health
+- GET /api/home
+- GET /api/about
+- GET /api/projects
+- GET /api/projects/:id
+- GET /api/blog
+- GET /api/blog/:id
+- POST /api/contact
+- GET /api/theme
 
-- `GET /api/health`
-- `GET /api/home`
-- `GET /api/about`
-- `GET /api/projects`
-- `GET /api/projects/:id`
-- `GET /api/blog`
-- `GET /api/blog/:id`
-- `POST /api/contact`
+Protected admin endpoints (Bearer JWT required) include:
 
-Protected admin endpoints (Bearer JWT required):
+- PUT /api/home
+- PUT /api/about
+- POST, PUT, DELETE /api/projects
+- POST, PUT, DELETE /api/blog
+- GET, DELETE /api/contact
+- POST /api/upload
+- PUT /api/theme
 
-- `PUT /api/home`
-- `PUT /api/about`
-- `POST /api/projects`
-- `PUT /api/projects/:id`
-- `DELETE /api/projects/:id`
-- `POST /api/blog`
-- `PUT /api/blog/:id`
-- `DELETE /api/blog/:id`
-- `GET /api/contact`
-- `DELETE /api/contact/:id`
-- `POST /api/upload`
+For full details, see docs/API_REFERENCE.md.
 
-OAuth endpoints:
+## Documentation Index
 
-- `GET /api/auth/google`
-- `GET /api/auth/callback`
-
-See full API notes in `docs/API_REFERENCE.md`.
-
-## Admin Access Model
-
-- User signs in via Google OAuth.
-- Backend creates JWT in callback.
-- Role is `admin` only when Google email matches `ADMIN_EMAIL`.
-- Admin-only routes are guarded by `requireAdmin` middleware.
-
-## Documentation
-
-- Environment setup: `docs/ENVIRONMENT.md`
-- API details: `docs/API_REFERENCE.md`
-- Admin content workflow: `docs/ADMIN_CONTENT_GUIDE.md`
+- Environment setup: docs/ENVIRONMENT.md
+- API details: docs/API_REFERENCE.md
+- Admin workflows: docs/ADMIN_CONTENT_GUIDE.md
 
 ## Notes
 
-- `POST /api/upload` supports `image` and `raw` resource types (used for both image and PDF flows).
-- Rich text editor is shared for Admin About and Admin Blog to keep a consistent authoring experience.
+- Upload endpoint supports resourceType image | raw | video | auto.
+- Theme runtime strategy reduces visual jumps:
+  - Apply default theme immediately
+  - Apply cached theme if available
+  - Fetch and apply server theme

@@ -7,7 +7,7 @@ Base path: /api
 - GET /health
 - GET /api/health
 
-Both return:
+Response:
 
 ```json
 { "success": true, "status": "ok" }
@@ -15,50 +15,126 @@ Both return:
 
 ## Auth
 
-- GET /api/auth/google
-  - Redirects to Google OAuth consent screen.
-- GET /api/auth/callback
-  - Exchanges code for Google profile, issues JWT, redirects to FE callback route.
+### GET /api/auth/google
+
+Redirects to Google OAuth consent.
+
+### GET /api/auth/callback
+
+- Exchanges auth code with Google
+- Fetches user profile
+- Issues JWT
+- Redirects to frontend callback route with query:
+  - token=<jwt> on success
+  - error=<reason> on failure
 
 Admin role rule:
 
-- role=admin if Google email equals ADMIN_EMAIL.
+- role=admin when Google email equals ADMIN_EMAIL
 
 ## Home
 
-- GET /api/home
-- PUT /api/home (admin)
+### GET /api/home
+
+Returns current home content record.
+
+### PUT /api/home (admin)
+
+Updates home content.
+
+Fields:
+
+- heroTitle
+- heroSubtitle
+- heroDescription
+- ctaText
+- ctaLink
+- profileImage
 
 ## About
 
-- GET /api/about
-- PUT /api/about (admin)
+### GET /api/about
 
-About payload includes:
+Returns about content. If empty, backend creates a default record.
 
-- name, title, bio
-- contactInfo: email, phone, location, website
-- skills
-- experience (rich text description supported)
-- education
-- avatarUrl, resumeUrl
-- socialLinks: github, linkedin, email
+### PUT /api/about (admin)
+
+Updates about content.
+
+Payload shape:
+
+- name
+- title
+- bio
+- contactInfo
+  - email
+  - phone
+  - location
+  - website
+- skills: string[]
+- experience: array
+  - company
+  - position
+  - startDate
+  - endDate
+  - description (rich HTML)
+- education: array
+  - institution
+  - degree
+  - field
+  - gpa
+  - startDate
+  - endDate
+- licensesCertifications: array
+  - name
+  - issuer
+  - issueDate
+  - expirationDate
+  - credentialId
+  - credentialUrl
+- avatarUrl
+- resumeUrl
+- socialLinks: array
+  - label
+  - url
+
+Normalization behavior:
+
+- Social links are normalized and legacy social data is migrated.
+- Education and licenses arrays are normalized and empty rows are removed.
 
 ## Projects
 
-- GET /api/projects
-  - Sorted by priority desc, featured desc, createdAt desc.
-- POST /api/projects (admin)
-- GET /api/projects/:id
-- PUT /api/projects/:id (admin)
-- DELETE /api/projects/:id (admin)
+### GET /api/projects
+
+Returns all projects sorted by:
+
+- priority desc
+- featured desc
+- createdAt desc
+
+### POST /api/projects (admin)
+
+Creates a new project.
+
+### GET /api/projects/:id
+
+Returns one project.
+
+### PUT /api/projects/:id (admin)
+
+Updates a project.
+
+### DELETE /api/projects/:id (admin)
+
+Deletes a project.
 
 Project fields:
 
 - title
 - description
-- duration (optional)
-- priority (number)
+- duration
+- priority
 - technologies
 - imageUrl
 - githubUrl
@@ -68,43 +144,104 @@ Project fields:
 
 ## Blog
 
-- GET /api/blog
-  - Public list returns only published posts.
-  - Admin UI can request all posts using query `all=true`.
-- POST /api/blog (admin)
-- GET /api/blog/:id
-- PUT /api/blog/:id (admin)
-- DELETE /api/blog/:id (admin)
+### GET /api/blog
+
+- Public mode: returns published posts only
+- Admin mode: pass query all=true to return all posts
+
+### POST /api/blog (admin)
+
+Creates a post.
+
+### GET /api/blog/:id
+
+Returns one post.
+
+### PUT /api/blog/:id (admin)
+
+Updates a post.
+
+### DELETE /api/blog/:id (admin)
+
+Deletes a post.
 
 ## Contact
 
-- GET /api/contact (admin)
-- POST /api/contact (public)
-- DELETE /api/contact/:id (admin)
+### POST /api/contact
+
+Public contact form submit endpoint.
+
+Required fields:
+
+- name
+- email
+- subject
+- message
+
+### GET /api/contact (admin)
+
+Returns messages sorted by newest first.
+
+### DELETE /api/contact/:id (admin)
+
+Deletes a message.
+
+## Theme
+
+### GET /api/theme
+
+Returns current theme settings. Creates default theme if missing.
+
+### PUT /api/theme (admin)
+
+Updates theme settings.
+
+Theme fields:
+
+- name
+- primaryColor
+- secondaryColor
+- accentColor
+- backgroundFrom
+- backgroundTo
+- surfaceFrom
+- surfaceTo
+- headingGradientFrom
+- headingGradientTo
+- textPrimary
+- textMuted
+- useAnimatedGlow
+
+Validation behavior:
+
+- Colors are normalized to valid hex values
+- Invalid values fallback to defaults
 
 ## Upload
 
-- POST /api/upload (admin)
+### POST /api/upload (admin)
 
 Request body:
 
 - data: data URL string (required)
-- folder: cloud folder (optional)
+- folder: target cloud folder (optional)
 - resourceType: image | raw | video | auto (optional)
 - fileName: custom public id source (optional)
 
-Behavior:
+Notes:
 
-- image uploads get auto quality/fetch_format transformation.
-- raw uploads are used for non-image files (for example PDF CV).
+- image uploads receive quality/fetch format optimization
+- raw uploads are used for non-image files (for example CV PDF)
 
-## Auth Header for Protected Endpoints
+## Authorization Header
 
-Use Bearer token in Authorization header:
+Protected endpoints require:
 
 ```http
 Authorization: Bearer <jwt_token>
 ```
 
-If token is missing or invalid, API returns 401.
-If role is not admin on admin routes, API returns 403.
+Errors:
+
+- 401: missing or invalid token
+- 403: valid token but non-admin role on admin endpoints

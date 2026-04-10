@@ -1,34 +1,33 @@
 # Environment Configuration
 
-This document explains environment variables for local development and deployment.
+This document describes required and optional environment variables for local and production deployments.
 
-## File Locations
+## Env File Locations
 
-- Backend env file: backend/.env
-- Frontend env file: fe/.env
-- Optional combined template: .env.example (repo root)
+- Backend: backend/.env
+- Frontend: fe/.env
 
-The backend loads env in this order:
+Backend loads env files in this order:
 
 1. backend/.env
-2. ../.env (root)
-3. process default env
+2. ../.env (repository root)
+3. process environment
 
 ## Backend Variables
 
-Required in most environments:
+Core:
 
-- PORT: API server port. Default 3000.
-- MONGODB_URI: MongoDB connection string.
-- JWT_SECRET: Secret used to sign auth tokens.
-- ADMIN_EMAIL: Email that receives admin role after Google login.
+- PORT: backend port (default 3000)
+- MONGODB_URI: MongoDB connection string
+- JWT_SECRET: token signing secret
+- ADMIN_EMAIL: email that receives admin role
 
 Google OAuth:
 
 - GOOGLE_CLIENT_ID
 - GOOGLE_CLIENT_SECRET
-- FRONTEND_URL: Base URL for redirect to FE callback page.
-- API_BASE_URL: Public backend base URL used to build OAuth callback URL.
+- FRONTEND_URL: frontend base URL used for auth callback redirect
+- API_BASE_URL: backend public URL used as OAuth redirect URI base
 
 Cloudinary:
 
@@ -38,17 +37,17 @@ Cloudinary:
 
 CORS:
 
-- CORS_ORIGIN: Allowed frontend origin (recommended in production).
+- CORS_ORIGIN: allowed frontend origin (recommended for production)
 
 ## Frontend Variables
 
-- VITE_API_BASE_URL: API base path or full URL.
-  - Local default: /api
-  - If FE and BE are split domains, use full BE URL.
+- VITE_API_BASE_URL: API base path or full backend URL
+  - local default: /api
+  - for split-domain deployment: full backend URL
 
 ## Local Example
 
-Backend (backend/.env):
+backend/.env
 
 ```env
 PORT=3000
@@ -65,15 +64,25 @@ API_BASE_URL=http://localhost:3000
 CORS_ORIGIN=http://localhost:5173
 ```
 
-Frontend (fe/.env):
+fe/.env
 
 ```env
 VITE_API_BASE_URL=/api
 ```
 
-## Production Notes
+## Deployment Notes
 
-- Always rotate JWT_SECRET and Cloudinary keys if exposed.
-- Use HTTPS URLs for FRONTEND_URL and API_BASE_URL.
-- Keep ADMIN_EMAIL explicit and restricted to the real maintainer account.
-- If hosted on Vercel, API_BASE_URL/FRONTEND_URL should be the deployed domains.
+- Always use HTTPS for FRONTEND_URL and API_BASE_URL.
+- Keep JWT_SECRET long and private.
+- Keep ADMIN_EMAIL strict to intended admin account.
+- If using Vercel, ensure FRONTEND_URL and API_BASE_URL match actual deployed domains.
+
+## Theme System Notes
+
+No extra env variables are needed for theme configuration.
+
+Theme values are stored in database and loaded at runtime:
+
+- default theme is applied immediately
+- cached theme is applied next
+- server theme is fetched and applied last
