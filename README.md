@@ -133,6 +133,7 @@ For full details, see docs/API_REFERENCE.md.
 - Environment setup: docs/ENVIRONMENT.md
 - API details: docs/API_REFERENCE.md
 - Admin workflows: docs/ADMIN_CONTENT_GUIDE.md
+- Agent replication playbook: docs/AGENT_REPLICATION_PLAYBOOK.md
 
 ## Notes
 
