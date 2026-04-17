@@ -85,6 +85,66 @@ function compactDescription(text) {
   return `${stripped.slice(0, 167).trimEnd()}...`
 }
 
+function compactText(text) {
+  return String(text || '')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function pickFirst(...values) {
+  for (const value of values) {
+    const normalized = compactText(value)
+    if (normalized) return normalized
+  }
+  return ''
+}
+
+function pickFirstImage(...values) {
+  for (const value of values) {
+    const normalized = String(value || '').trim()
+    if (normalized) return normalized
+  }
+  return ''
+}
+
+function sortByDateDesc(items = []) {
+  return [...items].sort((a, b) => {
+    const aTime = a?.createdAt ? Date.parse(a.createdAt) : 0
+    const bTime = b?.createdAt ? Date.parse(b.createdAt) : 0
+    return bTime - aTime
+  })
+}
+
+function getPublishedPosts(posts = []) {
+  return sortByDateDesc(toArray(posts).filter((post) => post?.published))
+}
+
+function getFeaturedProject(projects = []) {
+  return [...toArray(projects)].sort((a, b) => {
+    const featuredDiff = Number(Boolean(b?.featured)) - Number(Boolean(a?.featured))
+    if (featuredDiff !== 0) return featuredDiff
+
+    const priorityDiff = (b?.priority || 0) - (a?.priority || 0)
+    if (priorityDiff !== 0) return priorityDiff
+
+    const aTime = a?.createdAt ? Date.parse(a.createdAt) : 0
+    const bTime = b?.createdAt ? Date.parse(b.createdAt) : 0
+    return bTime - aTime
+  })[0]
+}
+
+function summarizeKeywords(values, limit) {
+  const unique = Array.from(
+    new Set(
+      toArray(values)
+        .map((value) => compactText(value).toLowerCase())
+        .filter(Boolean),
+    ),
+  )
+  return unique.slice(0, limit).join(', ')
+}
+
 function buildPageTitle(title) {
   if (!title) return DEFAULT_TITLE
   if (title.includes(SITE_NAME)) return title
@@ -95,31 +155,107 @@ function toArray(value) {
   return Array.isArray(value) ? value : []
 }
 
-function pickFirstImage(items, key) {
-  return toArray(items).find((item) => item && item[key])?.[key] || ''
-}
-
 function buildPublicPageMetas({ siteUrl, homeData, aboutData, projects, posts }) {
-  const homeDescription = homeData?.heroDescription || DEFAULT_DESCRIPTION
-  const aboutDescription = aboutData?.bio || 'Learn more about ThienHN, work experience, skills, education, and certifications.'
-  const featuredProjectImage =
-    toArray(projects).find((project) => project?.featured && project?.imageUrl)?.imageUrl ||
-    pickFirstImage(projects, 'imageUrl')
-  const latestPostImage = pickFirstImage(posts, 'coverImage')
-  const homeImage = homeData?.profileImage || aboutData?.avatarUrl || featuredProjectImage || latestPostImage || DEFAULT_IMAGE
-  const aboutImage = aboutData?.avatarUrl || homeData?.profileImage || featuredProjectImage || DEFAULT_IMAGE
-  const projectsImage = featuredProjectImage || latestPostImage || homeImage || DEFAULT_IMAGE
-  const blogImage = latestPostImage || featuredProjectImage || homeImage || DEFAULT_IMAGE
-  const contactImage = aboutData?.avatarUrl || homeData?.profileImage || DEFAULT_IMAGE
-  const cvImage = aboutData?.avatarUrl || homeData?.profileImage || DEFAULT_IMAGE
+  const publishedPosts = getPublishedPosts(posts)
+  const latestPost = publishedPosts[0]
+  const featuredProject = getFeaturedProject(projects)
+  const firstProjectWithImage = toArray(projects).find((project) => project?.imageUrl)
 
   const projectsCount = toArray(projects).length
-  const projectsDescription = projectsCount
-    ? `Explore ${projectsCount} portfolio projects including live demos, source code, and technical details.`
-    : 'Explore portfolio projects including live demos, source code, and technical details.'
+  const topTechnologies = summarizeKeywords(
+    toArray(projects).flatMap((project) => toArray(project?.technologies)),
+    4,
+  )
+  const topTags = summarizeKeywords(
+    publishedPosts.flatMap((post) => toArray(post?.tags)),
+    4,
+  )
 
-  const latestPost = toArray(posts)[0]
-  const blogDescription = latestPost?.excerpt || 'Read blog posts about web development, software engineering, and implementation notes.'
+  const homeDescription =
+    pickFirst(
+      homeData?.heroDescription,
+      aboutData?.bio,
+      latestPost?.excerpt,
+      latestPost?.content,
+      featuredProject?.description,
+    ) || DEFAULT_DESCRIPTION
+
+  const aboutDescription =
+    pickFirst(
+      aboutData?.bio,
+      aboutData?.experience?.[0]?.description,
+      homeData?.heroDescription,
+      latestPost?.excerpt,
+    ) || 'Learn more about ThienHN, work experience, skills, education, and certifications.'
+
+  const projectsDescription =
+    pickFirst(
+      featuredProject?.description,
+      projectsCount ? `Explore ${projectsCount} projects${topTechnologies ? ` built with ${topTechnologies}` : ''}.` : '',
+      homeData?.heroDescription,
+    ) || 'Explore portfolio projects including live demos, source code, and technical details.'
+
+  const blogDescription =
+    pickFirst(
+      latestPost?.excerpt,
+      latestPost?.content,
+      publishedPosts.length ? `Browse ${publishedPosts.length} blog posts${topTags ? ` about ${topTags}` : ''}.` : '',
+      featuredProject?.description,
+    ) || 'Read blog posts about web development, software engineering, and implementation notes.'
+
+  const homeImage =
+    pickFirstImage(
+      homeData?.profileImage,
+      aboutData?.avatarUrl,
+      latestPost?.coverImage,
+      featuredProject?.imageUrl,
+      firstProjectWithImage?.imageUrl,
+    ) || DEFAULT_IMAGE
+
+  const aboutImage =
+    pickFirstImage(
+      aboutData?.avatarUrl,
+      homeData?.profileImage,
+      featuredProject?.imageUrl,
+      latestPost?.coverImage,
+    ) || DEFAULT_IMAGE
+
+  const projectsImage =
+    pickFirstImage(
+      featuredProject?.imageUrl,
+      firstProjectWithImage?.imageUrl,
+      latestPost?.coverImage,
+      aboutData?.avatarUrl,
+      homeData?.profileImage,
+    ) || DEFAULT_IMAGE
+
+  const blogImage =
+    pickFirstImage(
+      latestPost?.coverImage,
+      publishedPosts.find((post) => post?.coverImage)?.coverImage,
+      featuredProject?.imageUrl,
+      homeData?.profileImage,
+      aboutData?.avatarUrl,
+    ) || DEFAULT_IMAGE
+
+  const contactImage = pickFirstImage(aboutData?.avatarUrl, homeData?.profileImage, featuredProject?.imageUrl) || DEFAULT_IMAGE
+  const cvImage = pickFirstImage(aboutData?.avatarUrl, homeData?.profileImage, featuredProject?.imageUrl) || DEFAULT_IMAGE
+
+  const contactDescription =
+    pickFirst(
+      aboutData?.bio,
+      homeData?.heroDescription,
+      [aboutData?.contactInfo?.email, aboutData?.contactInfo?.phone, aboutData?.contactInfo?.location]
+        .filter(Boolean)
+        .join(' | '),
+    ) || 'Send a message for collaboration, freelance work, or technical discussion.'
+
+  const cvDescription =
+    pickFirst(
+      aboutData?.title ? `${aboutData.title} - Curriculum Vitae.` : '',
+      aboutData?.bio,
+      homeData?.heroDescription,
+    ) || 'View and download the latest CV of ThienHN.'
 
   return [
     {
@@ -157,15 +293,15 @@ function buildPublicPageMetas({ siteUrl, homeData, aboutData, projects, posts })
     {
       path: '/contact',
       title: 'Contact',
-      description: 'Send a message for collaboration, freelance work, or technical discussion.',
+      description: contactDescription,
       type: 'website',
       image: contactImage,
       siteUrl,
     },
     {
       path: '/cv',
-      title: 'CV',
-      description: 'View and download the latest CV of ThienHN.',
+      title: aboutData?.name ? `${aboutData.name} CV` : 'CV',
+      description: cvDescription,
       type: 'website',
       image: cvImage,
       siteUrl,
@@ -264,6 +400,7 @@ async function main() {
     aboutData = fetchedAbout && typeof fetchedAbout === 'object' ? fetchedAbout : null
     projects = toArray(fetchedProjects)
     posts = toArray(fetchedPosts)
+    const postsById = Object.fromEntries(posts.filter((post) => post?._id).map((post) => [post._id, post]))
 
     const pageMetas = buildPublicPageMetas({
       siteUrl,
@@ -275,12 +412,13 @@ async function main() {
 
     projects.forEach((project) => {
       if (!project?._id) return
+      const relatedPost = project.relatedBlogId ? postsById[project.relatedBlogId] : null
       pageMetas.push({
         path: `/projects/${project._id}`,
         title: project.title || 'Project Detail',
-        description: project.description || DEFAULT_DESCRIPTION,
+        description: pickFirst(project.description, relatedPost?.excerpt, relatedPost?.content, homeData?.heroDescription) || DEFAULT_DESCRIPTION,
         type: 'article',
-        image: project.imageUrl || DEFAULT_IMAGE,
+        image: pickFirstImage(project.imageUrl, relatedPost?.coverImage, homeData?.profileImage, aboutData?.avatarUrl) || DEFAULT_IMAGE,
         siteUrl,
       })
       dynamicCount += 1
@@ -291,9 +429,9 @@ async function main() {
       pageMetas.push({
         path: `/blog/${post._id}`,
         title: post.title || 'Blog Post',
-        description: post.excerpt || post.content || DEFAULT_DESCRIPTION,
+        description: pickFirst(post.excerpt, post.content, homeData?.heroDescription) || DEFAULT_DESCRIPTION,
         type: 'article',
-        image: post.coverImage || DEFAULT_IMAGE,
+        image: pickFirstImage(post.coverImage, getFeaturedProject(projects)?.imageUrl, homeData?.profileImage) || DEFAULT_IMAGE,
         siteUrl,
       })
       dynamicCount += 1

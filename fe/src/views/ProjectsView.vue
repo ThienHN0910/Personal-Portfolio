@@ -43,12 +43,19 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useAboutStore } from '@/stores/about'
+import { useBlogStore } from '@/stores/blog'
+import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
 import ProjectCard from '@/components/ui/ProjectCard.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { applySeo } from '@/utils/seo'
+import { getProjectsSeoMeta } from '@/utils/seoPriority'
 
 const projectsStore = useProjectsStore()
+const homeStore = useHomeStore()
+const aboutStore = useAboutStore()
+const blogStore = useBlogStore()
 const activeFilter = ref('')
 const loading = computed(() => projectsStore.loading)
 
@@ -65,20 +72,20 @@ const filteredProjects = computed(() =>
 )
 
 onMounted(async () => {
-  await projectsStore.fetchProjects()
-  const projects = projectsStore.projects
-  const representativeImage =
-    projects.find((project) => project.featured && project.imageUrl)?.imageUrl ||
-    projects.find((project) => project.imageUrl)?.imageUrl
-
-  const description = projects.length
-    ? `Explore ${projects.length} portfolio projects including live demos, source code, and technical details.`
-    : 'Explore portfolio projects including live demos, source code, and technical details.'
+  await Promise.all([
+    projectsStore.fetchProjects(),
+    homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
+    aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
+    blogStore.posts.length ? Promise.resolve() : blogStore.fetchPosts(),
+  ])
 
   applySeo({
-    title: 'Projects',
-    description,
-    image: representativeImage,
+    ...getProjectsSeoMeta({
+      projects: projectsStore.projects,
+      home: homeStore.homeData,
+      about: aboutStore.aboutData,
+      posts: blogStore.posts,
+    }),
     url: '/projects',
   })
 })

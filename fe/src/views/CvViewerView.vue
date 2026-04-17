@@ -38,6 +38,9 @@ import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useAboutStore } from '@/stores/about'
+import { useHomeStore } from '@/stores/home'
+import { applySeo } from '@/utils/seo'
+import { getCvSeoMeta } from '@/utils/seoPriority'
 
 type PdfJsModule = typeof import('pdfjs-dist')
 
@@ -55,6 +58,7 @@ function getPdfJs(): Promise<PdfJsModule> {
 }
 
 const aboutStore = useAboutStore()
+const homeStore = useHomeStore()
 const loading = ref(true)
 const resumeUrl = ref('')
 const totalPages = ref(0)
@@ -170,7 +174,19 @@ async function renderPdf(url: string): Promise<void> {
 }
 
 onMounted(async () => {
-  await aboutStore.fetchAboutData()
+  await Promise.all([
+    aboutStore.fetchAboutData(),
+    homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
+  ])
+
+  applySeo({
+    ...getCvSeoMeta({
+      about: aboutStore.aboutData,
+      home: homeStore.homeData,
+    }),
+    url: '/cv',
+  })
+
   resumeUrl.value = aboutStore.aboutData?.resumeUrl || ''
   loading.value = false
 

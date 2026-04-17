@@ -64,6 +64,7 @@ import { useBlogStore } from '@/stores/blog'
 import type { BlogPost } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { applySeo } from '@/utils/seo'
+import { getBlogDetailSeoMeta } from '@/utils/seoPriority'
 
 const route = useRoute()
 const blogStore = useBlogStore()
@@ -91,11 +92,8 @@ async function loadPost(id: string): Promise<void> {
 
   if (post.value) {
     applySeo({
-      title: post.value.title,
-      description: post.value.excerpt,
-      image: post.value.coverImage,
+      ...getBlogDetailSeoMeta(post.value),
       url: `/blog/${id}`,
-      type: 'article',
     })
   } else {
     applySeo({

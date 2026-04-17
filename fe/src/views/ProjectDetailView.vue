@@ -138,6 +138,7 @@ import { useBlogStore } from '@/stores/blog'
 import { useProjectsStore } from '@/stores/projects'
 import type { BlogPost, Project } from '@/types'
 import { applySeo } from '@/utils/seo'
+import { getProjectDetailSeoMeta } from '@/utils/seoPriority'
 
 const route = useRoute()
 const projectsStore = useProjectsStore()
@@ -171,11 +172,8 @@ async function loadProject(id: string): Promise<void> {
 
   if (fetchedProject) {
     applySeo({
-      title: fetchedProject.title,
-      description: fetchedProject.description,
-      image: fetchedProject.imageUrl,
+      ...getProjectDetailSeoMeta(fetchedProject, relatedPost.value),
       url: `/projects/${id}`,
-      type: 'article',
     })
   } else {
     applySeo({

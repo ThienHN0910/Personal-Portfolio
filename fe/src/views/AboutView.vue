@@ -164,13 +164,20 @@
 import { computed, onMounted } from 'vue'
 import DOMPurify from 'dompurify'
 import { useAboutStore } from '@/stores/about'
+import { useBlogStore } from '@/stores/blog'
+import { useHomeStore } from '@/stores/home'
+import { useProjectsStore } from '@/stores/projects'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import SkillBadge from '@/components/ui/SkillBadge.vue'
 import { hasAnyContactInfo, getPublicSocialLinks } from '@/utils/aboutPresentation'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
 import { applySeo } from '@/utils/seo'
+import { getAboutSeoMeta } from '@/utils/seoPriority'
 
 const aboutStore = useAboutStore()
+const homeStore = useHomeStore()
+const projectsStore = useProjectsStore()
+const blogStore = useBlogStore()
 const loading = computed(() => aboutStore.loading)
 const about = computed(() => aboutStore.aboutData)
 const publicSocialLinks = computed(() => getPublicSocialLinks(about.value))
@@ -186,16 +193,20 @@ function sanitizeHtml(html: string): string {
 }
 
 onMounted(async () => {
-  await aboutStore.fetchAboutData()
-  const profile = aboutStore.aboutData
-  const namePart = profile?.name ? `${profile.name} - About` : 'About'
+  await Promise.all([
+    aboutStore.fetchAboutData(),
+    homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
+    projectsStore.projects.length ? Promise.resolve() : projectsStore.fetchProjects(),
+    blogStore.posts.length ? Promise.resolve() : blogStore.fetchPosts(),
+  ])
 
   applySeo({
-    title: namePart,
-    description:
-      profile?.bio ||
-      'Learn more about ThienHN, work experience, skills, education, and certifications.',
-    image: profile?.avatarUrl,
+    ...getAboutSeoMeta({
+      about: aboutStore.aboutData,
+      home: homeStore.homeData,
+      projects: projectsStore.projects,
+      posts: blogStore.posts,
+    }),
     url: '/about',
   })
 })

@@ -49,10 +49,16 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { onMounted, reactive } from 'vue'
+import { useAboutStore } from '@/stores/about'
+import { useHomeStore } from '@/stores/home'
 import { useContactStore } from '@/stores/contact'
+import { applySeo } from '@/utils/seo'
+import { getContactSeoMeta } from '@/utils/seoPriority'
 
 const contactStore = useContactStore()
+const aboutStore = useAboutStore()
+const homeStore = useHomeStore()
 
 const form = reactive({
   name: '',
@@ -70,4 +76,19 @@ async function handleSubmit() {
     form.message = ''
   }
 }
+
+onMounted(async () => {
+  await Promise.all([
+    aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
+    homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
+  ])
+
+  applySeo({
+    ...getContactSeoMeta({
+      about: aboutStore.aboutData,
+      home: homeStore.homeData,
+    }),
+    url: '/contact',
+  })
+})
 </script>

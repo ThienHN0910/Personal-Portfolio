@@ -38,12 +38,19 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
+import { useHomeStore } from '@/stores/home'
+import { useProjectsStore } from '@/stores/projects'
 import BlogCard from '@/components/ui/BlogCard.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { applySeo } from '@/utils/seo'
+import { getBlogSeoMeta } from '@/utils/seoPriority'
 
 const blogStore = useBlogStore()
+const homeStore = useHomeStore()
+const aboutStore = useAboutStore()
+const projectsStore = useProjectsStore()
 const searchQuery = ref('')
 const loading = computed(() => blogStore.loading)
 
@@ -61,16 +68,20 @@ const filteredPosts = computed(() => {
 })
 
 onMounted(async () => {
-  await blogStore.fetchPosts()
-  const posts = blogStore.posts.filter((post) => post.published)
-  const latestPost = posts[0]
+  await Promise.all([
+    blogStore.fetchPosts(),
+    homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
+    aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
+    projectsStore.projects.length ? Promise.resolve() : projectsStore.fetchProjects(),
+  ])
 
   applySeo({
-    title: 'Blog',
-    description:
-      latestPost?.excerpt ||
-      'Read blog posts about web development, software engineering, and implementation notes.',
-    image: latestPost?.coverImage,
+    ...getBlogSeoMeta({
+      posts: blogStore.posts,
+      projects: projectsStore.projects,
+      home: homeStore.homeData,
+      about: aboutStore.aboutData,
+    }),
     url: '/blog',
   })
 })
