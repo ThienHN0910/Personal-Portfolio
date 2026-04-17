@@ -47,6 +47,9 @@ CORS:
 - VITE_SITE_URL: public frontend URL used for canonical URL, Open Graph URL, and generated sitemap/robots files
   - local example: http://localhost:5173
   - production example: https://your-portfolio-domain.com
+- SEO_DATA_API_BASE_URL (optional): API base URL used only during build-time SEO prerender for dynamic routes
+  - recommended in production builds: https://your-backend-domain.com/api
+  - if omitted, build uses VITE_API_BASE_URL, then falls back to /api
 
 ## Local Example
 
@@ -72,6 +75,7 @@ fe/.env
 ```env
 VITE_API_BASE_URL=/api
 VITE_SITE_URL=http://localhost:5173
+SEO_DATA_API_BASE_URL=http://localhost:3000/api
 ```
 
 ## Deployment Notes
@@ -90,6 +94,16 @@ Frontend build/dev now auto-generates these files based on VITE_SITE_URL:
 - fe/public/sitemap.xml
 
 If VITE_SITE_URL is missing or invalid, generation falls back to http://localhost:5173.
+
+## Dynamic Route Prerender
+
+Frontend build also prerenders SEO HTML for public routes and dynamic details:
+
+- /projects/:id
+- /blog/:id
+
+The prerender step fetches metadata from SEO_DATA_API_BASE_URL (or VITE_API_BASE_URL).
+If API is unavailable during build, static route prerender still succeeds and dynamic detail prerender is skipped.
 
 ## Theme System Notes
 

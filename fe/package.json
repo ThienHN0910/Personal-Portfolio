@@ -6,10 +6,11 @@
   "type": "module",
   "scripts": {
     "dev": "npm run seo:generate && vite",
-    "build": "npm run seo:generate && vue-tsc --noEmit -p tsconfig.json && vite build",
+    "build": "npm run seo:generate && vue-tsc --noEmit -p tsconfig.json && vite build && npm run seo:prerender",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "preview": "vite preview",
-    "seo:generate": "node ./scripts/generate-seo-files.mjs"
+    "seo:generate": "node ./scripts/generate-seo-files.mjs",
+    "seo:prerender": "node ./scripts/prerender-social-pages.mjs"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-vue": "^6.0.0",
