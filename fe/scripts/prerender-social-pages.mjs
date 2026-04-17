@@ -91,6 +91,88 @@ function buildPageTitle(title) {
   return `${title} | ${SITE_NAME}`
 }
 
+function toArray(value) {
+  return Array.isArray(value) ? value : []
+}
+
+function pickFirstImage(items, key) {
+  return toArray(items).find((item) => item && item[key])?.[key] || ''
+}
+
+function buildPublicPageMetas({ siteUrl, homeData, aboutData, projects, posts }) {
+  const homeDescription = homeData?.heroDescription || DEFAULT_DESCRIPTION
+  const aboutDescription = aboutData?.bio || 'Learn more about ThienHN, work experience, skills, education, and certifications.'
+  const featuredProjectImage =
+    toArray(projects).find((project) => project?.featured && project?.imageUrl)?.imageUrl ||
+    pickFirstImage(projects, 'imageUrl')
+  const latestPostImage = pickFirstImage(posts, 'coverImage')
+  const homeImage = homeData?.profileImage || aboutData?.avatarUrl || featuredProjectImage || latestPostImage || DEFAULT_IMAGE
+  const aboutImage = aboutData?.avatarUrl || homeData?.profileImage || featuredProjectImage || DEFAULT_IMAGE
+  const projectsImage = featuredProjectImage || latestPostImage || homeImage || DEFAULT_IMAGE
+  const blogImage = latestPostImage || featuredProjectImage || homeImage || DEFAULT_IMAGE
+  const contactImage = aboutData?.avatarUrl || homeData?.profileImage || DEFAULT_IMAGE
+  const cvImage = aboutData?.avatarUrl || homeData?.profileImage || DEFAULT_IMAGE
+
+  const projectsCount = toArray(projects).length
+  const projectsDescription = projectsCount
+    ? `Explore ${projectsCount} portfolio projects including live demos, source code, and technical details.`
+    : 'Explore portfolio projects including live demos, source code, and technical details.'
+
+  const latestPost = toArray(posts)[0]
+  const blogDescription = latestPost?.excerpt || 'Read blog posts about web development, software engineering, and implementation notes.'
+
+  return [
+    {
+      path: '/',
+      title: 'Home',
+      description: homeDescription,
+      type: 'website',
+      image: homeImage,
+      siteUrl,
+    },
+    {
+      path: '/about',
+      title: 'About',
+      description: aboutDescription,
+      type: 'website',
+      image: aboutImage,
+      siteUrl,
+    },
+    {
+      path: '/projects',
+      title: 'Projects',
+      description: projectsDescription,
+      type: 'website',
+      image: projectsImage,
+      siteUrl,
+    },
+    {
+      path: '/blog',
+      title: 'Blog',
+      description: blogDescription,
+      type: 'website',
+      image: blogImage,
+      siteUrl,
+    },
+    {
+      path: '/contact',
+      title: 'Contact',
+      description: 'Send a message for collaboration, freelance work, or technical discussion.',
+      type: 'website',
+      image: contactImage,
+      siteUrl,
+    },
+    {
+      path: '/cv',
+      title: 'CV',
+      description: 'View and download the latest CV of ThienHN.',
+      type: 'website',
+      image: cvImage,
+      siteUrl,
+    },
+  ]
+}
+
 function setTag(html, pattern, replacement) {
   if (pattern.test(html)) {
     return html.replace(pattern, replacement)
@@ -124,7 +206,7 @@ function injectMeta(template, meta) {
   return html
 }
 
-async function fetchJson(url) {
+async function fetchData(url) {
   const response = await fetch(url, {
     headers: {
       Accept: 'application/json',
@@ -136,7 +218,7 @@ async function fetchJson(url) {
   }
 
   const payload = await response.json()
-  return payload?.data || []
+  return payload?.data
 }
 
 function writePage(routePath, html) {
@@ -163,64 +245,33 @@ async function main() {
     return
   }
 
-  const pageMetas = [
-    {
-      path: '/',
-      title: 'Home',
-      description: 'Portfolio of ThienHN featuring selected projects, technical profile, and latest updates.',
-      type: 'website',
-      image: DEFAULT_IMAGE,
-      siteUrl,
-    },
-    {
-      path: '/about',
-      title: 'About',
-      description: 'Learn more about ThienHN, work experience, skills, education, and certifications.',
-      type: 'website',
-      image: DEFAULT_IMAGE,
-      siteUrl,
-    },
-    {
-      path: '/projects',
-      title: 'Projects',
-      description: 'Explore portfolio projects including live demos, source code, and technical details.',
-      type: 'website',
-      image: DEFAULT_IMAGE,
-      siteUrl,
-    },
-    {
-      path: '/blog',
-      title: 'Blog',
-      description: 'Read blog posts about web development, software engineering, and implementation notes.',
-      type: 'website',
-      image: DEFAULT_IMAGE,
-      siteUrl,
-    },
-    {
-      path: '/contact',
-      title: 'Contact',
-      description: 'Send a message for collaboration, freelance work, or technical discussion.',
-      type: 'website',
-      image: DEFAULT_IMAGE,
-      siteUrl,
-    },
-    {
-      path: '/cv',
-      title: 'CV',
-      description: 'View and download the latest CV of ThienHN.',
-      type: 'website',
-      image: DEFAULT_IMAGE,
-      siteUrl,
-    },
-  ]
+  let homeData = null
+  let aboutData = null
+  let projects = []
+  let posts = []
 
   let dynamicCount = 0
 
   try {
-    const [projects, posts] = await Promise.all([
-      fetchJson(`${apiBaseUrl}/projects`),
-      fetchJson(`${apiBaseUrl}/blog`),
+    const [fetchedHome, fetchedAbout, fetchedProjects, fetchedPosts] = await Promise.all([
+      fetchData(`${apiBaseUrl}/home`),
+      fetchData(`${apiBaseUrl}/about`),
+      fetchData(`${apiBaseUrl}/projects`),
+      fetchData(`${apiBaseUrl}/blog`),
     ])
+
+    homeData = fetchedHome && typeof fetchedHome === 'object' ? fetchedHome : null
+    aboutData = fetchedAbout && typeof fetchedAbout === 'object' ? fetchedAbout : null
+    projects = toArray(fetchedProjects)
+    posts = toArray(fetchedPosts)
+
+    const pageMetas = buildPublicPageMetas({
+      siteUrl,
+      homeData,
+      aboutData,
+      projects,
+      posts,
+    })
 
     projects.forEach((project) => {
       if (!project?._id) return
@@ -247,17 +298,33 @@ async function main() {
       })
       dynamicCount += 1
     })
+
+    pageMetas.forEach((meta) => {
+      const html = injectMeta(template, meta)
+      writePage(meta.path, html)
+    })
+
+    console.log(`[seo:prerender] Generated ${pageMetas.length} SEO pages (${dynamicCount} dynamic) from ${apiBaseUrl}`)
+    return
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)
-    console.warn(`[seo:prerender] Dynamic route prerender skipped: ${message}`)
+    console.warn(`[seo:prerender] API metadata unavailable, generating static fallback pages only: ${message}`)
   }
 
-  pageMetas.forEach((meta) => {
+  const fallbackMetas = buildPublicPageMetas({
+    siteUrl,
+    homeData,
+    aboutData,
+    projects,
+    posts,
+  })
+
+  fallbackMetas.forEach((meta) => {
     const html = injectMeta(template, meta)
     writePage(meta.path, html)
   })
 
-  console.log(`[seo:prerender] Generated ${pageMetas.length} SEO pages (${dynamicCount} dynamic) from ${apiBaseUrl}`)
+  console.log(`[seo:prerender] Generated ${fallbackMetas.length} SEO pages (0 dynamic) from fallback metadata`)
 }
 
 void main()

@@ -95,12 +95,26 @@ Frontend build/dev now auto-generates these files based on VITE_SITE_URL:
 
 If VITE_SITE_URL is missing or invalid, generation falls back to http://localhost:5173.
 
+Sitemap generation now also includes dynamic public URLs from API when available:
+
+- /projects/:id
+- /blog/:id
+
 ## Dynamic Route Prerender
 
 Frontend build also prerenders SEO HTML for public routes and dynamic details:
 
 - /projects/:id
 - /blog/:id
+
+Public listing pages also use API-derived metadata where available:
+
+- / (home)
+- /about
+- /projects
+- /blog
+- /contact
+- /cv
 
 The prerender step fetches metadata from SEO_DATA_API_BASE_URL (or VITE_API_BASE_URL).
 If API is unavailable during build, static route prerender still succeeds and dynamic detail prerender is skipped.

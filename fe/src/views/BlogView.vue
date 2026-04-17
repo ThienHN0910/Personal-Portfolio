@@ -41,6 +41,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useBlogStore } from '@/stores/blog'
 import BlogCard from '@/components/ui/BlogCard.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { applySeo } from '@/utils/seo'
 
 const blogStore = useBlogStore()
 const searchQuery = ref('')
@@ -59,5 +60,18 @@ const filteredPosts = computed(() => {
     )
 })
 
-onMounted(() => blogStore.fetchPosts())
+onMounted(async () => {
+  await blogStore.fetchPosts()
+  const posts = blogStore.posts.filter((post) => post.published)
+  const latestPost = posts[0]
+
+  applySeo({
+    title: 'Blog',
+    description:
+      latestPost?.excerpt ||
+      'Read blog posts about web development, software engineering, and implementation notes.',
+    image: latestPost?.coverImage,
+    url: '/blog',
+  })
+})
 </script>

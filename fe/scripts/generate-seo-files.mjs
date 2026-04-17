@@ -43,9 +43,47 @@ function resolveSiteUrl() {
   }
 }
 
-function buildSitemap(siteUrl) {
+function resolveApiBaseUrl(siteUrl) {
+  const envFileValues = {
+    ...parseEnvFile(resolve(projectRoot, '.env')),
+    ...parseEnvFile(resolve(projectRoot, '.env.local')),
+    ...parseEnvFile(resolve(projectRoot, '.env.production')),
+    ...parseEnvFile(resolve(projectRoot, '.env.production.local')),
+  }
+
+  const configured =
+    process.env.SEO_DATA_API_BASE_URL ||
+    envFileValues.SEO_DATA_API_BASE_URL ||
+    process.env.VITE_API_BASE_URL ||
+    envFileValues.VITE_API_BASE_URL ||
+    '/api'
+
+  try {
+    return new URL(configured).toString().replace(/\/$/, '')
+  } catch {
+    const path = configured.startsWith('/') ? configured : `/${configured}`
+    return new URL(path, siteUrl).toString().replace(/\/$/, '')
+  }
+}
+
+async function fetchData(url) {
+  const response = await fetch(url, {
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Request failed ${response.status}: ${url}`)
+  }
+
+  const payload = await response.json()
+  return payload?.data
+}
+
+function buildSitemap(siteUrl, dynamicRoutes = []) {
   const now = new Date().toISOString().slice(0, 10)
-  const routes = [
+  const staticRoutes = [
     { path: '/', priority: '1.0', changefreq: 'weekly' },
     { path: '/about', priority: '0.8', changefreq: 'monthly' },
     { path: '/projects', priority: '0.9', changefreq: 'weekly' },
@@ -53,6 +91,12 @@ function buildSitemap(siteUrl) {
     { path: '/contact', priority: '0.7', changefreq: 'monthly' },
     { path: '/cv', priority: '0.6', changefreq: 'monthly' },
   ]
+
+  const normalizedDynamicRoutes = [...new Set(dynamicRoutes)]
+    .filter((path) => typeof path === 'string' && path.startsWith('/'))
+    .map((path) => ({ path, priority: '0.8', changefreq: 'weekly' }))
+
+  const routes = [...staticRoutes, ...normalizedDynamicRoutes]
 
   const urlEntries = routes
     .map(({ path, priority, changefreq }) => {
@@ -89,16 +133,37 @@ function buildRobots(siteUrl) {
   ].join('\n')
 }
 
-function main() {
+async function main() {
   const siteUrl = resolveSiteUrl()
-  const sitemap = buildSitemap(siteUrl)
+  const apiBaseUrl = resolveApiBaseUrl(siteUrl)
+  let dynamicRoutes = []
+
+  try {
+    const [projectsData, postsData] = await Promise.all([
+      fetchData(`${apiBaseUrl}/projects`),
+      fetchData(`${apiBaseUrl}/blog`),
+    ])
+
+    const projects = Array.isArray(projectsData) ? projectsData : []
+    const posts = Array.isArray(postsData) ? postsData : []
+
+    dynamicRoutes = [
+      ...projects.map((project) => (project?._id ? `/projects/${project._id}` : '')).filter(Boolean),
+      ...posts.map((post) => (post?._id ? `/blog/${post._id}` : '')).filter(Boolean),
+    ]
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.warn(`[seo] Dynamic sitemap routes skipped: ${message}`)
+  }
+
+  const sitemap = buildSitemap(siteUrl, dynamicRoutes)
   const robots = buildRobots(siteUrl)
 
   mkdirSync(publicDir, { recursive: true })
   writeFileSync(resolve(publicDir, 'sitemap.xml'), sitemap, 'utf8')
   writeFileSync(resolve(publicDir, 'robots.txt'), robots, 'utf8')
 
-  console.log(`[seo] Generated robots.txt and sitemap.xml for ${siteUrl}`)
+  console.log(`[seo] Generated robots.txt and sitemap.xml for ${siteUrl} (${dynamicRoutes.length} dynamic routes)`)
 }
 
-main()
+void main()

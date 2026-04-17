@@ -168,6 +168,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import SkillBadge from '@/components/ui/SkillBadge.vue'
 import { hasAnyContactInfo, getPublicSocialLinks } from '@/utils/aboutPresentation'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
+import { applySeo } from '@/utils/seo'
 
 const aboutStore = useAboutStore()
 const loading = computed(() => aboutStore.loading)
@@ -184,5 +185,18 @@ function sanitizeHtml(html: string): string {
   })
 }
 
-onMounted(() => aboutStore.fetchAboutData())
+onMounted(async () => {
+  await aboutStore.fetchAboutData()
+  const profile = aboutStore.aboutData
+  const namePart = profile?.name ? `${profile.name} - About` : 'About'
+
+  applySeo({
+    title: namePart,
+    description:
+      profile?.bio ||
+      'Learn more about ThienHN, work experience, skills, education, and certifications.',
+    image: profile?.avatarUrl,
+    url: '/about',
+  })
+})
 </script>

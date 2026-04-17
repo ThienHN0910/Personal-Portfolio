@@ -46,6 +46,7 @@ import { ref, computed, onMounted } from 'vue'
 import { useProjectsStore } from '@/stores/projects'
 import ProjectCard from '@/components/ui/ProjectCard.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { applySeo } from '@/utils/seo'
 
 const projectsStore = useProjectsStore()
 const activeFilter = ref('')
@@ -63,5 +64,22 @@ const filteredProjects = computed(() =>
     : projectsStore.projects,
 )
 
-onMounted(() => projectsStore.fetchProjects())
+onMounted(async () => {
+  await projectsStore.fetchProjects()
+  const projects = projectsStore.projects
+  const representativeImage =
+    projects.find((project) => project.featured && project.imageUrl)?.imageUrl ||
+    projects.find((project) => project.imageUrl)?.imageUrl
+
+  const description = projects.length
+    ? `Explore ${projects.length} portfolio projects including live demos, source code, and technical details.`
+    : 'Explore portfolio projects including live demos, source code, and technical details.'
+
+  applySeo({
+    title: 'Projects',
+    description,
+    image: representativeImage,
+    url: '/projects',
+  })
+})
 </script>
