@@ -44,6 +44,9 @@ CORS:
 - VITE_API_BASE_URL: API base path or full backend URL
   - local default: /api
   - for split-domain deployment: full backend URL
+- VITE_SITE_URL: public frontend URL used for canonical URL, Open Graph URL, and generated sitemap/robots files
+  - local example: http://localhost:5173
+  - production example: https://your-portfolio-domain.com
 
 ## Local Example
 
@@ -68,6 +71,7 @@ fe/.env
 
 ```env
 VITE_API_BASE_URL=/api
+VITE_SITE_URL=http://localhost:5173
 ```
 
 ## Deployment Notes
@@ -76,6 +80,16 @@ VITE_API_BASE_URL=/api
 - Keep JWT_SECRET long and private.
 - Keep ADMIN_EMAIL strict to intended admin account.
 - If using Vercel, ensure FRONTEND_URL and API_BASE_URL match actual deployed domains.
+- Set VITE_SITE_URL to the final frontend domain so canonical/og:url and sitemap URLs are correct.
+
+## SEO Files
+
+Frontend build/dev now auto-generates these files based on VITE_SITE_URL:
+
+- fe/public/robots.txt
+- fe/public/sitemap.xml
+
+If VITE_SITE_URL is missing or invalid, generation falls back to http://localhost:5173.
 
 ## Theme System Notes
 

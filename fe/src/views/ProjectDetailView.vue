@@ -129,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import DOMPurify from 'dompurify'
 import { useRoute } from 'vue-router'
 
@@ -137,6 +137,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useBlogStore } from '@/stores/blog'
 import { useProjectsStore } from '@/stores/projects'
 import type { BlogPost, Project } from '@/types'
+import { applySeo } from '@/utils/seo'
 
 const route = useRoute()
 const projectsStore = useProjectsStore()
@@ -158,17 +159,45 @@ function formatDate(date?: string): string {
   return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
-onMounted(async () => {
-  const id = route.params.id as string
+async function loadProject(id: string): Promise<void> {
+  loading.value = true
   const fetchedProject = await projectsStore.fetchProject(id)
   project.value = fetchedProject
+  relatedPost.value = null
 
   if (fetchedProject?.relatedBlogId) {
     relatedPost.value = await blogStore.fetchPost(fetchedProject.relatedBlogId)
   }
 
+  if (fetchedProject) {
+    applySeo({
+      title: fetchedProject.title,
+      description: fetchedProject.description,
+      image: fetchedProject.imageUrl,
+      url: `/projects/${id}`,
+      type: 'article',
+    })
+  } else {
+    applySeo({
+      title: 'Project Not Found',
+      description: 'The requested project does not exist or has been removed.',
+      url: `/projects/${id}`,
+      noindex: true,
+    })
+  }
+
   loading.value = false
-})
+}
+
+watch(
+  () => route.params.id,
+  (value) => {
+    if (typeof value === 'string' && value) {
+      void loadProject(value)
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <style scoped lang="scss">

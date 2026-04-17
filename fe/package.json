@@ -5,10 +5,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit -p tsconfig.json && vite build",
+    "dev": "npm run seo:generate && vite",
+    "build": "npm run seo:generate && vue-tsc --noEmit -p tsconfig.json && vite build",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seo:generate": "node ./scripts/generate-seo-files.mjs"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-vue": "^6.0.0",

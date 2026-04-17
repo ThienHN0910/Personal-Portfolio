@@ -57,38 +57,67 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted } from "vue";
-import DOMPurify from "dompurify";
-import { useRoute } from "vue-router";
-import { useBlogStore } from "@/stores/blog";
-import type { BlogPost } from "@/types";
-import LoadingSpinner from "@/components/ui/LoadingSpinner.vue";
+import { computed, ref, watch } from 'vue'
+import DOMPurify from 'dompurify'
+import { useRoute } from 'vue-router'
+import { useBlogStore } from '@/stores/blog'
+import type { BlogPost } from '@/types'
+import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { applySeo } from '@/utils/seo'
 
-const route = useRoute();
-const blogStore = useBlogStore();
-const post = ref<BlogPost | null>(null);
-const loading = ref(true);
+const route = useRoute()
+const blogStore = useBlogStore()
+const post = ref<BlogPost | null>(null)
+const loading = ref(true)
 const sanitizedContent = computed(() => {
-  const html = post.value?.content || "";
+  const html = post.value?.content || ''
   return DOMPurify.sanitize(html, {
     USE_PROFILES: { html: true },
-  });
-});
+  })
+})
 
 function formatDate(date?: string): string {
-  if (!date) return "";
-  return new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  if (!date) return ''
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 }
 
-onMounted(async () => {
-  const id = route.params.id as string;
-  post.value = await blogStore.fetchPost(id);
-  loading.value = false;
-});
+async function loadPost(id: string): Promise<void> {
+  loading.value = true
+  post.value = await blogStore.fetchPost(id)
+
+  if (post.value) {
+    applySeo({
+      title: post.value.title,
+      description: post.value.excerpt,
+      image: post.value.coverImage,
+      url: `/blog/${id}`,
+      type: 'article',
+    })
+  } else {
+    applySeo({
+      title: 'Post Not Found',
+      description: 'The requested blog post does not exist or has been removed.',
+      url: `/blog/${id}`,
+      noindex: true,
+    })
+  }
+
+  loading.value = false
+}
+
+watch(
+  () => route.params.id,
+  (value) => {
+    if (typeof value === 'string' && value) {
+      void loadPost(value)
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <style scoped lang="scss">
