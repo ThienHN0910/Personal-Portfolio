@@ -41,4 +41,25 @@
     padding: 0.75rem;
     overflow-x: auto;
   }
+
+  .media {
+    margin: 0.75rem 0;
+  }
+
+  .rich-embed__ratio {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%;
+    border-radius: 0.75rem;
+    overflow: hidden;
+    background: rgba(15, 23, 42, 0.85);
+  }
+
+  .rich-embed__ratio iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
 }

@@ -164,6 +164,9 @@ const editorConfig: Record<string, unknown> = {
   table: {
     contentToolbar: ['tableColumn', 'tableRow', 'mergeTableCells'],
   },
+  mediaEmbed: {
+    previewsInData: true,
+  },
   htmlSupport: {
     allow: [
       {

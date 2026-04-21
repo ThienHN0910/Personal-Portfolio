@@ -130,13 +130,13 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import DOMPurify from 'dompurify'
 import { useRoute } from 'vue-router'
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useBlogStore } from '@/stores/blog'
 import { useProjectsStore } from '@/stores/projects'
 import type { BlogPost, Project } from '@/types'
+import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
 import { getProjectDetailSeoMeta } from '@/utils/seoPriority'
 
@@ -150,9 +150,7 @@ const loading = ref(true)
 const hasProjectLinks = computed(() => Boolean(project.value?.githubUrl || project.value?.liveUrl))
 const sanitizedRelatedContent = computed(() => {
   const html = relatedPost.value?.content || ''
-  return DOMPurify.sanitize(html, {
-    USE_PROFILES: { html: true },
-  })
+  return sanitizeRichContent(html)
 })
 
 function formatDate(date?: string): string {
@@ -274,5 +272,26 @@ watch(
 .blog-content :deep(td) {
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 0.5rem 0.75rem;
+}
+
+.blog-content :deep(.media) {
+  margin: 1.25rem 0;
+}
+
+.blog-content :deep(.rich-embed__ratio) {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  background: rgba(15, 23, 42, 0.85);
+}
+
+.blog-content :deep(.rich-embed__ratio iframe) {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 </style>

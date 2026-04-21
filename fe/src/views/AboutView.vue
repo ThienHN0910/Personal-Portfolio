@@ -162,7 +162,6 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue'
-import DOMPurify from 'dompurify'
 import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
@@ -171,6 +170,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import SkillBadge from '@/components/ui/SkillBadge.vue'
 import { hasAnyContactInfo, getPublicSocialLinks } from '@/utils/aboutPresentation'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
+import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
 import { getAboutSeoMeta } from '@/utils/seoPriority'
 
@@ -187,9 +187,7 @@ const licensesCertifications = computed(() => about.value?.licensesCertification
 const hasContactInfo = computed(() => hasAnyContactInfo(about.value))
 
 function sanitizeHtml(html: string): string {
-  return DOMPurify.sanitize(html || '', {
-    USE_PROFILES: { html: true },
-  })
+  return sanitizeRichContent(html)
 }
 
 onMounted(async () => {
