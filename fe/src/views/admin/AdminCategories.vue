@@ -10,6 +10,14 @@
         </template>
       </AdminSectionHeader>
 
+      <div
+        v-if="saveNotice"
+        class="mb-6 rounded-xl border px-4 py-3 text-sm"
+        :class="saveNoticeType === 'success' ? 'border-emerald-400/30 bg-emerald-400/10 text-emerald-200' : 'border-rose-400/30 bg-rose-400/10 text-rose-200'"
+      >
+        {{ saveNotice }}
+      </div>
+
       <LoadingSpinner v-if="loading" />
 
       <div v-else class="grid grid-cols-1 xl:grid-cols-2 gap-6">
@@ -58,6 +66,8 @@ import { useCategoriesStore } from '@/stores/categories'
 
 const categoriesStore = useCategoriesStore()
 const loading = ref(true)
+const saveNotice = ref('')
+const saveNoticeType = ref<'success' | 'error'>('success')
 
 const projectCategories = computed({
   get: () => categoriesStore.categorySettings.projectCategories,
@@ -74,10 +84,19 @@ const blogCategories = computed({
 })
 
 async function handleSave(): Promise<void> {
-  await categoriesStore.updateCategories({
-    projectCategories: projectCategories.value,
-    blogCategories: blogCategories.value,
-  })
+  saveNotice.value = ''
+
+  try {
+    await categoriesStore.updateCategories({
+      projectCategories: projectCategories.value,
+      blogCategories: blogCategories.value,
+    })
+    saveNoticeType.value = 'success'
+    saveNotice.value = 'Categories saved successfully.'
+  } catch {
+    saveNoticeType.value = 'error'
+    saveNotice.value = categoriesStore.error || 'Failed to save categories.'
+  }
 }
 
 onMounted(async () => {

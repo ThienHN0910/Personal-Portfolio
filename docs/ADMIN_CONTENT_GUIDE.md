@@ -108,6 +108,12 @@ In /admin/categories:
 - Manage the shared project category list.
 - Manage the shared blog category list.
 - Keep category labels short and in English.
+- Saving shows a success or error banner above the forms.
+
+Public cards:
+
+- Project cards show categories as secondary-colored chips with a +n overflow badge.
+- Blog cards place tags below the post summary.
 
 ## Messages
 

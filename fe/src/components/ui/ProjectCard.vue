@@ -28,9 +28,12 @@
     </div>
 
     <div class="card__body project-card__body">
-      <div class="card__tags mb-3">
-        <span v-for="category in (project.categories || []).slice(0, 2)" :key="category" class="card__tag">
+      <div v-if="categoryPreview.length" class="card__tags mb-3 project-card__categories">
+        <span v-for="category in categoryPreview" :key="category" class="card__tag card__tag--secondary">
           {{ category }}
+        </span>
+        <span v-if="categoryOverflowCount > 0" class="card__tag card__tag--secondary project-card__more-tag">
+          +{{ categoryOverflowCount }}
         </span>
       </div>
       <h3 class="card__title">{{ project.title }}</h3>
@@ -86,6 +89,7 @@ const props = defineProps<{
 const router = useRouter()
 
 const DESCRIPTION_TOGGLE_THRESHOLD = 120
+const CATEGORY_PREVIEW_LIMIT = 2
 
 const isExpanded = ref(false)
 
@@ -100,6 +104,10 @@ type CardAction = {
 }
 
 const canToggleDescription = computed(() => props.project.description.length > DESCRIPTION_TOGGLE_THRESHOLD)
+
+const categoryPreview = computed(() => (props.project.categories || []).slice(0, CATEGORY_PREVIEW_LIMIT))
+
+const categoryOverflowCount = computed(() => Math.max((props.project.categories || []).length - CATEGORY_PREVIEW_LIMIT, 0))
 
 const actionItems = computed<CardAction[]>(() => {
   const actions: CardAction[] = []

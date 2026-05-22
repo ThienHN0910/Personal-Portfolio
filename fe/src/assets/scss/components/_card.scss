@@ -65,6 +65,11 @@
     flex-wrap: wrap;
     gap: $spacing-xs;
     margin-bottom: $spacing-md;
+
+    &--after-description {
+      margin-top: -0.25rem;
+      margin-bottom: 0;
+    }
   }
 
   &__tag {
@@ -75,6 +80,12 @@
     border-radius: $radius-full;
     font-size: $font-xs;
     font-weight: 500;
+
+    &--secondary {
+      background: color-mix(in srgb, var(--theme-secondary, #06b6d4) 14%, transparent);
+      color: color-mix(in srgb, var(--theme-secondary, #06b6d4) 88%, white);
+      border-color: color-mix(in srgb, var(--theme-secondary, #06b6d4) 28%, transparent);
+    }
   }
 
   &__footer {
