@@ -5,7 +5,7 @@ A full-stack portfolio monorepo with a Vue frontend and an Express backend.
 ## Highlights
 
 - Public pages: Home, About, Projects, Blog, Contact, CV Viewer
-- Admin CMS: Dashboard, Projects, Blog, Messages, Content, Appearance
+- Admin CMS: Dashboard, Projects, Blog, Categories, Messages, Content, Appearance
 - Public Projects and Blog pages use progressive infinite scroll loading
 - Dynamic theme system:
   - Runtime gradient and color variables
@@ -98,6 +98,7 @@ npm run typecheck
 ## Key Data Behaviors
 
 - Projects are sorted by: priority desc, featured desc, createdAt desc.
+- Project and blog content use managed English category lists.
 - About social links are dynamic list items (label + url), not fixed fields.
 - Education supports GPA.
 - Licenses and certifications are dynamic list items.
@@ -114,6 +115,7 @@ Public endpoints include:
 - GET /api/projects/:id
 - GET /api/blog
 - GET /api/blog/:id
+- GET /api/categories
 - POST /api/contact
 - GET /api/theme
 
@@ -123,6 +125,7 @@ Protected admin endpoints (Bearer JWT required) include:
 - PUT /api/about
 - POST, PUT, DELETE /api/projects
 - POST, PUT, DELETE /api/blog
+- PUT /api/categories
 - GET, DELETE /api/contact
 - POST /api/upload
 - PUT /api/theme

@@ -14,12 +14,41 @@ function parsePositiveInteger(value: unknown): number | null {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : null
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function buildSearchFilter(queryValue: unknown, fields: string[]): Record<string, unknown> {
+  const raw = Array.isArray(queryValue) ? queryValue[0] : queryValue
+  const term = typeof raw === 'string' ? raw.trim() : ''
+  if (!term) return {}
+
+  const regex = new RegExp(escapeRegExp(term), 'i')
+  return {
+    $or: fields.map((field) => ({ [field]: regex })),
+  }
+}
+
+function buildCategoryFilter(categoryValue: unknown): Record<string, unknown> {
+  const raw = Array.isArray(categoryValue) ? categoryValue[0] : categoryValue
+  const category = typeof raw === 'string' ? raw.trim() : ''
+  if (!category) return {}
+
+  return { categories: { $in: [new RegExp(`^${escapeRegExp(category)}$`, 'i')] } }
+}
+
 router.get('/', async (req, res) => {
   await connectToDatabase()
 
   try {
     const isAdminView = req.query.all === 'true'
-    const query = isAdminView ? {} : { published: true }
+    const baseFilter = isAdminView
+      ? {}
+      : {
+          published: true,
+          ...buildSearchFilter(req.query.q, ['title', 'content', 'excerpt', 'tags', 'categories']),
+          ...buildCategoryFilter(req.query.category),
+        }
     const page = parsePositiveInteger(req.query.page)
     const limit = parsePositiveInteger(req.query.limit)
 
@@ -27,11 +56,11 @@ router.get('/', async (req, res) => {
       const currentPage = page ?? 1
       const pageSize = limit ?? 6
       const [posts, total] = await Promise.all([
-        BlogPost.find(query)
+        BlogPost.find(baseFilter)
           .sort({ createdAt: -1 })
           .skip((currentPage - 1) * pageSize)
           .limit(pageSize),
-        BlogPost.countDocuments(query),
+        BlogPost.countDocuments(baseFilter),
       ])
 
       return res.status(200).json({
@@ -46,7 +75,7 @@ router.get('/', async (req, res) => {
       })
     }
 
-    const posts = await BlogPost.find(query).sort({ createdAt: -1 })
+    const posts = await BlogPost.find(baseFilter).sort({ createdAt: -1 })
     return res.status(200).json({ success: true, data: posts })
   } catch {
     return res.status(500).json({ success: false, error: 'Failed to fetch posts' })

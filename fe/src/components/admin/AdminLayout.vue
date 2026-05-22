@@ -69,6 +69,7 @@ const navItems = [
   { to: '/admin', label: 'Dashboard', icon: 'dashboard' as const },
   { to: '/admin/projects', label: 'Projects', icon: 'projects' as const },
   { to: '/admin/blog', label: 'Blog', icon: 'blog' as const },
+  { to: '/admin/categories', label: 'Categories', icon: 'featured' as const },
   { to: '/admin/messages', label: 'Messages', icon: 'messages' as const },
   { to: '/admin/about', label: 'Content', icon: 'about' as const },
   { to: '/admin/appearance', label: 'Appearance', icon: 'appearance' as const },

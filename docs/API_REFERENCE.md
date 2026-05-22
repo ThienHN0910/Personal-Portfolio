@@ -113,6 +113,12 @@ Returns all projects sorted by:
 - featured desc
 - createdAt desc
 
+Public search and filtering:
+
+- Query params: `q`, `category`
+- Search matches title, description, technologies, and categories
+- Category matches entries in the `categories` array
+
 Public pagination:
 
 - Query params: `page`, `limit`
@@ -142,6 +148,7 @@ Project fields:
 - description
 - duration
 - priority
+- categories
 - technologies
 - imageUrl
 - githubUrl
@@ -155,6 +162,9 @@ Project fields:
 
 - Public mode: returns published posts only
 - Admin mode: pass query all=true to return all posts
+- Public search and filtering: pass `q` and `category`
+- Search matches title, content, excerpt, tags, and categories
+- Category matches entries in the `categories` array
 - Public pagination: pass `page` and `limit` to load published posts progressively
 - Returns `pagination` metadata when page/limit are provided
 - Defaults to page 1 if `page` is omitted
@@ -175,6 +185,26 @@ Updates a post.
 ### DELETE /api/blog/:id (admin)
 
 Deletes a post.
+
+## Categories
+
+### GET /api/categories
+
+Returns the current category settings used by project and blog editors.
+
+Response fields:
+
+- projectCategories
+- blogCategories
+
+### PUT /api/categories (admin)
+
+Updates category settings.
+
+Payload fields:
+
+- projectCategories: string[]
+- blogCategories: string[]
 
 ## Contact
 

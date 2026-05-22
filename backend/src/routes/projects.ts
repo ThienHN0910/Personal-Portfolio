@@ -14,19 +14,46 @@ function parsePositiveInteger(value: unknown): number | null {
   return Number.isInteger(parsed) && parsed > 0 ? parsed : null
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function buildSearchFilter(queryValue: unknown, fields: string[]): Record<string, unknown> {
+  const raw = Array.isArray(queryValue) ? queryValue[0] : queryValue
+  const term = typeof raw === 'string' ? raw.trim() : ''
+  if (!term) return {}
+
+  const regex = new RegExp(escapeRegExp(term), 'i')
+  return {
+    $or: fields.map((field) => ({ [field]: regex })),
+  }
+}
+
+function buildCategoryFilter(categoryValue: unknown): Record<string, unknown> {
+  const raw = Array.isArray(categoryValue) ? categoryValue[0] : categoryValue
+  const category = typeof raw === 'string' ? raw.trim() : ''
+  if (!category) return {}
+
+  return { categories: { $in: [new RegExp(`^${escapeRegExp(category)}$`, 'i')] } }
+}
+
 router.get('/', async (req, res) => {
   await connectToDatabase()
 
   try {
     const page = parsePositiveInteger(req.query.page)
     const limit = parsePositiveInteger(req.query.limit)
+    const baseFilter = {
+      ...buildSearchFilter(req.query.q, ['title', 'description', 'technologies', 'categories']),
+      ...buildCategoryFilter(req.query.category),
+    }
 
     if (page !== null || limit !== null) {
       const currentPage = page ?? 1
       const pageSize = limit ?? 9
       const [projects, total] = await Promise.all([
-        Project.find().sort({ priority: -1, featured: -1, createdAt: -1 }).skip((currentPage - 1) * pageSize).limit(pageSize),
-        Project.countDocuments(),
+        Project.find(baseFilter).sort({ priority: -1, featured: -1, createdAt: -1 }).skip((currentPage - 1) * pageSize).limit(pageSize),
+        Project.countDocuments(baseFilter),
       ])
 
       return res.status(200).json({
@@ -41,7 +68,7 @@ router.get('/', async (req, res) => {
       })
     }
 
-    const projects = await Project.find().sort({ priority: -1, featured: -1, createdAt: -1 })
+    const projects = await Project.find(baseFilter).sort({ priority: -1, featured: -1, createdAt: -1 })
     return res.status(200).json({ success: true, data: projects })
   } catch {
     return res.status(500).json({ success: false, error: 'Failed to fetch projects' })

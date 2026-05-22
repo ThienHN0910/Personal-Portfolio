@@ -19,6 +19,11 @@
 
     <div class="card__body">
       <div class="card__tags mb-3">
+        <span v-for="category in (post.categories || []).slice(0, 2)" :key="category" class="card__tag">
+          {{ category }}
+        </span>
+      </div>
+      <div class="card__tags mb-3">
         <span v-for="tag in post.tags.slice(0, 3)" :key="tag" class="card__tag">
           {{ tag }}
         </span>

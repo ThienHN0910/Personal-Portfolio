@@ -28,6 +28,11 @@
     </div>
 
     <div class="card__body project-card__body">
+      <div class="card__tags mb-3">
+        <span v-for="category in (project.categories || []).slice(0, 2)" :key="category" class="card__tag">
+          {{ category }}
+        </span>
+      </div>
       <h3 class="card__title">{{ project.title }}</h3>
       <p class="card__description" :class="{ 'card__description--expanded': isExpanded }">{{ project.description }}</p>
       <button

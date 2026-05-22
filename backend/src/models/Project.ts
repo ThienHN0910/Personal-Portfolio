@@ -5,6 +5,7 @@ export interface IProject extends Document {
   description: string
   duration?: string
   priority: number
+  categories: string[]
   technologies: string[]
   imageUrl?: string
   githubUrl?: string
@@ -19,6 +20,7 @@ const ProjectSchema = new Schema<IProject>(
     description: { type: String, required: true },
     duration: { type: String, trim: true },
     priority: { type: Number, default: 0 },
+    categories: { type: [{ type: String }], default: [] },
     technologies: [{ type: String }],
     imageUrl: { type: String },
     githubUrl: { type: String },

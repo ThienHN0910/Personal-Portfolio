@@ -19,6 +19,7 @@
               <th>Title</th>
               <th class="hidden md:table-cell">Priority</th>
               <th class="hidden xl:table-cell">Duration</th>
+              <th class="hidden md:table-cell">Categories</th>
               <th class="hidden md:table-cell">Technologies</th>
               <th class="hidden lg:table-cell">Related Blog</th>
               <th class="hidden sm:table-cell">Featured</th>
@@ -33,6 +34,11 @@
               <td class="text-white font-medium">{{ project.title }}</td>
               <td class="hidden md:table-cell text-gray-200">{{ project.priority || 0 }}</td>
               <td class="hidden xl:table-cell text-gray-300 text-sm">{{ project.duration || '-' }}</td>
+              <td class="hidden md:table-cell">
+                <div class="flex flex-wrap gap-1">
+                  <span v-for="category in (project.categories || []).slice(0, 2)" :key="category" class="card__tag">{{ category }}</span>
+                </div>
+              </td>
               <td class="hidden md:table-cell">
                 <div class="flex flex-wrap gap-1">
                   <span v-for="tech in project.technologies.slice(0, 3)" :key="tech" class="card__tag">{{ tech }}</span>
@@ -89,6 +95,15 @@
                     <label>Priority (higher first)</label>
                     <input v-model.number="form.priority" type="number" min="0" step="1" />
                   </div>
+                </div>
+                <div class="form-group">
+                  <CategoryCheckboxGroup
+                    v-model="selectedCategories"
+                    label="Project categories"
+                    description="Choose the best categories for this project."
+                    :options="projectCategoryOptions"
+                    empty-message="No project categories available. Open Admin Categories to add some."
+                  />
                 </div>
                 <div class="form-group">
                   <label>Technologies (select from Skills)</label>
@@ -158,6 +173,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 
 import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
+import CategoryCheckboxGroup from '@/components/admin/CategoryCheckboxGroup.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import IconGlyph from '@/components/ui/IconGlyph.vue'
 import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
@@ -165,6 +181,7 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
+import { useCategoriesStore } from '@/stores/categories'
 import { useProjectsStore } from '@/stores/projects'
 import type { Project } from '@/types'
 
@@ -173,6 +190,7 @@ interface ProjectFormState {
   description: string
   duration: string
   priority: number
+  categories: string[]
   githubUrl: string
   liveUrl: string
   imageUrl: string
@@ -186,6 +204,7 @@ function createInitialFormState(): ProjectFormState {
     description: '',
     duration: '',
     priority: 0,
+    categories: [],
     githubUrl: '',
     liveUrl: '',
     imageUrl: '',
@@ -197,13 +216,16 @@ function createInitialFormState(): ProjectFormState {
 const projectsStore = useProjectsStore()
 const aboutStore = useAboutStore()
 const blogStore = useBlogStore()
+const categoriesStore = useCategoriesStore()
 const loading = computed(() => projectsStore.loading)
 const showModal = ref(false)
 const editingProject = ref<Project | null>(null)
 const { isOpen: isDeleteDialogOpen, request: requestDelete, cancel: cancelDelete, consume: consumeDelete } = useConfirmDialog()
 const selectedTechnologies = ref<string[]>([])
+const selectedCategories = ref<string[]>([])
 const isEditing = computed(() => Boolean(editingProject.value?._id))
 const blogOptions = computed(() => blogStore.posts)
+const projectCategoryOptions = computed(() => categoriesStore.categorySettings.projectCategories)
 const blogTitleById = computed(() => {
   return blogStore.posts.reduce<Record<string, string>>((acc, post) => {
     if (post._id) acc[post._id] = post.title
@@ -227,6 +249,7 @@ const form = reactive<ProjectFormState>(createInitialFormState())
 function resetForm(): void {
   Object.assign(form, createInitialFormState())
   selectedTechnologies.value = []
+  selectedCategories.value = []
 }
 
 function fillFormFromProject(project: Project): void {
@@ -234,12 +257,14 @@ function fillFormFromProject(project: Project): void {
   form.description = project.description
   form.duration = project.duration || ''
   form.priority = project.priority || 0
+  form.categories = [...(project.categories || [])]
   form.githubUrl = project.githubUrl || ''
   form.liveUrl = project.liveUrl || ''
   form.imageUrl = project.imageUrl || ''
   form.relatedBlogId = project.relatedBlogId || ''
   form.featured = project.featured
   selectedTechnologies.value = [...project.technologies]
+  selectedCategories.value = [...(project.categories || [])]
 }
 
 function openModal(project?: Project) {
@@ -262,6 +287,7 @@ async function handleSubmit() {
   const data = {
     ...form,
     relatedBlogId: form.relatedBlogId || undefined,
+    categories: selectedCategories.value,
     technologies,
   }
 
@@ -284,6 +310,11 @@ async function confirmDelete() {
 }
 
 onMounted(async () => {
-  await Promise.all([projectsStore.fetchProjects(), aboutStore.fetchAboutData(), blogStore.fetchPosts(true)])
+  await Promise.all([
+    projectsStore.fetchProjects(),
+    aboutStore.fetchAboutData(),
+    blogStore.fetchPosts(true),
+    categoriesStore.fetchCategories(),
+  ])
 })
 </script>

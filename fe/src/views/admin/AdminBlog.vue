@@ -17,6 +17,7 @@
           <thead>
             <tr>
               <th>Title</th>
+              <th class="hidden md:table-cell">Categories</th>
               <th class="hidden md:table-cell">Tags</th>
               <th class="hidden sm:table-cell">Status</th>
               <th class="text-right">Actions</th>
@@ -28,6 +29,11 @@
               :key="post._id"
             >
               <td class="text-white font-medium">{{ post.title }}</td>
+              <td class="hidden md:table-cell">
+                <div class="flex flex-wrap gap-1">
+                  <span v-for="category in (post.categories || []).slice(0, 2)" :key="category" class="card__tag">{{ category }}</span>
+                </div>
+              </td>
               <td class="hidden md:table-cell">
                 <div class="flex flex-wrap gap-1">
                   <span v-for="tag in post.tags.slice(0, 2)" :key="tag" class="card__tag">{{ tag }}</span>
@@ -80,6 +86,15 @@
                   />
                 </div>
                 <div class="form-group">
+                  <CategoryCheckboxGroup
+                    v-model="selectedCategories"
+                    label="Blog categories"
+                    description="Choose one or more categories for this post."
+                    :options="blogCategoryOptions"
+                    empty-message="No blog categories available. Open Admin Categories to add some."
+                  />
+                </div>
+                <div class="form-group">
                   <label>Tags (comma separated)</label>
                   <input v-model="tagsInput" type="text" placeholder="Vue, TypeScript, Tutorial" />
                 </div>
@@ -116,11 +131,13 @@
 import { ref, reactive, computed, onMounted, defineAsyncComponent } from 'vue'
 
 import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
+import CategoryCheckboxGroup from '@/components/admin/CategoryCheckboxGroup.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
 import EditorLoadingSkeleton from '@/components/ui/EditorLoadingSkeleton.vue'
 import IconGlyph from '@/components/ui/IconGlyph.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useBlogStore } from '@/stores/blog'
+import { useCategoriesStore } from '@/stores/categories'
 import type { BlogPost } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 
@@ -148,20 +165,24 @@ const FullRichEditor = defineAsyncComponent({
 })
 
 const blogStore = useBlogStore()
+const categoriesStore = useCategoriesStore()
 const loading = computed(() => blogStore.loading)
 const showModal = ref(false)
 const editingPost = ref<BlogPost | null>(null)
 const { isOpen: isDeleteDialogOpen, request: requestDelete, cancel: cancelDelete, consume: consumeDelete } = useConfirmDialog()
 const tagsInput = ref('')
+const selectedCategories = ref<string[]>([])
 const editorRenderKey = ref(0)
 const isEditing = computed(() => Boolean(editingPost.value?._id))
 const editorInstanceKey = computed(() => `${editingPost.value?._id || 'new'}-${editorRenderKey.value}`)
+const blogCategoryOptions = computed(() => categoriesStore.categorySettings.blogCategories)
 
 const form = reactive<BlogFormState>(createInitialFormState())
 
 function resetForm(): void {
   Object.assign(form, createInitialFormState())
   tagsInput.value = ''
+  selectedCategories.value = []
 }
 
 function fillFormFromPost(post: BlogPost): void {
@@ -169,6 +190,7 @@ function fillFormFromPost(post: BlogPost): void {
   form.content = post.content
   form.published = post.published
   tagsInput.value = post.tags.join(', ')
+  selectedCategories.value = [...(post.categories || [])]
 }
 
 function openModal(post?: BlogPost) {
@@ -224,6 +246,7 @@ async function handleSubmit() {
     ...form,
     excerpt: buildExcerpt(form.content),
     coverImage: extractFirstImageUrl(form.content),
+    categories: selectedCategories.value,
     tags,
   }
 
@@ -247,5 +270,6 @@ async function confirmDelete() {
 
 onMounted(() => {
   blogStore.fetchPosts(true)
+  categoriesStore.fetchCategories()
 })
 </script>

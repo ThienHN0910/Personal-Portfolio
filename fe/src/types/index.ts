@@ -4,6 +4,7 @@ export interface Project {
   description: string
   duration?: string
   priority?: number
+  categories: string[]
   technologies: string[]
   imageUrl?: string
   githubUrl?: string
@@ -20,6 +21,7 @@ export interface BlogPost {
   content: string
   excerpt: string
   coverImage?: string
+  categories: string[]
   tags: string[]
   published: boolean
   createdAt?: string
@@ -97,6 +99,12 @@ export interface HomeData {
   ctaText: string
   ctaLink: string
   profileImage?: string
+}
+
+export interface CategorySettings {
+  _id?: string
+  projectCategories: string[]
+  blogCategories: string[]
 }
 
 export interface ThemeSettings {

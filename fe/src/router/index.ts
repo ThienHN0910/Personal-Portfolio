@@ -138,6 +138,12 @@ const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
+          path: 'categories',
+          name: 'admin-categories',
+          component: () => import('@/views/admin/AdminCategories.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
           path: 'messages',
           name: 'admin-messages',
           component: () => import('@/views/admin/AdminMessages.vue'),

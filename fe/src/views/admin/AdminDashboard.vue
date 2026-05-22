@@ -15,7 +15,7 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
         <RouterLink
           v-for="link in adminLinks"
           :key="link.to"
@@ -98,6 +98,7 @@ const stats = computed(() => [
 const adminLinks = [
   { to: '/admin/projects', label: 'Manage Projects', description: 'Add, edit, delete projects' },
   { to: '/admin/blog', label: 'Manage Blog', description: 'Write and publish posts' },
+  { to: '/admin/categories', label: 'Categories', description: 'Organize project and blog categories' },
   { to: '/admin/messages', label: 'View Messages', description: 'Read contact submissions' },
   { to: '/admin/about', label: 'Edit Content', description: 'Update about & home page' },
   { to: '/admin/appearance', label: 'Appearance', description: 'Theme gradients and colors' },

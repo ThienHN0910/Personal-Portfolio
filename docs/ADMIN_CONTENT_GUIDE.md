@@ -22,6 +22,7 @@ Admin uses a left sidebar layout with these routes:
 - /admin (Dashboard)
 - /admin/projects
 - /admin/blog
+- /admin/categories
 - /admin/messages
 - /admin/about
 - /admin/appearance
@@ -74,6 +75,7 @@ Behavior notes:
 In /admin/blog:
 
 - Create and edit posts with shared rich editor.
+- Categories are selected from the shared category list.
 - Tags are comma-separated.
 - Publish toggle controls post visibility.
 
@@ -81,24 +83,44 @@ Derived behavior:
 
 - Excerpt is generated from HTML content.
 - Cover image is extracted from first image in content.
+- Public blog page now loads posts progressively with infinite scroll.
+- Public blog filters support category and keyword search.
 
 ## Projects Content
 
 In /admin/projects:
 
+- Manage all project metadata.
+- Categories are selected from the shared category list.
+- Fields include duration and priority.
+- Related blog can be linked from existing posts.
 
 Display order on public pages:
 
- Public project and blog pages now load content progressively with infinite scroll.
+- priority desc -> featured desc -> createdAt desc
+- Public project and blog pages now load content progressively with infinite scroll.
+- Public project filters support category and keyword search.
+
+## Categories
+
+In /admin/categories:
+
+- Manage the shared project category list.
+- Manage the shared blog category list.
+- Keep category labels short and in English.
 
 ## Messages
 
 In /admin/messages:
 
+- Read contact submissions.
+- Delete messages with confirmation dialog.
+
 ## Appearance and Theme
 
 In /admin/appearance:
- Public blog page now loads posts progressively with infinite scroll.
+
+- Configure global theme colors and gradients.
 - Toggle animated glow.
 - Preview style changes before saving.
 

@@ -7,6 +7,8 @@ interface FetchPostsOptions {
   includeAll?: boolean
   page?: number
   limit?: number
+  query?: string
+  category?: string
   append?: boolean
 }
 
@@ -31,7 +33,7 @@ export const useBlogStore = defineStore('blog', () => {
 
   async function fetchPosts(options: boolean | FetchPostsOptions = false) {
     const normalizedOptions: FetchPostsOptions = typeof options === 'boolean' ? { includeAll: options } : options
-    const { includeAll = false, page, limit, append = false } = normalizedOptions
+    const { includeAll = false, page, limit, query, category, append = false } = normalizedOptions
 
     loading.value = true
     error.value = null
@@ -40,6 +42,8 @@ export const useBlogStore = defineStore('blog', () => {
       if (includeAll) params.all = 'true'
       if (page !== undefined) params.page = String(page)
       if (limit !== undefined) params.limit = String(limit)
+      if (query?.trim()) params.q = query.trim()
+      if (category?.trim()) params.category = category.trim()
 
       const response = await api.get<{ success: boolean; data: BlogPost[]; pagination?: PaginationMeta }>('/blog', {
         params: Object.keys(params).length ? params : undefined,

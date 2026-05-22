@@ -5,6 +5,7 @@ export interface IBlogPost extends Document {
   content: string
   excerpt: string
   coverImage?: string
+  categories: string[]
   tags: string[]
   published: boolean
 }
@@ -15,6 +16,7 @@ const BlogPostSchema = new Schema<IBlogPost>(
     content: { type: String, required: true },
     excerpt: { type: String, required: true },
     coverImage: { type: String },
+    categories: { type: [{ type: String }], default: [] },
     tags: [{ type: String }],
     published: { type: Boolean, default: false },
   },
