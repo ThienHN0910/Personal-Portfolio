@@ -1,5 +1,13 @@
 <template>
-  <div class="card project-card" :class="{ 'card--featured': project.featured }">
+  <div
+    class="card project-card"
+    :class="{ 'card--featured': project.featured, 'project-card--clickable': Boolean(project._id) }"
+    role="link"
+    tabindex="0"
+    @click="handleCardClick"
+    @keydown.enter.prevent="openDetail"
+    @keydown.space.prevent="openDetail"
+  >
     <div class="project-card__media overflow-hidden">
       <img
         v-if="project.imageUrl"
@@ -26,6 +34,7 @@
         v-if="canToggleDescription"
         type="button"
         class="card__link card__toggle"
+        data-card-action="true"
         @click="toggleDescription"
       >
         {{ isExpanded ? 'View Less' : 'Read more' }}
@@ -48,6 +57,7 @@
         :is="action.to ? RouterLink : 'a'"
         v-bind="action.to ? { to: action.to } : { href: action.href, target: '_blank', rel: 'noopener noreferrer' }"
         class="project-card__action"
+        data-card-action="true"
         :aria-label="action.label"
         :title="action.label"
       >
@@ -59,7 +69,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { useRouter, RouterLink } from 'vue-router'
 
 import IconGlyph from '@/components/ui/IconGlyph.vue'
 import type { Project } from '@/types'
@@ -67,6 +77,8 @@ import type { Project } from '@/types'
 const props = defineProps<{
   project: Project
 }>()
+
+const router = useRouter()
 
 const DESCRIPTION_TOGGLE_THRESHOLD = 120
 
@@ -128,5 +140,16 @@ const actionItems = computed<CardAction[]>(() => {
 
 function toggleDescription(): void {
   isExpanded.value = !isExpanded.value
+}
+
+function openDetail(): void {
+  if (!props.project._id) return
+  void router.push(`/projects/${props.project._id}`)
+}
+
+function handleCardClick(event: MouseEvent): void {
+  const target = event.target as HTMLElement | null
+  if (target?.closest('[data-card-action="true"]')) return
+  openDetail()
 }
 </script>
