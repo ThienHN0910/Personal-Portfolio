@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { Project } from '@/types'
+import type { PaginationMeta, Project } from '@/types'
 import api from '@/utils/api'
+
+interface FetchProjectsOptions {
+  page?: number
+  limit?: number
+  append?: boolean
+}
 
 export const useProjectsStore = defineStore('projects', () => {
   const projects = ref<Project[]>([])
@@ -23,17 +29,27 @@ export const useProjectsStore = defineStore('projects', () => {
     })
   }
 
-  async function fetchProjects() {
+  async function fetchProjects(options: FetchProjectsOptions = {}) {
+    const { page, limit, append = false } = options
+
     loading.value = true
     error.value = null
     try {
-      const response = await api.get<{ success: boolean; data: Project[] }>('/projects')
+      const params: Record<string, string> = {}
+      if (page !== undefined) params.page = String(page)
+      if (limit !== undefined) params.limit = String(limit)
+
+      const response = await api.get<{ success: boolean; data: Project[]; pagination?: PaginationMeta }>('/projects', {
+        params: Object.keys(params).length ? params : undefined,
+      })
       if (response.data.success && response.data.data) {
-        projects.value = sortProjects(response.data.data)
+        projects.value = append ? sortProjects([...projects.value, ...response.data.data]) : sortProjects(response.data.data)
       }
+      return response.data.pagination ?? null
     } catch (err) {
       error.value = 'Failed to fetch projects'
       console.error(err)
+      return null
     } finally {
       loading.value = false
     }

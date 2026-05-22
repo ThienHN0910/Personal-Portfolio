@@ -86,26 +86,19 @@ Derived behavior:
 
 In /admin/projects:
 
-- Manage all project metadata.
-- Fields include duration and priority.
-- Related blog can be linked from existing posts.
 
 Display order on public pages:
 
-- priority desc -> featured desc -> createdAt desc
+ Public project and blog pages now load content progressively with infinite scroll.
 
 ## Messages
 
 In /admin/messages:
 
-- Read contact submissions.
-- Delete messages with confirmation dialog.
-
 ## Appearance and Theme
 
 In /admin/appearance:
-
-- Configure global theme colors and gradients.
+ Public blog page now loads posts progressively with infinite scroll.
 - Toggle animated glow.
 - Preview style changes before saving.
 

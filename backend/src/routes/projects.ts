@@ -6,10 +6,41 @@ import Project from '../models/Project'
 
 const router = Router()
 
-router.get('/', async (_req, res) => {
+function parsePositiveInteger(value: unknown): number | null {
+  const raw = Array.isArray(value) ? value[0] : value
+  if (typeof raw !== 'string') return null
+
+  const parsed = Number.parseInt(raw, 10)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : null
+}
+
+router.get('/', async (req, res) => {
   await connectToDatabase()
 
   try {
+    const page = parsePositiveInteger(req.query.page)
+    const limit = parsePositiveInteger(req.query.limit)
+
+    if (page !== null || limit !== null) {
+      const currentPage = page ?? 1
+      const pageSize = limit ?? 9
+      const [projects, total] = await Promise.all([
+        Project.find().sort({ priority: -1, featured: -1, createdAt: -1 }).skip((currentPage - 1) * pageSize).limit(pageSize),
+        Project.countDocuments(),
+      ])
+
+      return res.status(200).json({
+        success: true,
+        data: projects,
+        pagination: {
+          page: currentPage,
+          limit: pageSize,
+          total,
+          hasMore: currentPage * pageSize < total,
+        },
+      })
+    }
+
     const projects = await Project.find().sort({ priority: -1, featured: -1, createdAt: -1 })
     return res.status(200).json({ success: true, data: projects })
   } catch {

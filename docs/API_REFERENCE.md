@@ -113,6 +113,13 @@ Returns all projects sorted by:
 - featured desc
 - createdAt desc
 
+Public pagination:
+
+- Query params: `page`, `limit`
+- Returns `pagination` metadata when page/limit are provided
+- Defaults to page 1 if `page` is omitted
+- Defaults to 9 items per page if `limit` is omitted
+
 ### POST /api/projects (admin)
 
 Creates a new project.
@@ -148,6 +155,10 @@ Project fields:
 
 - Public mode: returns published posts only
 - Admin mode: pass query all=true to return all posts
+- Public pagination: pass `page` and `limit` to load published posts progressively
+- Returns `pagination` metadata when page/limit are provided
+- Defaults to page 1 if `page` is omitted
+- Defaults to 6 items per page if `limit` is omitted
 
 ### POST /api/blog (admin)
 

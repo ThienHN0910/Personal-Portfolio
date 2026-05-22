@@ -6,6 +6,7 @@ A full-stack portfolio monorepo with a Vue frontend and an Express backend.
 
 - Public pages: Home, About, Projects, Blog, Contact, CV Viewer
 - Admin CMS: Dashboard, Projects, Blog, Messages, Content, Appearance
+- Public Projects and Blog pages use progressive infinite scroll loading
 - Dynamic theme system:
   - Runtime gradient and color variables
   - Admin-editable appearance settings

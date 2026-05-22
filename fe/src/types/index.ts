@@ -121,6 +121,14 @@ export interface ApiResponse<T> {
   data?: T
   message?: string
   error?: string
+  pagination?: PaginationMeta
+}
+
+export interface PaginationMeta {
+  page: number
+  limit: number
+  total: number
+  hasMore: boolean
 }
 
 export interface User {

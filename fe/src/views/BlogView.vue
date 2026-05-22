@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <LoadingSpinner v-if="loading" />
+      <LoadingSpinner v-if="initialLoading" />
 
       <div v-else-if="filteredPosts.length" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <BlogCard v-for="post in filteredPosts" :key="post._id" :post="post" />
@@ -32,12 +32,19 @@
       <div v-else class="text-center py-20 text-gray-500">
         No blog posts found.
       </div>
+
+      <div ref="sentinelRef" class="flex justify-center py-10">
+        <div v-if="hasMorePosts || loadingMore" class="flex items-center gap-3 text-sm text-gray-400">
+          <LoadingSpinner v-if="loadingMore" />
+          <span>{{ loadingMore ? 'Loading more posts...' : 'Scroll to load more' }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
@@ -52,7 +59,52 @@ const homeStore = useHomeStore()
 const aboutStore = useAboutStore()
 const projectsStore = useProjectsStore()
 const searchQuery = ref('')
-const loading = computed(() => blogStore.loading)
+const initialLoading = ref(true)
+const loadingMore = ref(false)
+const hasMorePosts = ref(true)
+const currentPage = ref(1)
+const pageSize = 6
+const sentinelRef = ref<HTMLDivElement | null>(null)
+let pageObserver: IntersectionObserver | null = null
+
+function disconnectObserver(): void {
+  pageObserver?.disconnect()
+  pageObserver = null
+}
+
+async function loadNextPage(): Promise<void> {
+  if (loadingMore.value || !hasMorePosts.value) return
+
+  loadingMore.value = true
+  const nextPage = currentPage.value + 1
+  const pagination = await blogStore.fetchPosts({ page: nextPage, limit: pageSize, append: true })
+
+  if (pagination) {
+    currentPage.value = pagination.page
+    hasMorePosts.value = pagination.hasMore
+  } else {
+    hasMorePosts.value = false
+  }
+
+  loadingMore.value = false
+}
+
+function setupObserver(): void {
+  disconnectObserver()
+
+  if (!hasMorePosts.value || !sentinelRef.value || !('IntersectionObserver' in window)) return
+
+  pageObserver = new IntersectionObserver(
+    (entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        void loadNextPage()
+      }
+    },
+    { rootMargin: '400px 0px' },
+  )
+
+  pageObserver.observe(sentinelRef.value)
+}
 
 const filteredPosts = computed(() => {
   const query = searchQuery.value.toLowerCase()
@@ -68,12 +120,19 @@ const filteredPosts = computed(() => {
 })
 
 onMounted(async () => {
-  await Promise.all([
-    blogStore.fetchPosts(),
+  const [blogPagination] = await Promise.all([
+    blogStore.fetchPosts({ page: 1, limit: pageSize }),
     homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
     aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
     projectsStore.projects.length ? Promise.resolve() : projectsStore.fetchProjects(),
   ])
+
+  currentPage.value = 1
+  hasMorePosts.value = blogPagination?.hasMore ?? false
+  initialLoading.value = false
+
+  await nextTick()
+  setupObserver()
 
   applySeo({
     ...getBlogSeoMeta({
@@ -84,5 +143,9 @@ onMounted(async () => {
     }),
     url: '/blog',
   })
+})
+
+onBeforeUnmount(() => {
+  disconnectObserver()
 })
 </script>
