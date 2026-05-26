@@ -44,11 +44,7 @@
     @include truncate(3);
 
     &--expanded {
-      display: block;
-      overflow: visible;
-      text-overflow: unset;
-      -webkit-line-clamp: unset;
-      -webkit-box-orient: initial;
+      @include truncate(6);
     }
   }
 

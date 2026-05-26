@@ -43,7 +43,15 @@
         <span v-for="category in (post.categories || []).slice(0, 2)" :key="category" class="card__tag font-mono text-[10px] tracking-[0.2em] text-cyan-100 bg-white/2 border border-white/6 rounded px-2 py-1">{{ category }}</span>
       </div>
       <h3 class="card__title font-os tracking-[0.18em] uppercase text-cyan-100">{{ post.title }}</h3>
-      <p :class="['card__description font-mono text-sm text-gray-300 scanning-text leading-relaxed', { 'card__description--expanded': descriptionExpanded }]">{{ post.excerpt }}</p>
+      <p :class="['card__description font-mono text-sm text-gray-300 scanning-text leading-relaxed', { 'card__description--expanded': descriptionOpen }]">{{ post.excerpt }}</p>
+      <button
+        v-if="showToggleVisible"
+        @click="descriptionOpen = !descriptionOpen"
+        class="card__toggle font-mono text-xs text-cyan-200"
+        :aria-expanded="descriptionOpen"
+      >
+        {{ descriptionOpen ? 'Show less' : 'Show more' }}
+      </button>
       <div class="card__tags card__tags--after-description">
         <span v-for="tag in post.tags.slice(0, 3)" :key="tag" class="card__tag font-mono text-[10px] tracking-[0.2em] px-2 py-1 bg-white/2 border border-white/6 rounded">{{ tag }}</span>
       </div>
@@ -57,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import type { BlogPost } from '@/types'
 
 const props = withDefaults(
@@ -95,6 +103,8 @@ const galleryImages = computed(() => {
 
 const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.layout === 'tall' || props.layout === 'featured'))
 const descriptionExpanded = computed(() => (props.layout === 'tall' || props.layout === 'featured') && galleryImages.value.length < 2)
+const descriptionOpen = ref(false)
+const showToggleVisible = computed(() => descriptionExpanded.value || (props.post.excerpt && props.post.excerpt.length > 200))
 
 function pad(n: number): string {
   return n.toString().padStart(2, '0')
@@ -106,4 +116,3 @@ function formatTimestamp(date?: string): string {
   return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} | ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 </script>
-
