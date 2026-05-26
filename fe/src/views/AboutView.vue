@@ -72,27 +72,13 @@
 
           <div class="lg:col-span-8 glass-panel cut-corners p-6 md:p-7">
             <div class="flex items-center justify-between gap-3 mb-5">
-              <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Identity Data</h2>
+              <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Overview</h2>
               <span class="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">[PROFILE_MODULE]</span>
             </div>
             <p class="font-mono text-sm md:text-base text-gray-300 leading-relaxed">
               {{ about?.bio || 'A passionate developer who loves building great web experiences.' }}
             </p>
 
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6">
-              <div class="glass-panel cut-corners p-4">
-                <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-300 uppercase">Contact</div>
-                <div class="mt-2 font-os text-sm text-white uppercase">Channels</div>
-              </div>
-              <div class="glass-panel cut-corners p-4">
-                <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-300 uppercase">Focus</div>
-                <div class="mt-2 font-os text-sm text-white uppercase">UI / System</div>
-              </div>
-              <div class="glass-panel cut-corners p-4">
-                <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-300 uppercase">Mode</div>
-                <div class="mt-2 font-os text-sm text-white uppercase">Available</div>
-              </div>
-            </div>
           </div>
         </div>
 
@@ -128,11 +114,7 @@
           </div>
           <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
             <div v-for="skill in about.skills" :key="skill" class="p-4 bg-white/3 border border-white/6 rounded-md font-mono text-sm text-cyan-100">
-              <div class="flex items-center justify-between gap-2 text-xs uppercase tracking-[0.18em] text-gray-300">
-                <span>{{ skill }}</span>
-                <span class="text-cyan-300">ACTIVE</span>
-              </div>
-              <div class="loading-bar mt-3"><i></i></div>
+              <div class="text-xs uppercase tracking-[0.18em] text-gray-300">{{ skill }}</div>
             </div>
           </div>
         </div>
