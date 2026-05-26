@@ -156,15 +156,15 @@ body::before {
   inset: -30vmax;
   pointer-events: none;
   background:
-    radial-gradient(circle at 12% 16%, color-mix(in srgb, var(--theme-secondary) var(--theme-glow-strength), transparent), transparent 42%),
-    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--theme-primary) var(--theme-glow-strength), transparent), transparent 44%),
-    radial-gradient(circle at 50% 92%, color-mix(in srgb, var(--theme-accent) var(--theme-glow-strength), transparent), transparent 48%);
+    radial-gradient(circle at 12% 16%, color-mix(in srgb, var(--os-cyan) 18%, transparent), transparent 42%),
+    radial-gradient(circle at 88% 18%, color-mix(in srgb, var(--os-purple) 14%, transparent), transparent 44%),
+    radial-gradient(circle at 50% 92%, color-mix(in srgb, var(--os-cyan) 8%, transparent), transparent 48%);
   z-index: -1;
 }
 
 #app {
   min-height: 100vh;
-  color: var(--theme-text-primary);
+  color: var(--os-text);
 }
 
 // Typography
@@ -184,15 +184,15 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background: color-mix(in srgb, var(--theme-bg-from) 80%, black);
+  background: color-mix(in srgb, var(--os-bg) 80%, black);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--theme-primary) 45%, transparent);
+  background: color-mix(in srgb, var(--os-cyan) 45%, transparent);
   border-radius: $radius-full;
 
   &:hover {
-    background: var(--theme-primary);
+    background: var(--os-cyan);
   }
 }
 
@@ -209,7 +209,7 @@ a {
 .section-title {
   font-size: $font-3xl;
   font-weight: 800;
-  color: var(--theme-text-primary);
+  color: var(--os-text);
   margin-bottom: $spacing-md;
 
   @include respond-to('md') {
@@ -217,7 +217,7 @@ a {
   }
 
   .highlight {
-    background: linear-gradient(135deg, var(--theme-heading-from), var(--theme-heading-to));
+    background: linear-gradient(135deg, var(--os-cyan), color-mix(in srgb, var(--os-purple) 80%, white));
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -226,9 +226,18 @@ a {
 
 .section-subtitle {
   font-size: $font-lg;
-  color: var(--theme-text-muted);
+  color: var(--os-text-muted);
   max-width: 600px;
   line-height: 1.8;
+}
+
+.glow-hover {
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 25px rgba(0, 242, 255, 0.18), 0 0 0 1px rgba(0, 242, 255, 0.18) inset;
+  border-color: rgba(0, 242, 255, 0.35);
 }
 
 // Skill badge

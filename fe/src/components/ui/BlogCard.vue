@@ -1,6 +1,10 @@
 ﻿<template>
-  <RouterLink :to="`/blog/${post._id}`" class="card block no-underline glass-panel cut-corners glitch-hover">
-    <div class="relative overflow-hidden">
+  <RouterLink
+    :to="`/blog/${post._id}`"
+    class="card block no-underline glass-panel cut-corners glow-hover h-full flex flex-col"
+    :class="[`blog-card--${layout}`]"
+  >
+    <div class="relative overflow-hidden" :class="mediaClass">
       <img
         v-if="post.coverImage"
         :src="post.coverImage"
@@ -18,40 +22,63 @@
       </div>
 
       <div class="scanline" aria-hidden="true"></div>
+      <span class="absolute top-4 left-4 z-20 text-[10px] font-mono tracking-[0.2em] px-2 py-1 border border-white/10 bg-black/40 text-cyan-200 rounded">
+        0x{{ postCode }}
+      </span>
+      <span class="absolute top-4 right-4 z-20 text-[10px] font-mono tracking-[0.2em] px-2 py-1 border border-cyan-300/20 bg-cyan-300/10 text-cyan-200 rounded uppercase">
+        TRANSMISSION
+      </span>
     </div>
 
-    <div class="card__body">
+    <div class="card__body flex-1 flex flex-col gap-4">
       <div class="card__tags mb-3">
-        <span v-for="category in (post.categories || []).slice(0, 2)" :key="category" class="card__tag font-mono text-xs text-cyan-100">{{ category }}</span>
+        <span v-for="category in (post.categories || []).slice(0, 2)" :key="category" class="card__tag font-mono text-[10px] tracking-[0.2em] text-cyan-100 bg-white/2 border border-white/6 rounded px-2 py-1">{{ category }}</span>
       </div>
-      <h3 class="card__title font-os tracking-wider text-cyan-200">{{ post.title }}</h3>
-      <p class="card__description font-mono text-sm text-gray-300 scanning-text">{{ post.excerpt }}</p>
+      <h3 class="card__title font-os tracking-[0.18em] uppercase text-cyan-100">{{ post.title }}</h3>
+      <p class="card__description font-mono text-sm text-gray-300 scanning-text leading-relaxed">{{ post.excerpt }}</p>
       <div class="card__tags card__tags--after-description">
-        <span v-for="tag in post.tags.slice(0, 3)" :key="tag" class="card__tag font-mono text-xs">{{ tag }}</span>
+        <span v-for="tag in post.tags.slice(0, 3)" :key="tag" class="card__tag font-mono text-[10px] tracking-[0.2em] px-2 py-1 bg-white/2 border border-white/6 rounded">{{ tag }}</span>
       </div>
     </div>
 
-    <div class="card__footer flex items-center justify-between">
-      <span class="text-xs text-gray-400 font-mono">{{ formatDate(post.createdAt) }}</span>
-      <span class="card__link font-mono text-cyan-200">Read more</span>
+    <div class="card__footer flex items-center justify-between gap-3 mt-auto">
+      <span class="text-[10px] text-gray-400 font-mono tracking-[0.2em] uppercase">{{ formatTimestamp(post.createdAt) }}</span>
+      <span class="card__link font-mono text-cyan-200 text-[10px] tracking-[0.2em] uppercase">Read more</span>
     </div>
   </RouterLink>
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { BlogPost } from '@/types'
 
-defineProps<{
-  post: BlogPost
-}>()
+const props = withDefaults(
+  defineProps<{
+    post: BlogPost
+    layout?: 'featured' | 'tall' | 'wide' | 'standard'
+  }>(),
+  {
+    layout: 'standard',
+  },
+)
 
-function formatDate(date?: string): string {
+const postCode = computed(() => (props.post._id ? props.post._id.slice(-4).toUpperCase() : '0000'))
+
+const mediaClass = computed(() => {
+  if (props.layout === 'featured') return 'h-64 md:h-96'
+  if (props.layout === 'tall') return 'h-56 md:h-80'
+  if (props.layout === 'wide') return 'h-52 md:h-64'
+  return 'h-48 md:h-56'
+})
+
+function pad(n: number): string {
+  return n.toString().padStart(2, '0')
+}
+
+function formatTimestamp(date?: string): string {
   if (!date) return ''
-  return new Date(date).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
+  const d = new Date(date)
+  return `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} | ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 </script>
 
