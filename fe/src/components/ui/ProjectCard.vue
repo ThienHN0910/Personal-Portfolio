@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <article
     class="card project-card glass-panel encrypted-file cut-corners glow-hover h-full flex flex-col"
     :class="[
@@ -12,21 +12,29 @@
     @keydown.space.prevent="openDetail"
   >
     <div class="project-card__media overflow-hidden relative" :class="mediaClass">
-      <img
-        v-if="project.imageUrl"
-        :src="project.imageUrl"
-        :alt="project.title"
-        class="card__image"
-      />
-      <div
-        v-else
-        class="card__image flex items-center justify-center"
-        style="background: linear-gradient(135deg, rgba(0,242,255,0.03), rgba(112,0,255,0.03));"
-      >
-        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-cyan-300 opacity-40">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-        </svg>
-      </div>
+      <template v-if="showTwoImages">
+        <div class="flex flex-col w-full h-full">
+          <img :src="galleryImages[0]" :alt="project.title" class="w-full object-cover h-1/2" />
+          <img :src="galleryImages[1]" :alt="project.title" class="w-full object-cover h-1/2" />
+        </div>
+      </template>
+      <template v-else>
+        <img
+          v-if="galleryImages.length"
+          :src="galleryImages[0]"
+          :alt="project.title"
+          class="card__image w-full h-full object-cover"
+        />
+        <div
+          v-else
+          class="card__image flex items-center justify-center"
+          style="background: linear-gradient(135deg, rgba(0,242,255,0.03), rgba(112,0,255,0.03));"
+        >
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-cyan-300 opacity-40">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
+          </svg>
+        </div>
+      </template>
 
       <div class="scanline" aria-hidden="true"></div>
       <span class="absolute top-4 left-4 z-20 text-[10px] font-mono tracking-[0.2em] px-2 py-1 border border-white/10 bg-black/40 text-cyan-200 rounded">
@@ -53,7 +61,7 @@
 
       <div class="space-y-3 flex-1">
         <h3 class="card__title font-os tracking-[0.18em] uppercase text-cyan-100">{{ project.title }}</h3>
-        <p class="card__description font-mono text-sm text-gray-300 leading-relaxed">{{ project.description }}</p>
+        <p :class="['card__description font-mono text-sm text-gray-300 leading-relaxed', { 'card__description--expanded': descriptionExpanded }]">{{ project.description }}</p>
       </div>
 
       <div class="flex flex-wrap gap-2">
@@ -137,6 +145,23 @@ const mediaClass = computed(() => {
   if (props.layout === 'wide') return 'h-52 md:h-64'
   return 'h-48 md:h-56'
 })
+
+const rawProject = props.project as any
+const galleryImages = computed(() => {
+  const imgs: string[] = []
+  if (rawProject.imageUrl) imgs.push(rawProject.imageUrl)
+  if (Array.isArray(rawProject.images) && rawProject.images.length) {
+    for (const i of rawProject.images) {
+      if (imgs.length >= 2) break
+      if (typeof i === 'string') imgs.push(i)
+    }
+  }
+  if (rawProject.secondaryImage && imgs.length < 2) imgs.push(rawProject.secondaryImage)
+  return imgs
+})
+
+const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.layout === 'tall' || props.layout === 'featured'))
+const descriptionExpanded = computed(() => (props.layout === 'tall' || props.layout === 'featured') && galleryImages.value.length < 2)
 
 const actionItems = computed<CardAction[]>(() => {
   const actions: CardAction[] = []

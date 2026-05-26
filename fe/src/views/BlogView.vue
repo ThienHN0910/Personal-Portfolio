@@ -60,7 +60,7 @@
 
       <div
         v-else-if="blogStore.posts.length"
-        class="columns-1 sm:columns-2 lg:columns-3 2xl:columns-4 gap-6 [column-fill:_balance]"
+        class="columns-1 sm:columns-2 md:columns-3 gap-6 [column-fill:_balance]"
       >
         <div
           v-for="(post, index) in blogStore.posts"

@@ -5,21 +5,29 @@
     :class="[`blog-card--${layout}`]"
   >
     <div class="relative overflow-hidden" :class="mediaClass">
-      <img
-        v-if="post.coverImage"
-        :src="post.coverImage"
-        :alt="post.title"
-        class="card__image"
-      />
-      <div
-        v-else
-        class="card__image flex items-center justify-center"
-        style="background: linear-gradient(135deg, rgba(112,0,255,0.03), rgba(0,242,255,0.03));"
-      >
-        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-cyan-300 opacity-40">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
-        </svg>
-      </div>
+      <template v-if="showTwoImages">
+        <div class="flex flex-col w-full h-full">
+          <img :src="galleryImages[0]" :alt="post.title" class="w-full object-cover h-1/2" />
+          <img :src="galleryImages[1]" :alt="post.title" class="w-full object-cover h-1/2" />
+        </div>
+      </template>
+      <template v-else>
+        <img
+          v-if="galleryImages.length"
+          :src="galleryImages[0]"
+          :alt="post.title"
+          class="card__image w-full h-full object-cover"
+        />
+        <div
+          v-else
+          class="card__image flex items-center justify-center"
+          style="background: linear-gradient(135deg, rgba(112,0,255,0.03), rgba(0,242,255,0.03));"
+        >
+          <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-cyan-300 opacity-40">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+          </svg>
+        </div>
+      </template>
 
       <div class="scanline" aria-hidden="true"></div>
       <span class="absolute top-4 left-4 z-20 text-[10px] font-mono tracking-[0.2em] px-2 py-1 border border-white/10 bg-black/40 text-cyan-200 rounded">
@@ -35,7 +43,7 @@
         <span v-for="category in (post.categories || []).slice(0, 2)" :key="category" class="card__tag font-mono text-[10px] tracking-[0.2em] text-cyan-100 bg-white/2 border border-white/6 rounded px-2 py-1">{{ category }}</span>
       </div>
       <h3 class="card__title font-os tracking-[0.18em] uppercase text-cyan-100">{{ post.title }}</h3>
-      <p class="card__description font-mono text-sm text-gray-300 scanning-text leading-relaxed">{{ post.excerpt }}</p>
+      <p :class="['card__description font-mono text-sm text-gray-300 scanning-text leading-relaxed', { 'card__description--expanded': descriptionExpanded }]">{{ post.excerpt }}</p>
       <div class="card__tags card__tags--after-description">
         <span v-for="tag in post.tags.slice(0, 3)" :key="tag" class="card__tag font-mono text-[10px] tracking-[0.2em] px-2 py-1 bg-white/2 border border-white/6 rounded">{{ tag }}</span>
       </div>
@@ -70,6 +78,23 @@ const mediaClass = computed(() => {
   if (props.layout === 'wide') return 'h-52 md:h-64'
   return 'h-48 md:h-56'
 })
+
+const rawPost = props.post as any
+const galleryImages = computed(() => {
+  const imgs: string[] = []
+  if (rawPost.coverImage) imgs.push(rawPost.coverImage)
+  if (Array.isArray(rawPost.images) && rawPost.images.length) {
+    for (const i of rawPost.images) {
+      if (imgs.length >= 2) break
+      if (typeof i === 'string') imgs.push(i)
+    }
+  }
+  if (rawPost.secondaryImage && imgs.length < 2) imgs.push(rawPost.secondaryImage)
+  return imgs
+})
+
+const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.layout === 'tall' || props.layout === 'featured'))
+const descriptionExpanded = computed(() => (props.layout === 'tall' || props.layout === 'featured') && galleryImages.value.length < 2)
 
 function pad(n: number): string {
   return n.toString().padStart(2, '0')
