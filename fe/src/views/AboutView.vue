@@ -11,23 +11,25 @@
         <div class="max-w-4xl mx-auto">
           <!-- Header -->
           <div class="flex flex-col md:flex-row items-center gap-8 mb-12">
-            <img
-              v-if="about?.avatarUrl"
-              :src="about.avatarUrl"
-              :alt="about.name"
-              class="w-36 h-36 rounded-full object-cover border-4 border-blue-500/30 shadow-2xl"
-            />
-            <div
-              v-else
-              class="w-36 h-36 rounded-full bg-gradient-to-br from-blue-600/30 to-purple-600/30 flex items-center justify-center border-4 border-blue-500/30"
-            >
-              <svg width="60" height="60" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" class="text-blue-400 opacity-60">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-              </svg>
+            <div class="relative w-36 h-36 glass-panel cut-corners p-2">
+              <img
+                v-if="about?.avatarUrl"
+                :src="about.avatarUrl"
+                :alt="about.name"
+                class="w-full h-full rounded-md object-cover border border-white/10"
+              />
+              <div
+                v-else
+                class="w-full h-full bg-gradient-to-br from-cyan-600/20 to-purple-600/20 flex items-center justify-center border border-white/10 rounded-md"
+              >
+                <svg width="60" height="60" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" class="text-cyan-300 opacity-60">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+              </div>
             </div>
             <div class="flex-1">
-              <h1 class="section-title mb-2">{{ about?.name || 'About Me' }}</h1>
-              <p class="text-xl text-blue-400 font-medium mb-3">{{ about?.title || 'Full Stack Developer' }}</p>
+              <h1 class="section-title mb-2 font-os text-cyan-100">{{ about?.name || 'About Me' }}</h1>
+              <p class="text-xl text-cyan-300 font-medium mb-3 font-mono">{{ about?.title || 'Full Stack Developer' }}</p>
               <div v-if="publicSocialLinks.length" class="flex gap-4">
                 <a
                   v-for="link in publicSocialLinks"
@@ -35,7 +37,7 @@
                   :href="link.href"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-gray-400 hover:text-blue-400 transition-colors"
+                  class="text-gray-300 hover:text-cyan-300 transition-colors font-mono text-sm"
                 >
                   {{ link.label }}
                 </a>
@@ -53,23 +55,23 @@
 
           <!-- Contact Info -->
           <div v-if="about?.contactInfo && hasContactInfo" class="mb-12">
-            <h2 class="text-2xl font-bold text-white mb-4">Contact</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Contact Channels</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-              <div v-if="about.contactInfo.email" class="border border-white/10 rounded-xl px-4 py-3 bg-white/[0.02] text-sm">
-                <p class="text-gray-500 mb-1">Email</p>
-                <a :href="`mailto:${about.contactInfo.email}`" class="text-blue-300 hover:text-blue-200 transition-colors">{{ about.contactInfo.email }}</a>
+              <div v-if="about.contactInfo.email" class="glass-panel cut-corners px-4 py-3 text-sm">
+                <p class="text-gray-400 mb-1 font-mono text-xs">Email</p>
+                <a :href="`mailto:${about.contactInfo.email}`" class="text-cyan-300 hover:text-cyan-200 transition-colors font-mono">{{ about.contactInfo.email }}</a>
               </div>
-              <div v-if="about.contactInfo.phone" class="border border-white/10 rounded-xl px-4 py-3 bg-white/[0.02] text-sm">
-                <p class="text-gray-500 mb-1">Phone</p>
-                <a :href="`tel:${about.contactInfo.phone}`" class="text-blue-300 hover:text-blue-200 transition-colors">{{ about.contactInfo.phone }}</a>
+              <div v-if="about.contactInfo.phone" class="glass-panel cut-corners px-4 py-3 text-sm">
+                <p class="text-gray-400 mb-1 font-mono text-xs">Phone</p>
+                <a :href="`tel:${about.contactInfo.phone}`" class="text-cyan-300 hover:text-cyan-200 transition-colors font-mono">{{ about.contactInfo.phone }}</a>
               </div>
-              <div v-if="about.contactInfo.location" class="border border-white/10 rounded-xl px-4 py-3 bg-white/[0.02] text-sm">
-                <p class="text-gray-500 mb-1">Location</p>
-                <p class="text-gray-300">{{ about.contactInfo.location }}</p>
+              <div v-if="about.contactInfo.location" class="glass-panel cut-corners px-4 py-3 text-sm">
+                <p class="text-gray-400 mb-1 font-mono text-xs">Location</p>
+                <p class="text-gray-300 font-mono">{{ about.contactInfo.location }}</p>
               </div>
-              <div v-if="about.contactInfo.website" class="border border-white/10 rounded-xl px-4 py-3 bg-white/[0.02] text-sm">
-                <p class="text-gray-500 mb-1">Website</p>
-                <a :href="about.contactInfo.website" target="_blank" rel="noopener noreferrer" class="text-blue-300 hover:text-blue-200 transition-colors">{{ about.contactInfo.website }}</a>
+              <div v-if="about.contactInfo.website" class="glass-panel cut-corners px-4 py-3 text-sm">
+                <p class="text-gray-400 mb-1 font-mono text-xs">Website</p>
+                <a :href="about.contactInfo.website" target="_blank" rel="noopener noreferrer" class="text-cyan-300 hover:text-cyan-200 transition-colors font-mono">{{ about.contactInfo.website }}</a>
               </div>
             </div>
           </div>
@@ -115,49 +117,51 @@
 
           <!-- Education -->
           <div v-if="about?.education?.length" class="mb-12">
-            <h2 class="text-2xl font-bold text-white mb-6">Education</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Education Records</h2>
             <div class="space-y-6">
-              <div
-                v-for="(edu, i) in sortedEducation"
-                :key="i"
-                class="border border-white/10 rounded-xl p-6 bg-white/[0.02]"
-              >
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                  <h3 class="text-lg font-bold text-white">{{ edu.degree }} in {{ edu.field }}</h3>
-                  <span class="text-sm text-gray-500">{{ edu.startDate }} – {{ edu.endDate || 'Present' }}</span>
+              <div v-for="(edu, i) in sortedEducation" :key="i" class="glass-panel cut-corners p-4">
+                <div class="flex items-start gap-4">
+                  <div class="w-2 h-20 bg-gradient-to-b from-purple-400/60 to-transparent rounded-sm" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h3 class="font-os text-lg text-cyan-100">{{ edu.degree }} in {{ edu.field }}</h3>
+                      <span class="font-mono text-sm text-gray-400">{{ edu.startDate }} – {{ edu.endDate || 'Present' }}</span>
+                    </div>
+                    <p class="font-mono text-sm text-cyan-200 mb-1">{{ edu.institution }}</p>
+                    <p v-if="edu.gpa" class="font-mono text-sm text-gray-300">GPA: {{ edu.gpa }}</p>
+                  </div>
                 </div>
-                <p class="text-blue-400 font-medium">{{ edu.institution }}</p>
-                <p v-if="edu.gpa" class="text-sm text-gray-300 mt-1">GPA: {{ edu.gpa }}</p>
               </div>
             </div>
           </div>
 
           <!-- Licenses & Certifications -->
           <div v-if="licensesCertifications.length" class="mb-12">
-            <h2 class="text-2xl font-bold text-white mb-6">Licenses &amp; Certifications</h2>
-            <div class="space-y-6">
-              <div
-                v-for="(item, i) in licensesCertifications"
-                :key="`${item.name}-${item.issuer}-${i}`"
-                class="border border-white/10 rounded-xl p-6 bg-white/[0.02]"
-              >
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
-                  <h3 class="text-lg font-bold text-white">{{ item.name }}</h3>
-                  <span v-if="item.issueDate || item.expirationDate" class="text-sm text-gray-500">
-                    {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No expiration' }}
-                  </span>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Credentials &amp; Certifications</h2>
+            <div class="space-y-4">
+              <div v-for="(item, i) in licensesCertifications" :key="`${item.name}-${item.issuer}-${i}`" class="glass-panel cut-corners p-4">
+                <div class="flex items-start gap-4">
+                  <div class="text-cyan-400 text-lg">»</div>
+                  <div class="flex-1">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
+                      <h3 class="font-os text-lg text-cyan-100">{{ item.name }}</h3>
+                      <span v-if="item.issueDate || item.expirationDate" class="font-mono text-sm text-gray-400">
+                        {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No expiration' }}
+                      </span>
+                    </div>
+                    <p v-if="item.issuer" class="font-mono text-sm text-cyan-200 mb-1">{{ item.issuer }}</p>
+                    <p v-if="item.credentialId" class="font-mono text-xs text-gray-400 mb-2">ID: {{ item.credentialId }}</p>
+                    <a
+                      v-if="item.credentialUrl"
+                      :href="item.credentialUrl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="text-xs text-cyan-300 hover:text-cyan-200 transition-colors font-mono"
+                    >
+                      [VERIFY]
+                    </a>
+                  </div>
                 </div>
-                <p v-if="item.issuer" class="text-blue-400 font-medium mb-2">{{ item.issuer }}</p>
-                <p v-if="item.credentialId" class="text-sm text-gray-400 mb-2">Credential ID: {{ item.credentialId }}</p>
-                <a
-                  v-if="item.credentialUrl"
-                  :href="item.credentialUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-sm text-blue-300 hover:text-blue-200 transition-colors"
-                >
-                  Verify Credential
-                </a>
               </div>
             </div>
           </div>
