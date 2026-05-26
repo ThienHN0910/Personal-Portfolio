@@ -60,17 +60,9 @@
       </div>
 
       <div class="space-y-3 flex-1">
-        <h3 class="card__title font-os tracking-[0.18em] uppercase text-cyan-100">{{ project.title }}</h3>
-        <p :class="['card__description font-mono text-sm text-gray-300 leading-relaxed', { 'card__description--expanded': descriptionOpen }]">{{ project.description }}</p>
-        <button
-          v-if="showToggleVisible"
-          @click="descriptionOpen = !descriptionOpen"
-          class="card__toggle font-mono text-xs text-cyan-200"
-          :aria-expanded="descriptionOpen"
-        >
-          {{ descriptionOpen ? 'Show less' : 'Show more' }}
-        </button>
-      </div>
+            <h3 class="card__title font-os tracking-[0.18em] uppercase text-cyan-100">{{ project.title }}</h3>
+            <p :class="['card__description font-mono text-sm text-gray-300 leading-relaxed', { 'card__description--expanded': descriptionExpanded }]">{{ project.description }}</p>
+          </div>
 
       <div class="flex flex-wrap gap-2">
         <span
@@ -114,7 +106,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 
 import IconGlyph from '@/components/ui/IconGlyph.vue'
@@ -170,8 +162,6 @@ const galleryImages = computed(() => {
 
 const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.layout === 'tall' || props.layout === 'featured'))
 const descriptionExpanded = computed(() => (props.layout === 'tall' || props.layout === 'featured') && galleryImages.value.length < 2)
-const descriptionOpen = ref(false)
-const showToggleVisible = computed(() => descriptionExpanded.value || (props.project.description && props.project.description.length > 200))
 
 const actionItems = computed<CardAction[]>(() => {
   const actions: CardAction[] = []
