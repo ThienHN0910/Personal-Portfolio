@@ -5,7 +5,7 @@
     <div class="hero__container glass-panel cut-corners p-6">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
         <div class="md:col-span-2">
-          <div class="hero__badge font-mono text-sm text-cyan-300">• SYSTEM: READY</div>
+          <div class="hero__badge font-mono text-sm text-cyan-300">Ã¢â‚¬Â¢ SYSTEM: READY</div>
 
           <h1 class="hero__title font-os text-4xl mt-3 text-cyan-100">
             {{ data.heroTitle || 'Hi, I\'m' }}
@@ -21,7 +21,7 @@
             <RouterLink :to="data.ctaLink || '/projects'" class="btn btn--primary btn--lg font-os">
               {{ data.ctaText || 'View My Work' }}
             </RouterLink>
-            <RouterLink to="/contact" class="btn btn--secondary btn--lg font-mono">ESTABLISH CONNECTION</RouterLink>
+            <RouterLink to="/contact" class="btn btn--secondary btn--lg font-mono">Get In Touch</RouterLink>
           </div>
         </div>
 

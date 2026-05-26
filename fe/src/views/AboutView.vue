@@ -1,10 +1,6 @@
-<template>
+﻿<template>
   <div class="section min-h-screen pt-24">
     <div class="container">
-      <div class="glass-panel cut-corners p-6 mb-8">
-        <h2 class="section-title mb-2">IDENTITY DATA</h2>
-        <p class="text-sm text-gray-300">Biography and identity records.</p>
-      </div>
       <LoadingSpinner v-if="loading" />
 
       <template v-else>
@@ -55,7 +51,7 @@
 
           <!-- Contact Info -->
           <div v-if="about?.contactInfo && hasContactInfo" class="mb-12">
-            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Contact Channels</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Contact</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div v-if="about.contactInfo.email" class="glass-panel cut-corners px-4 py-3 text-sm">
                 <p class="text-gray-400 mb-1 font-mono text-xs">Email</p>
@@ -78,7 +74,7 @@
 
           <!-- Bio -->
           <div class="mb-12 glass-panel cut-corners p-6">
-            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Identity Data</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">About Me</h2>
             <p class="font-mono text-sm text-gray-300 leading-relaxed">
               {{ about?.bio || 'A passionate developer who loves building great web experiences.' }}
             </p>
@@ -86,7 +82,7 @@
 
           <!-- Skills -->
           <div v-if="about?.skills?.length" class="mb-12 glass-panel cut-corners p-6">
-            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Core Technologies</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Skills</h2>
             <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
               <div v-for="skill in about.skills" :key="skill" class="p-3 bg-white/3 border border-white/6 rounded-md font-mono text-sm text-cyan-100">
                 <div class="text-sm">{{ skill }}</div>
@@ -97,7 +93,7 @@
 
           <!-- Experience -->
           <div v-if="about?.experience?.length" class="mb-12">
-            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Experience (Data Stream)</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Experience</h2>
             <div class="space-y-6">
               <div v-for="(exp, i) in sortedExperiences" :key="i" class="glass-panel cut-corners p-4">
                 <div class="flex items-start gap-4">
@@ -105,7 +101,7 @@
                   <div class="flex-1">
                     <div class="flex items-center justify-between">
                       <h3 class="font-os text-lg text-cyan-100">{{ exp.position }}</h3>
-                      <span class="font-mono text-sm text-gray-400">{{ exp.startDate }} – {{ exp.endDate || 'Present' }}</span>
+                      <span class="font-mono text-sm text-gray-400">{{ exp.startDate }} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ {{ exp.endDate || 'Present' }}</span>
                     </div>
                     <p class="font-mono text-sm text-cyan-200 mb-1">{{ exp.company }}</p>
                     <div class="experience-content text-gray-300 text-sm leading-relaxed" v-html="sanitizeHtml(exp.description)" />
@@ -117,7 +113,7 @@
 
           <!-- Education -->
           <div v-if="about?.education?.length" class="mb-12">
-            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Education Records</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Education</h2>
             <div class="space-y-6">
               <div v-for="(edu, i) in sortedEducation" :key="i" class="glass-panel cut-corners p-4">
                 <div class="flex items-start gap-4">
@@ -125,7 +121,7 @@
                   <div class="flex-1">
                     <div class="flex items-center justify-between">
                       <h3 class="font-os text-lg text-cyan-100">{{ edu.degree }} in {{ edu.field }}</h3>
-                      <span class="font-mono text-sm text-gray-400">{{ edu.startDate }} – {{ edu.endDate || 'Present' }}</span>
+                      <span class="font-mono text-sm text-gray-400">{{ edu.startDate }} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ {{ edu.endDate || 'Present' }}</span>
                     </div>
                     <p class="font-mono text-sm text-cyan-200 mb-1">{{ edu.institution }}</p>
                     <p v-if="edu.gpa" class="font-mono text-sm text-gray-300">GPA: {{ edu.gpa }}</p>
@@ -137,16 +133,16 @@
 
           <!-- Licenses & Certifications -->
           <div v-if="licensesCertifications.length" class="mb-12">
-            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Credentials &amp; Certifications</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Licenses &amp; Certifications</h2>
             <div class="space-y-4">
               <div v-for="(item, i) in licensesCertifications" :key="`${item.name}-${item.issuer}-${i}`" class="glass-panel cut-corners p-4">
                 <div class="flex items-start gap-4">
-                  <div class="text-cyan-400 text-lg">»</div>
+                  <div class="text-cyan-400 text-lg">Ãƒâ€š></div>
                   <div class="flex-1">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2 gap-2">
                       <h3 class="font-os text-lg text-cyan-100">{{ item.name }}</h3>
                       <span v-if="item.issueDate || item.expirationDate" class="font-mono text-sm text-gray-400">
-                        {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No expiration' }}
+                        {{ item.issueDate || 'N/A' }} ÃƒÂ¢Ã¢â€šÂ¬Ã¢â‚¬Å“ {{ item.expirationDate || 'No expiration' }}
                       </span>
                     </div>
                     <p v-if="item.issuer" class="font-mono text-sm text-cyan-200 mb-1">{{ item.issuer }}</p>
@@ -219,3 +215,4 @@ onMounted(async () => {
   })
 })
 </script>
+

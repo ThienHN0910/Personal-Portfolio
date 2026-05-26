@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <div
       class="card project-card glass-panel encrypted-file cut-corners glitch-hover"
       :class="{ 'card--featured': project.featured, 'project-card--clickable': Boolean(project._id) }"
@@ -47,8 +47,6 @@
       </div>
 
       <div class="card__footer project-card__footer flex items-center gap-3">
-        <div class="flex-1 text-xs text-gray-400 font-mono">TECH: {{ project.technologies?.length || 0 }} • CATEGORIES: {{ (project.categories || []).length }} • STATUS: <span class="text-cyan-300">{{ project.liveUrl ? 'DEPLOYED' : 'LOCAL' }}</span></div>
-
         <div class="flex items-center gap-2">
           <component
             v-for="action in actionItems"
@@ -153,3 +151,4 @@ function handleCardClick(event: MouseEvent): void {
   openDetail()
 }
 </script>
+

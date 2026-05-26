@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <RouterLink :to="`/blog/${post._id}`" class="card block no-underline glass-panel cut-corners glitch-hover">
     <div class="relative overflow-hidden">
       <img
@@ -32,7 +32,7 @@
     </div>
 
     <div class="card__footer flex items-center justify-between">
-      <span class="text-xs text-gray-400 font-mono">[{{ formatTimestamp(post.createdAt) }}]</span>
+      <span class="text-xs text-gray-400 font-mono">{{ formatDate(post.createdAt) }}</span>
       <span class="card__link font-mono text-cyan-200">Read more</span>
     </div>
   </RouterLink>
@@ -45,17 +45,13 @@ defineProps<{
   post: BlogPost
 }>()
 
-function pad(n: number) { return n.toString().padStart(2, '0') }
-
-function formatTimestamp(date?: string): string {
+function formatDate(date?: string): string {
   if (!date) return ''
-  const d = new Date(date)
-  const y = d.getFullYear()
-  const m = pad(d.getMonth() + 1)
-  const day = pad(d.getDate())
-  const hh = pad(d.getHours())
-  const mm = pad(d.getMinutes())
-  const ss = pad(d.getSeconds())
-  return `${y}.${m}.${day} | ${hh}:${mm}:${ss}`
+  return new Date(date).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
 }
 </script>
+
