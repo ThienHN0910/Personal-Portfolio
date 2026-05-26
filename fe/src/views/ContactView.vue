@@ -7,26 +7,26 @@
           <p class="section-subtitle mx-auto">Have a project in mind or want to collaborate? Send me a message.</p>
         </div>
 
-        <div class="card p-8">
-          <form @submit.prevent="handleSubmit">
+        <div class="glass-panel cut-corners p-6">
+          <form @submit.prevent="handleSubmit" class="font-mono">
             <div class="form-group">
-              <label for="name">Name</label>
-              <input id="name" v-model="form.name" type="text" placeholder="Your name" required />
+              <label for="name">&gt; Name</label>
+              <input id="name" v-model="form.name" type="text" placeholder="Your name" required class="bg-transparent border border-white/8 py-2 px-3" />
             </div>
 
             <div class="form-group">
-              <label for="email">Email</label>
-              <input id="email" v-model="form.email" type="email" placeholder="your@email.com" required />
+              <label for="email">&gt; Email</label>
+              <input id="email" v-model="form.email" type="email" placeholder="your@email.com" required class="bg-transparent border border-white/8 py-2 px-3" />
             </div>
 
             <div class="form-group">
-              <label for="subject">Subject</label>
-              <input id="subject" v-model="form.subject" type="text" placeholder="What's this about?" required />
+              <label for="subject">&gt; Subject</label>
+              <input id="subject" v-model="form.subject" type="text" placeholder="What's this about?" required class="bg-transparent border border-white/8 py-2 px-3" />
             </div>
 
             <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" v-model="form.message" rows="6" placeholder="Tell me about your project..." required />
+              <label for="message">&gt; Message</label>
+              <textarea id="message" v-model="form.message" rows="6" placeholder="Tell me about your project..." required class="bg-transparent border border-white/8 py-2 px-3 font-mono" />
             </div>
 
             <div v-if="contactStore.error" class="text-red-400 text-sm mb-4">
@@ -37,11 +37,16 @@
               ✓ Message sent! I'll get back to you soon.
             </div>
 
-            <button type="submit" class="btn btn--primary w-full" :disabled="contactStore.loading">
-              <span v-if="contactStore.loading">Sending...</span>
-              <span v-else>Send Message</span>
+            <button type="submit" class="btn btn--primary w-full font-os" :disabled="contactStore.loading">
+              <span v-if="contactStore.loading">ESTABLISHING...</span>
+              <span v-else>ESTABLISH CONNECTION</span>
             </button>
           </form>
+
+          <div class="mt-6">
+            <h3 class="text-sm text-gray-400 font-mono mb-2">RADAR</h3>
+            <div class="w-full h-40 bg-white/3 border border-white/6 rounded flex items-center justify-center text-gray-400">[Radar map placeholder]</div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,10 @@
 <template>
   <div class="section min-h-screen pt-24">
     <div class="container">
+      <div class="glass-panel cut-corners p-6 mb-8">
+        <h2 class="section-title mb-2">IDENTITY DATA</h2>
+        <p class="text-sm text-gray-300">Biography and identity records.</p>
+      </div>
       <LoadingSpinner v-if="loading" />
 
       <template v-else>
@@ -71,37 +75,40 @@
           </div>
 
           <!-- Bio -->
-          <div class="mb-12">
-            <h2 class="text-2xl font-bold text-white mb-4">About Me</h2>
-            <p class="text-gray-400 leading-relaxed text-lg">
+          <div class="mb-12 glass-panel cut-corners p-6">
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Identity Data</h2>
+            <p class="font-mono text-sm text-gray-300 leading-relaxed">
               {{ about?.bio || 'A passionate developer who loves building great web experiences.' }}
             </p>
           </div>
 
           <!-- Skills -->
-          <div v-if="about?.skills?.length" class="mb-12">
-            <h2 class="text-2xl font-bold text-white mb-4">Skills</h2>
-            <div class="flex flex-wrap gap-3">
-              <SkillBadge v-for="skill in about.skills" :key="skill" :skill="skill" />
+          <div v-if="about?.skills?.length" class="mb-12 glass-panel cut-corners p-6">
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-4">Core Technologies</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+              <div v-for="skill in about.skills" :key="skill" class="p-3 bg-white/3 border border-white/6 rounded-md font-mono text-sm text-cyan-100">
+                <div class="text-sm">{{ skill }}</div>
+                <div class="h-2 bg-white/6 mt-2 rounded overflow-hidden"><div class="h-2 bg-cyan-400/60" style="width:60%"></div></div>
+              </div>
             </div>
           </div>
 
           <!-- Experience -->
           <div v-if="about?.experience?.length" class="mb-12">
-            <h2 class="text-2xl font-bold text-white mb-6">Experience</h2>
+            <h2 class="text-2xl font-os tracking-wider text-cyan-200 mb-6">Experience (Data Stream)</h2>
             <div class="space-y-6">
-              <div
-                v-for="(exp, i) in sortedExperiences"
-                :key="i"
-                class="border border-white/10 rounded-xl p-6 bg-white/[0.02]"
-              >
-                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-2">
-                  <h3 class="text-lg font-bold text-white">{{ exp.position }}</h3>
-                  <span class="text-sm text-gray-500">{{ exp.startDate }} – {{ exp.endDate || 'Present' }}</span>
+              <div v-for="(exp, i) in sortedExperiences" :key="i" class="glass-panel cut-corners p-4">
+                <div class="flex items-start gap-4">
+                  <div class="w-2 h-20 bg-gradient-to-b from-cyan-400/60 to-transparent rounded-sm" />
+                  <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                      <h3 class="font-os text-lg text-cyan-100">{{ exp.position }}</h3>
+                      <span class="font-mono text-sm text-gray-400">{{ exp.startDate }} – {{ exp.endDate || 'Present' }}</span>
+                    </div>
+                    <p class="font-mono text-sm text-cyan-200 mb-1">{{ exp.company }}</p>
+                    <div class="experience-content text-gray-300 text-sm leading-relaxed" v-html="sanitizeHtml(exp.description)" />
+                  </div>
                 </div>
-                <p class="text-blue-400 font-medium mb-2">{{ exp.company }}</p>
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <div class="experience-content text-gray-400 text-sm leading-relaxed" v-html="sanitizeHtml(exp.description)" />
               </div>
             </div>
           </div>
@@ -167,7 +174,6 @@ import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
-import SkillBadge from '@/components/ui/SkillBadge.vue'
 import { hasAnyContactInfo, getPublicSocialLinks } from '@/utils/aboutPresentation'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
 import { sanitizeRichContent } from '@/utils/richContent'

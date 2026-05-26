@@ -24,30 +24,131 @@ html {
 }
 
 :root {
-  --theme-primary: #3b82f6;
-  --theme-secondary: #06b6d4;
-  --theme-accent: #f59e0b;
-  --theme-bg-from: #0f172a;
-  --theme-bg-to: #1e293b;
-  --theme-surface-from: #111827;
-  --theme-surface-to: #0b1220;
-  --theme-heading-from: #38bdf8;
-  --theme-heading-to: #f97316;
-  --theme-text-primary: #e2e8f0;
-  --theme-text-muted: #94a3b8;
-  --theme-glow-strength: 22%;
+  /* Futuristic OS theme tokens */
+  --os-bg: #020617; /* Deep Midnight Navy */
+  --os-cyan: #00F2FF; /* Primary glow */
+  --os-purple: #7000FF; /* Accent */
+  --os-glass: rgba(15, 23, 42, 0.65);
+  --os-border: rgba(0, 242, 255, 0.2);
+  --os-text: #dbeafe;
+  --os-text-muted: #94a3b8;
+  --os-backdrop-blur: 16px;
+  --os-tracking-wide: 0.18em;
 }
 
 body {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(160deg, var(--theme-bg-from), var(--theme-bg-to));
-  color: var(--theme-text-primary);
+  font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
+  background: var(--os-bg);
+  color: var(--os-text);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
   min-height: 100vh;
 }
+
+/* Glass panel base */
+.glass-panel {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--os-glass) 92%, transparent), color-mix(in srgb, var(--os-glass) 76%, transparent));
+  border: 1px solid var(--os-border);
+  border-radius: 12px;
+  backdrop-filter: blur(var(--os-backdrop-blur));
+  box-shadow: 0 6px 30px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Cut-corner (diagonal chamfer) */
+.cut-corners {
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+
+/* Subtle inner cyan glow */
+.cyan-glow {
+  box-shadow: inset 0 0 30px rgba(0,242,255,0.06), 0 8px 24px rgba(0,242,255,0.04);
+}
+
+/* System status bar */
+.system-status-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: var(--os-tracking-wide);
+  color: var(--os-text-muted);
+  background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(255,255,255,0.02));
+  border-bottom: 1px solid rgba(255,255,255,0.02);
+}
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 30% 30%, #b9fff8, var(--os-cyan));
+  box-shadow: 0 0 12px rgba(0,242,255,0.9);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0% { transform: scale(0.9); opacity: 0.9; } 50% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.9; } }
+
+/* Scanline overlay for cards */
+.scanline {
+  position: absolute;
+  top: -40%;
+  left: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,242,255,0.04), rgba(255,255,255,0.02));
+  transform: skewY(-12deg);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(.2,.9,.2,1), opacity 0.5s;
+}
+.encrypted-file:hover .scanline {
+  transform: translateY(180%) skewY(-12deg);
+  opacity: 0.9;
+}
+
+/* Small glitch on hover */
+.glitch-hover:hover {
+  transform: translateX(0.5px) rotate(0.01deg);
+}
+
+/* Scanning text reveal */
+.scanning-text {
+  position: relative;
+  overflow: hidden;
+}
+.scanning-text::after {
+  content: '';
+  position: absolute;
+  left: -100%;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,242,255,0.06) 50%, transparent 100%);
+  transform: skewX(-12deg);
+  transition: left 0.9s ease;
+}
+.glitch-hover:hover .scanning-text::after {
+  left: 100%;
+}
+
+/* Small loading sequence bars used in About skills */
+.loading-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.loading-bar > i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, rgba(0,242,255,0.18), rgba(112,0,255,0.18));
+  width: 50%;
+}
+
 
 body::before {
   content: '';

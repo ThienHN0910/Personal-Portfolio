@@ -1,58 +1,38 @@
 <template>
-  <footer class="footer">
-    <div class="footer__container">
-      <div class="footer__top">
-        <div class="footer__brand">
-          <span class="footer__logo">{{ brandName }}</span>
-          <p>{{ brandDescription }}</p>
-        </div>
+  <footer class="glass-panel cut-corners cyan-glow p-6 mt-12">
+    <div class="flex flex-col md:flex-row md:justify-between gap-6">
+      <div>
+        <div class="font-os text-lg font-bold">{{ brandName }}</div>
+        <div class="text-sm text-gray-400 mt-2">{{ brandDescription }}</div>
+      </div>
 
+      <div class="flex gap-10">
         <div>
-          <h3 class="footer__nav-title">Navigation</h3>
-          <ul class="footer__nav-links">
-            <li v-for="link in navLinks" :key="link.to">
-              <RouterLink :to="link.to" class="footer__nav-link">{{ link.label }}</RouterLink>
-            </li>
+          <h4 class="text-xs text-gray-400 uppercase tracking-widest">Navigation</h4>
+          <ul class="mt-2 space-y-2">
+            <li v-for="link in navLinks" :key="link.to"><RouterLink :to="link.to" class="text-sm text-gray-300">{{ link.label }}</RouterLink></li>
           </ul>
         </div>
 
         <div>
-          <h3 class="footer__nav-title">Connect</h3>
-          <ul class="footer__nav-links">
-            <li v-for="link in connectLinks" :key="link.label">
-              <a :href="link.href" target="_blank" rel="noopener noreferrer" class="footer__nav-link">{{ link.label }}</a>
+          <h4 class="text-xs text-gray-400 uppercase tracking-widest">Connect</h4>
+          <ul class="mt-2 space-y-2">
+            <li v-for="link in connectLinks" :key="link.label"><a :href="link.href" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-300">{{ link.label }}</a></li>
+            <li v-if="contactItems && contactItems.length" class="pt-2 text-sm text-gray-300">
+              <div v-for="item in contactItems" :key="item.label">
+                <a v-if="item.href" :href="item.href" target="_blank" rel="noopener noreferrer" class="text-sm text-gray-300">{{ item.value }}</a>
+                <span v-else class="text-sm text-gray-300">{{ item.value }}</span>
+              </div>
             </li>
-            <li v-if="!connectLinks.length" class="footer__nav-link">No social links yet</li>
-          </ul>
-
-          <h3 class="footer__nav-title mt-6">Contact</h3>
-          <ul class="footer__nav-links">
-            <li v-for="item in contactItems" :key="item.label">
-              <a v-if="item.href" :href="item.href" class="footer__nav-link">{{ item.value }}</a>
-              <span v-else class="footer__nav-link">{{ item.value }}</span>
-            </li>
-            <li v-if="!contactItems.length" class="footer__nav-link">No contact info yet</li>
           </ul>
         </div>
       </div>
+    </div>
 
-      <div class="footer__bottom">
-        <p class="footer__copyright">
-          &copy; {{ currentYear }} {{ brandName }}. All rights reserved.
-        </p>
-        <div class="footer__social">
-          <a
-            v-for="link in socialIconLinks"
-            :key="link.label"
-            :href="link.href"
-            target="_blank"
-            rel="noopener noreferrer"
-            :aria-label="link.label"
-            :title="link.label"
-          >
-            <IconGlyph :name="link.icon" :size="16" />
-          </a>
-        </div>
+    <div class="mt-6 border-t border-white/6 pt-4 flex items-center justify-between">
+      <div class="text-xs text-gray-500">© {{ currentYear }} {{ brandName }}</div>
+      <div class="flex items-center gap-3">
+        <a v-for="link in socialIconLinks" :key="link.label" :href="link.href" target="_blank" rel="noopener noreferrer" class="text-gray-300"> <IconGlyph :name="link.icon" :size="16" /> </a>
       </div>
     </div>
   </footer>

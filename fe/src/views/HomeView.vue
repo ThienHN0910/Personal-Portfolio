@@ -1,8 +1,10 @@
 <template>
-  <div>
-    <HeroSection :data="homeStore.homeData || {}" />
-    <FeaturedProjects />
-  </div>
+    <div class="container">
+      <HeroSection :data="homeStore.homeData || {}" />
+      <div class="mt-8">
+        <FeaturedProjects />
+      </div>
+    </div>
 </template>
 
 <script setup lang="ts">

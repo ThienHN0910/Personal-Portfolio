@@ -7,16 +7,20 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: '#3B82F6',
-        secondary: '#8B5CF6',
-        accent: '#F59E0B',
-        dark: '#0F172A',
-        light: '#F8FAFC',
-        'text-primary': '#1E293B',
-        'text-secondary': '#64748B',
+        cyber: {
+          bg: '#020617',
+          cyan: '#00F2FF',
+          purple: '#7000FF',
+          glass: 'rgba(15, 23, 42, 0.65)',
+          border: 'rgba(0, 242, 255, 0.2)'
+        },
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        os: ['Orbitron', 'Rajdhani', 'sans-serif'],
+        mono: ['JetBrains Mono', 'Fira Code', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+      boxShadow: {
+        'cyan-glow': '0 8px 32px rgba(0,242,255,0.08), inset 0 1px 0 rgba(255,255,255,0.03)',
       },
     },
   },
