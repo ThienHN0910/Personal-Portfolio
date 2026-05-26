@@ -60,14 +60,14 @@
 
       <div
         v-else-if="projectsStore.projects.length"
-        class="grid grid-cols-1 md:grid-cols-12 gap-6 md:auto-rows-[minmax(220px,auto)] grid-flow-dense"
+        class="columns-1 sm:columns-2 lg:columns-3 2xl:columns-4 gap-6 [column-fill:_balance]"
       >
         <div
           v-for="(project, index) in projectsStore.projects"
           :key="project._id"
-          :class="getTileClass(index)"
+          class="mb-6 break-inside-avoid"
         >
-          <ProjectCard :project="project" :layout="getProjectLayout(index)" />
+          <ProjectCard :project="project" :layout="getMasonryLayout(index)" />
         </div>
       </div>
 
@@ -184,21 +184,11 @@ function setupObserver(): void {
   pageObserver.observe(sentinelRef.value)
 }
 
-function getProjectLayout(index: number): 'featured' | 'tall' | 'wide' | 'standard' {
-  if (index === 0) return 'featured'
-  if (index === 1) return 'tall'
-  if (index === 2) return 'wide'
+function getMasonryLayout(index: number): 'featured' | 'tall' | 'wide' | 'standard' {
+  if (index % 11 === 0) return 'featured'
+  if (index % 5 === 0) return 'tall'
+  if (index % 3 === 0) return 'wide'
   return 'standard'
-}
-
-function getTileClass(index: number): string {
-  const base = 'group'
-
-  if (index === 0) return `${base} md:col-span-8 md:row-span-2`
-  if (index === 1) return `${base} md:col-span-4 md:row-span-1`
-  if (index === 2) return `${base} md:col-span-6 md:row-span-1`
-  if (index === 3) return `${base} md:col-span-6 md:row-span-1`
-  return `${base} md:col-span-4`
 }
 
 const projectCategoryOptions = computed(() => categoriesStore.categorySettings.projectCategories)
