@@ -1,20 +1,21 @@
 <template>
-  <section class="hero relative min-h-[70vh] flex items-center pt-24 pb-12 overflow-hidden">
+  <section class="hero relative flex items-center pt-12 pb-12 overflow-hidden w-full">
     <div class="hero__bg pointer-events-none absolute inset-0 z-0 opacity-20 bg-[radial-gradient(circle_at_20%_30%,rgba(0,242,255,0.15),transparent_50%)]" />
 
-    <div class="container relative z-10 mx-auto px-4 sm:px-6">
-      <div class="hero__container glass-panel cut-corners p-6 md:p-12 bg-surface-glass border border-border-cyan/30 backdrop-blur-xl relative overflow-hidden">
+    <div class="w-full relative z-10">
+      <div class="hero__container glass-panel cut-corners p-6 md:p-10 lg:p-12 bg-surface-glass border border-border-cyan/30 backdrop-blur-xl relative overflow-hidden">
         <div class="absolute inset-0 pointer-events-none bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%),linear-gradient(90deg,rgba(255,0,0,0.02),rgba(0,255,0,0.01),rgba(0,0,255,0.02))] bg-[size:100%_4px,3px_100%] z-0"></div>
         
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-10 xl:gap-16 items-center relative z-10">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-center relative z-10">
           
-          <div class="md:col-span-7 space-y-8 min-w-0">
+          <div class="md:col-span-7 space-y-6 lg:space-y-8 min-w-0">
             <div class="space-y-2">
               <div class="font-mono text-[10px] tracking-[0.3em] text-cyan-400 uppercase opacity-80 flex items-center gap-2">
                 <span class="w-2 h-2 bg-cyan-500 rounded-full animate-pulse shadow-[0_0_8px_#00f2ff]"></span>
                 System Identity // Initializing
               </div>
-              <h1 class="hero__title font-display-os text-4xl sm:text-5xl md:text-5xl lg:text-6xl xl:text-7xl text-white uppercase tracking-[0.1em] xl:tracking-[0.12em] leading-[1.1] break-words">
+              
+              <h1 class="hero__title font-display-os text-4xl md:text-4xl lg:text-6xl xl:text-7xl text-white uppercase tracking-[0.08em] lg:tracking-[0.12em] leading-[1.1] break-words">
                 {{ data.heroTitle || "HI, I'M" }}
                 <br />
                 <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 drop-shadow-[0_0_15px_rgba(0,242,255,0.5)]">
@@ -23,14 +24,14 @@
               </h1>
             </div>
 
-            <p class="hero__description font-mono text-gray-400 max-w-xl leading-relaxed text-base border-l-2 border-border-cyan/20 pl-6">
+            <p class="hero__description font-mono text-gray-400 max-w-xl leading-relaxed text-sm lg:text-base border-l-2 border-border-cyan/20 pl-6">
               {{ data.heroDescription || 'Architecting high-performance digital ecosystems with a focus on tactical UI/UX and scalable backend systems.' }}
             </p>
 
             <div class="hero__cta flex flex-wrap gap-4">
               <RouterLink 
                 :to="data.ctaLink || '/projects'" 
-                class="group relative px-8 py-4 bg-cyan-500 text-black font-display-os uppercase tracking-[0.2em] text-sm cut-corners-sm hover:bg-cyan-400 transition-all duration-300 shadow-[0_0_20px_rgba(0,242,255,0.4)] flex items-center gap-2"
+                class="group relative px-6 py-3 lg:px-8 lg:py-4 bg-cyan-500 text-black font-display-os uppercase tracking-[0.2em] text-xs lg:text-sm cut-corners-sm hover:bg-cyan-400 transition-all duration-300 shadow-[0_0_20px_rgba(0,242,255,0.4)] flex items-center gap-2"
               >
                 {{ data.ctaText || 'Execute_Projects' }}
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform">
@@ -39,7 +40,7 @@
               </RouterLink>
               <RouterLink 
                 to="/contact" 
-                class="px-8 py-4 border border-cyan-500/50 text-cyan-400 font-mono uppercase tracking-[0.2em] text-sm cut-corners-sm hover:bg-cyan-500/10 transition-all duration-300 flex items-center gap-2"
+                class="px-6 py-3 lg:px-8 lg:py-4 border border-cyan-500/50 text-cyan-400 font-mono uppercase tracking-[0.2em] text-xs lg:text-sm cut-corners-sm hover:bg-cyan-500/10 transition-all duration-300 flex items-center gap-2"
               >
                 Connect_Link
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -50,7 +51,7 @@
           </div>
 
           <div class="md:col-span-5 flex justify-center md:justify-end w-full">
-            <div class="relative w-full max-w-[280px] sm:max-w-[320px] xl:max-w-[340px]">
+            <div class="relative w-full max-w-[260px] lg:max-w-[320px] xl:max-w-[340px]">
               <div class="absolute -top-4 -left-4 w-8 h-8 border-t-2 border-l-2 border-cyan-500/40 z-20"></div>
               <div class="absolute -bottom-4 -right-4 w-8 h-8 border-b-2 border-r-2 border-cyan-500/40 z-20"></div>
               
