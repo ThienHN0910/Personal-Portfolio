@@ -18,7 +18,10 @@
   }
 
   &__container {
-    @include container;
+    /* Removed inner container mixin to avoid double-centering when HeroSection
+       is already placed inside a page-level `.container`. Use full width and
+       let the parent container control max-width and centering. */
+    width: 100%;
     display: grid;
     grid-template-columns: 1fr;
     gap: $spacing-3xl;
