@@ -123,8 +123,9 @@
     z-index: 1;
 
     @include respond-to('lg') {
-      width: 360px;
-      height: 420px; /* portrait card feel */
+      width: 400px;
+      height: 400px; /* square shape */
+      margin-right: -80px; /* extend overflow to the right */
     }
   }
 
@@ -137,8 +138,9 @@
     animation: pulse 3s ease-in-out infinite;
 
     @include respond-to('lg') {
-      width: 450px;
-      height: 450px;
+      width: 480px;
+      height: 480px;
+      margin-right: -60px;
     }
   }
 }
