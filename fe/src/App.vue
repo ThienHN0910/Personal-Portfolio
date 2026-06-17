@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <Analytics />
     <Navbar v-if="!isAdminRoute" />
     <main>
       <RouterView v-slot="{ Component }">
@@ -15,6 +16,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { Analytics } from '@vercel/analytics/vue'
 
 import Navbar from '@/components/layout/Navbar.vue'
 import Footer from '@/components/layout/Footer.vue'
