@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <article
     class="card project-card glass-panel encrypted-file cut-corners glow-hover h-full flex flex-col"
     :class="[
@@ -171,7 +171,7 @@ const actionItems = computed<CardAction[]>(() => {
       key: 'detail',
       label: 'Project detail',
       icon: 'detail',
-      to: `/projects/${props.project._id}`,
+      to: `/projects/${props.project.slug || props.project._id}`,
     })
   }
 
@@ -207,7 +207,7 @@ const actionItems = computed<CardAction[]>(() => {
 
 function openDetail(): void {
   if (!props.project._id) return
-  void router.push(`/projects/${props.project._id}`)
+  void router.push(`/projects/${props.project.slug || props.project._id}`)
 }
 
 function handleCardClick(event: MouseEvent): void {

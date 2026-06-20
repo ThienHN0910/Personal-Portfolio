@@ -100,7 +100,9 @@ router.get('/:id', async (req, res) => {
   await connectToDatabase()
 
   try {
-    const post = await BlogPost.findById(req.params.id)
+    const isObjectId = /^[0-9a-fA-F]{24}$/.test(req.params.id);
+    const query = isObjectId ? { _id: req.params.id } : { slug: req.params.id };
+    const post = await BlogPost.findOne(query)
     if (!post) return res.status(404).json({ success: false, error: 'Not found' })
 
     return res.status(200).json({ success: true, data: post })

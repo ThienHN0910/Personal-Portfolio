@@ -1,6 +1,6 @@
-﻿<template>
+<template>
   <RouterLink
-    :to="`/blog/${post._id}`"
+    :to="`/blog/${post.slug || post._id}`"
     class="card block no-underline glass-panel cut-corners glow-hover h-full flex flex-col"
     :class="[`blog-card--${layout}`]"
   >

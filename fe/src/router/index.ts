@@ -52,7 +52,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/projects/:id',
+      path: '/projects/:slug',
       name: 'project-detail',
       component: () => import('@/views/ProjectDetailView.vue'),
       meta: {
@@ -75,7 +75,7 @@ const router = createRouter({
       },
     },
     {
-      path: '/blog/:id',
+      path: '/blog/:slug',
       name: 'blog-post',
       component: () => import('@/views/BlogPostView.vue'),
       meta: {

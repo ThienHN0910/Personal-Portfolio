@@ -148,8 +148,8 @@ async function main() {
     const posts = Array.isArray(postsData) ? postsData : []
 
     dynamicRoutes = [
-      ...projects.map((project) => (project?._id ? `/projects/${project._id}` : '')).filter(Boolean),
-      ...posts.map((post) => (post?._id ? `/blog/${post._id}` : '')).filter(Boolean),
+      ...projects.map((project) => ((project?.slug || project?._id) ? `/projects/${project.slug || project._id}` : '')).filter(Boolean),
+      ...posts.map((post) => ((post?.slug || post?._id) ? `/blog/${post.slug || post._id}` : '')).filter(Boolean),
     ]
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error)

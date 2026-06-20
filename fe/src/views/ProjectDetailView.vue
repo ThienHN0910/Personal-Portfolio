@@ -103,7 +103,7 @@
               <p class="text-gray-500 text-sm mt-3">Published {{ formatDate(relatedPost.createdAt) }}</p>
             </div>
 
-            <RouterLink :to="`/blog/${relatedPost._id}`" class="card__link shrink-0">
+            <RouterLink :to="`/blog/${relatedPost.slug || relatedPost._id}`" class="card__link shrink-0">
               Open Full Post
             </RouterLink>
           </div>
@@ -171,7 +171,7 @@ async function loadProject(id: string): Promise<void> {
   if (fetchedProject) {
     applySeo({
       ...getProjectDetailSeoMeta(fetchedProject, relatedPost.value),
-      url: `/projects/${id}`,
+      url: `/projects/${fetchedProject.slug || id}`,
     })
   } else {
     applySeo({
@@ -186,7 +186,7 @@ async function loadProject(id: string): Promise<void> {
 }
 
 watch(
-  () => route.params.id,
+  () => route.params.slug,
   (value) => {
     if (typeof value === 'string' && value) {
       void loadProject(value)

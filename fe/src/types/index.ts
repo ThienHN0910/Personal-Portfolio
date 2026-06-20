@@ -11,6 +11,7 @@ export interface Project {
   liveUrl?: string
   relatedBlogId?: string
   featured: boolean
+  slug?: string
   createdAt?: string
   updatedAt?: string
 }
@@ -24,6 +25,7 @@ export interface BlogPost {
   categories: string[]
   tags: string[]
   published: boolean
+  slug?: string
   createdAt?: string
   updatedAt?: string
 }

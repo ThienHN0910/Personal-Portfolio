@@ -91,7 +91,7 @@ async function loadPost(id: string): Promise<void> {
   if (post.value) {
     applySeo({
       ...getBlogDetailSeoMeta(post.value),
-      url: `/blog/${id}`,
+      url: `/blog/${post.value.slug || id}`,
     })
   } else {
     applySeo({
@@ -106,7 +106,7 @@ async function loadPost(id: string): Promise<void> {
 }
 
 watch(
-  () => route.params.id,
+  () => route.params.slug,
   (value) => {
     if (typeof value === 'string' && value) {
       void loadPost(value)
