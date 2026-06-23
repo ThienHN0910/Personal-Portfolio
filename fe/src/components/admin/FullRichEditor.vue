@@ -1,16 +1,32 @@
 <template>
-  <div class="full-rich-editor" :style="{ '--editor-sticky-top': `${stickyTop}px` }">
-    <Ckeditor
-      :key="editorKey"
-      :editor="editor"
-      :model-value="modelValue"
-      :config="editorConfig"
-      @update:model-value="onUpdate"
-    />
+  <div class="full-rich-editor-wrapper">
+    <div class="flex justify-end mb-2">
+      <button
+        type="button"
+        class="btn btn--sm btn--secondary flex items-center gap-1.5 text-xs py-1 px-2 border border-gray-600 rounded bg-gray-800 hover:bg-gray-700 text-gray-200 transition-colors"
+        :disabled="isImproving || !modelValue"
+        @click="improveContent"
+        title="Sử dụng AI để sửa lỗi và định dạng lại nội dung"
+      >
+        <span v-if="isImproving" class="inline-block animate-spin">⏳</span>
+        <span v-else>✨</span>
+        {{ isImproving ? 'Đang cải thiện...' : 'Cải thiện nội dung' }}
+      </button>
+    </div>
+    <div class="full-rich-editor" :style="{ '--editor-sticky-top': `${stickyTop}px` }">
+      <Ckeditor
+        :key="editorKey"
+        :editor="editor"
+        :model-value="modelValue"
+        :config="editorConfig"
+        @update:model-value="onUpdate"
+      />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import {
   Alignment,
@@ -54,6 +70,7 @@ import {
 import 'ckeditor5/ckeditor5.css'
 
 import { createCloudinaryUploadAdapterPlugin } from '@/utils/ckeditorUploadAdapter'
+import api from '@/utils/api'
 
 const props = withDefaults(
   defineProps<{
@@ -181,6 +198,30 @@ const editorConfig: Record<string, unknown> = {
 
 function onUpdate(value: string): void {
   emit('update:modelValue', value)
+}
+
+const isImproving = ref(false)
+
+async function improveContent() {
+  if (!props.modelValue) return
+
+  isImproving.value = true
+  try {
+    const response = await api.post<{ success: boolean; data: string }>('/ai/improve-content', {
+      content: props.modelValue,
+    })
+    
+    if (response.data.success && response.data.data) {
+      emit('update:modelValue', response.data.data)
+    } else {
+      alert('AI failed to improve the content. Please try again later.')
+    }
+  } catch (error) {
+    console.error('Error improving content:', error)
+    alert('An error occurred while calling AI service.')
+  } finally {
+    isImproving.value = false
+  }
 }
 </script>
 

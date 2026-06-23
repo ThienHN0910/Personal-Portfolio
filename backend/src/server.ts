@@ -13,6 +13,7 @@ import projectsRouter from './routes/projects'
 import categoriesRouter from './routes/categories'
 import themeRouter from './routes/theme'
 import uploadRouter from './routes/upload'
+import aiRouter from './routes/ai'
 
 const backendEnvPath = path.resolve(process.cwd(), '.env')
 const rootEnvPath = path.resolve(process.cwd(), '..', '.env')
@@ -49,6 +50,7 @@ app.use('/api/projects', projectsRouter)
 app.use('/api/categories', categoriesRouter)
 app.use('/api/theme', themeRouter)
 app.use('/api/upload', uploadRouter)
+app.use('/api/ai', aiRouter)
 
 app.use('/api/*', (_req, res) => {
   res.status(404).json({ success: false, error: 'Not found' })
