@@ -21,7 +21,7 @@ router.post('/improve-content', async (req, res) => {
       return res.status(500).json({ success: false, error: 'Gemini API Key is not configured' })
     }
 
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' })
+    const model = genAI.getGenerativeModel({ model: 'gemini-3.1-flash-lite' })
 
     const prompt = `Bạn là một chuyên gia viết blog và biên tập nội dung HTML. Hãy sửa lại nội dung HTML sau đây, cải thiện văn phong, sửa lỗi chính tả, tối ưu hóa các thẻ HTML và thêm inline style để nội dung trông chuyên nghiệp và đẹp mắt hơn. Layout nên được sắp xếp tốt hơn nếu có thể. CHỈ trả về đoạn mã HTML, KHÔNG bao gồm markdown (như \`\`\`html) hay bất kỳ lời giải thích nào khác.\n\nContent:\n${content}`
 
