@@ -24,20 +24,53 @@ router.post('/', async (req, res) => {
   await connectToDatabase()
 
   try {
-    const { name, email, subject, message } = req.body as {
+    const { name, email, subject, message, cfTurnstileResponse } = req.body as {
       name?: string
       email?: string
       subject?: string
       message?: string
+      cfTurnstileResponse?: string
     }
 
-    if (!name || !email || !subject || !message) {
-      return res.status(400).json({ success: false, error: 'All fields are required' })
+    if (!name || !email || !subject || !message || !cfTurnstileResponse) {
+      return res.status(400).json({ success: false, error: 'All fields and CAPTCHA are required' })
+    }
+
+    if (message.length > 2000) {
+      return res.status(400).json({ success: false, error: 'Message cannot exceed 2000 characters' })
+    }
+
+    // Verify Turnstile
+    const TURNSTILE_SECRET_KEY = process.env.TURNSTILE_SECRET_KEY
+    if (!TURNSTILE_SECRET_KEY) {
+      console.error('TURNSTILE_SECRET_KEY is not defined')
+      return res.status(500).json({ success: false, error: 'Server configuration error' })
+    }
+
+    const formData = new URLSearchParams()
+    formData.append('secret', TURNSTILE_SECRET_KEY)
+    formData.append('response', cfTurnstileResponse)
+
+    const turnstileRes = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: formData,
+    })
+
+    const turnstileData = await turnstileRes.json()
+    if (!turnstileData.success) {
+      return res.status(400).json({ success: false, error: 'CAPTCHA verification failed' })
+    }
+
+    // Check queue limit
+    const unreadCount = await Contact.countDocuments({ isRead: false })
+    if (unreadCount >= 20) {
+      return res.status(400).json({ success: false, error: 'Hệ thống đang quá tải (hàng đợi đã đầy 20 tin). Vui lòng thử lại sau.' })
     }
 
     await Contact.create({ name, email, subject, message })
     return res.status(201).json({ success: true, message: 'Message sent successfully' })
-  } catch {
+  } catch (err) {
+    console.error('Contact post error:', err)
     return res.status(500).json({ success: false, error: 'Failed to send message' })
   }
 })

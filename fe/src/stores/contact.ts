@@ -9,7 +9,7 @@ export const useContactStore = defineStore('contact', () => {
   const error = ref<string | null>(null)
   const success = ref(false)
 
-  async function sendMessage(data: Omit<ContactMessage, '_id' | 'createdAt'>) {
+  async function sendMessage(data: Omit<ContactMessage, '_id' | 'createdAt'> & { cfTurnstileResponse?: string }) {
     loading.value = true
     error.value = null
     success.value = false
@@ -18,8 +18,8 @@ export const useContactStore = defineStore('contact', () => {
       if (response.data.success) {
         success.value = true
       }
-    } catch (err) {
-      error.value = 'Failed to send message'
+    } catch (err: any) {
+      error.value = err.response?.data?.error || 'Failed to send message'
       console.error(err)
       throw err
     } finally {

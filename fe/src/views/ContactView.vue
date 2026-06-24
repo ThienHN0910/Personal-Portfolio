@@ -26,8 +26,10 @@
 
             <div class="form-group">
               <label for="message">Message</label>
-              <textarea id="message" v-model="form.message" rows="6" placeholder="Tell me about your project..." required class="bg-transparent border border-white/8 py-2 px-3 font-mono" />
+              <textarea id="message" v-model="form.message" rows="6" maxlength="2000" placeholder="Tell me about your project..." required class="bg-transparent border border-white/8 py-2 px-3 font-mono" />
             </div>
+
+            <div id="turnstile-container" class="mt-4 mb-4 min-h-[65px]"></div>
 
             <div v-if="contactStore.error" class="text-red-400 text-sm mb-4">
               {{ contactStore.error }}
@@ -51,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
 import { useAboutStore } from '@/stores/about'
 import { useHomeStore } from '@/stores/home'
 import { useContactStore } from '@/stores/contact'
@@ -69,13 +71,30 @@ const form = reactive({
   message: '',
 })
 
+const turnstileToken = ref<string>('')
+const turnstileWidgetId = ref<string | null>(null)
+
 async function handleSubmit() {
-  await contactStore.sendMessage({ ...form })
+  if (!turnstileToken.value) {
+    contactStore.error = 'Vui lòng xác nhận CAPTCHA'
+    return
+  }
+
+  await contactStore.sendMessage({ 
+    ...form,
+    cfTurnstileResponse: turnstileToken.value
+  })
+
   if (contactStore.success) {
     form.name = ''
     form.email = ''
     form.subject = ''
     form.message = ''
+  }
+
+  if ((window as any).turnstile && turnstileWidgetId.value !== null) {
+    (window as any).turnstile.reset(turnstileWidgetId.value)
+    turnstileToken.value = ''
   }
 }
 
@@ -92,5 +111,34 @@ onMounted(async () => {
     }),
     url: '/contact',
   })
+
+  const initTurnstile = () => {
+    if ((window as any).turnstile) {
+      const widgetId = (window as any).turnstile.render('#turnstile-container', {
+        sitekey: import.meta.env.VITE_TURNSTILE_SITE_KEY,
+        callback: (token: string) => {
+          turnstileToken.value = token
+          contactStore.error = null
+        },
+        'error-callback': () => {
+          contactStore.error = 'CAPTCHA error. Please refresh and try again.'
+        }
+      })
+      turnstileWidgetId.value = widgetId
+    }
+  }
+
+  if ((window as any).turnstile) {
+    initTurnstile()
+  } else {
+    const script = document.createElement('script')
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit'
+    script.async = true
+    script.defer = true
+    script.onload = () => {
+      initTurnstile()
+    }
+    document.head.appendChild(script)
+  }
 })
 </script>
