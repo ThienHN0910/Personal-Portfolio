@@ -56,7 +56,7 @@ router.post('/', async (req, res) => {
       body: formData,
     })
 
-    const turnstileData = await turnstileRes.json()
+    const turnstileData = await turnstileRes.json() as { success: boolean }
     if (!turnstileData.success) {
       return res.status(400).json({ success: false, error: 'CAPTCHA verification failed' })
     }
