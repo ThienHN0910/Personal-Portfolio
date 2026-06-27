@@ -58,7 +58,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useBlogStore } from '@/stores/blog'
 import type { BlogPost } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
@@ -67,6 +67,7 @@ import { applySeo } from '@/utils/seo'
 import { getBlogDetailSeoMeta } from '@/utils/seoPriority'
 
 const route = useRoute()
+const router = useRouter()
 const blogStore = useBlogStore()
 const post = ref<BlogPost | null>(null)
 const loading = ref(true)
@@ -86,14 +87,20 @@ function formatDate(date?: string): string {
 
 async function loadPost(id: string): Promise<void> {
   loading.value = true
-  post.value = await blogStore.fetchPost(id)
+  const fetchedPost = await blogStore.fetchPost(id)
 
-  if (post.value) {
+  if (fetchedPost) {
+    if (fetchedPost.slug && fetchedPost.slug !== id) {
+      void router.replace(`/blog/${fetchedPost.slug}`)
+      return
+    }
+    post.value = fetchedPost
     applySeo({
-      ...getBlogDetailSeoMeta(post.value),
-      url: `/blog/${post.value.slug || id}`,
+      ...getBlogDetailSeoMeta(fetchedPost),
+      url: `/blog/${fetchedPost.slug || id}`,
     })
   } else {
+    post.value = null
     applySeo({
       title: 'Post Not Found',
       description: 'The requested blog post does not exist or has been removed.',

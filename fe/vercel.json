@@ -1,4 +1,23 @@
 {
+  "redirects": [
+    { "source": "/blog/6a1e8d7779f5ac57f024b9e3", "destination": "/blog/assisstantbot-telegram-auto-deploy-devlog", "permanent": true },
+    { "source": "/blog/6a0f16098fdcdb2b144df13b", "destination": "/blog/breakthroughcv-overview", "permanent": true },
+    { "source": "/blog/6a0eff9fb33b92ffb4ee5b51", "destination": "/blog/chat-bot-fb-overview", "permanent": true },
+    { "source": "/blog/69e0e538af7b7562f8fb35c9", "destination": "/blog/words-note-overview", "permanent": true },
+    { "source": "/blog/69d5932fb888cbccf87f60c3", "destination": "/blog/innovation-lab-overview", "permanent": true },
+    { "source": "/blog/69d599d3e5d5a7b85d1782c8", "destination": "/blog/universal-travel-game-dev-log", "permanent": true },
+    { "source": "/blog/69d5b86a17ec987d3cf68ec5", "destination": "/blog/picx-art-marketplace-website-overview", "permanent": true },
+    { "source": "/blog/69d5d012e1f9aa26b8df6ab4", "destination": "/blog/simplemp3-app-desktop-overview", "permanent": true },
+    { "source": "/blog/69d871d80a375edaf3983f9c", "destination": "/blog/game-meo-bat-chuot-dev-log", "permanent": true },
+    { "source": "/projects/69d4cb7c6cae2cb456875206", "destination": "/projects/innovationlab", "permanent": true },
+    { "source": "/projects/6a1e910218ee4e0cf45c34fd", "destination": "/projects/assisstantbot-telegram-overview", "permanent": true },
+    { "source": "/projects/69d5b75217ec987d3cf68eb7", "destination": "/projects/picx-art-marketplace-website", "permanent": true },
+    { "source": "/projects/6a0f126045cf1fd76e00f8f9", "destination": "/projects/breakthroughcv-aipowered-job-candidate-cv-optimization-platform", "permanent": true },
+    { "source": "/projects/69e0e5bcaf7b7562f8fb35cc", "destination": "/projects/words-note", "permanent": true },
+    { "source": "/projects/6a0f0371ad8767691b3abde6", "destination": "/projects/geminipowered-smart-facebook-chatbot-system", "permanent": true },
+    { "source": "/projects/69d5d063105f061fd4c185b5", "destination": "/projects/simplemp3-app-desktop", "permanent": true },
+    { "source": "/projects/69d59748ed7c4366ab6520f0", "destination": "/projects/universal-travel-coop-2player", "permanent": true }
+  ],
   "routes": [
     { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "/index.html" }

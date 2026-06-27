@@ -414,7 +414,7 @@ async function main() {
       if (!project?._id) return
       const relatedPost = project.relatedBlogId ? postsById[project.relatedBlogId] : null
       pageMetas.push({
-        path: `/projects/${project._id}`,
+        path: `/projects/${project.slug || project._id}`,
         title: project.title || 'Project Detail',
         description: pickFirst(project.description, relatedPost?.excerpt, relatedPost?.content, homeData?.heroDescription) || DEFAULT_DESCRIPTION,
         type: 'article',
@@ -427,7 +427,7 @@ async function main() {
     posts.forEach((post) => {
       if (!post?._id) return
       pageMetas.push({
-        path: `/blog/${post._id}`,
+        path: `/blog/${post.slug || post._id}`,
         title: post.title || 'Blog Post',
         description: pickFirst(post.excerpt, post.content, homeData?.heroDescription) || DEFAULT_DESCRIPTION,
         type: 'article',

@@ -130,7 +130,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useBlogStore } from '@/stores/blog'
@@ -141,6 +141,7 @@ import { applySeo } from '@/utils/seo'
 import { getProjectDetailSeoMeta } from '@/utils/seoPriority'
 
 const route = useRoute()
+const router = useRouter()
 const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
 
@@ -161,19 +162,26 @@ function formatDate(date?: string): string {
 async function loadProject(id: string): Promise<void> {
   loading.value = true
   const fetchedProject = await projectsStore.fetchProject(id)
-  project.value = fetchedProject
-  relatedPost.value = null
-
-  if (fetchedProject?.relatedBlogId) {
-    relatedPost.value = await blogStore.fetchPost(fetchedProject.relatedBlogId)
-  }
 
   if (fetchedProject) {
+    if (fetchedProject.slug && fetchedProject.slug !== id) {
+      void router.replace(`/projects/${fetchedProject.slug}`)
+      return
+    }
+    project.value = fetchedProject
+    relatedPost.value = null
+
+    if (fetchedProject.relatedBlogId) {
+      relatedPost.value = await blogStore.fetchPost(fetchedProject.relatedBlogId)
+    }
+
     applySeo({
       ...getProjectDetailSeoMeta(fetchedProject, relatedPost.value),
       url: `/projects/${fetchedProject.slug || id}`,
     })
   } else {
+    project.value = null
+    relatedPost.value = null
     applySeo({
       title: 'Project Not Found',
       description: 'The requested project does not exist or has been removed.',
