@@ -5,26 +5,26 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
       <!-- Breadcrumb Link -->
       <RouterLink to="/about" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyber-cyan transition-colors text-sm font-mono">
-        <span>← Quay lại Giới Thiệu</span>
+        <span>← Back to About</span>
       </RouterLink>
 
       <!-- Page Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
-          <span>HỒ SƠ NĂNG LỰC</span>
+          <span>CURRICULUM VITAE</span>
         </div>
         <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Curriculum Vitae <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">(CV)</span>
+          Interactive <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Curriculum Vitae (CV)</span>
         </h1>
         <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed">
-          Xem trực tiếp bản CV chính thức của Hồ Ngọc Thiện (ThienHN) hoặc tải về tệp PDF.
+          Preview the official CV of Hồ Ngọc Thiện (ThienHN) directly in your browser or download the PDF version.
         </p>
       </div>
 
       <LoadingSpinner v-if="loading" />
 
       <div v-else-if="!resumeUrl" class="glass-panel p-8 text-center text-slate-400 font-mono">
-        Bản CV chưa được cập nhật trong hệ thống.
+        Curriculum Vitae (CV) is not currently uploaded.
       </div>
 
       <div v-else class="space-y-6">
@@ -32,7 +32,7 @@
         <div class="glass-panel p-4 border border-cyber-border/30 flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-2 text-xs font-mono text-slate-300">
             <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Tổng số trang: {{ totalPages }} trang</span>
+            <span>Total Pages: {{ totalPages }} pages</span>
           </div>
 
           <div class="flex items-center gap-3">
@@ -42,14 +42,14 @@
               rel="noopener noreferrer"
               class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 text-xs font-mono font-semibold hover:bg-white/10 transition-all"
             >
-              Mở Tab Mới ↗
+              Open in New Tab ↗
             </a>
             <a
               :href="resumeUrl"
               download
               class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 text-xs font-mono font-bold hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all"
             >
-              Tải CV (PDF) ↓
+              Download CV (PDF) ↓
             </a>
           </div>
         </div>
@@ -136,7 +136,7 @@ async function renderPage(pageNumber: number, wrapper: HTMLDivElement): Promise<
     wrapper.innerHTML = ''
     const title = document.createElement('p')
     title.className = 'text-xs font-mono text-slate-400 mb-3'
-    title.textContent = `Trang ${pageNumber} / ${totalPages.value}`
+    title.textContent = `Page ${pageNumber} of ${totalPages.value}`
     wrapper.appendChild(title)
     wrapper.appendChild(contextCanvas)
 
@@ -185,7 +185,7 @@ async function renderPdf(url: string): Promise<void> {
 
       const title = document.createElement('p')
       title.className = 'text-xs font-mono text-slate-400 mb-3'
-      title.textContent = `Trang ${pageNumber} (Đang tải...)`
+      title.textContent = `Page ${pageNumber} (Loading...)`
 
       const skeleton = document.createElement('div')
       skeleton.className = 'h-96 rounded-xl bg-slate-900 animate-pulse'
@@ -201,7 +201,7 @@ async function renderPdf(url: string): Promise<void> {
       }
     }
   } catch {
-    renderError.value = 'Không thể hiển thị tệp PDF trực tiếp. Vui lòng mở bằng nút "Mở Tab Mới" ở trên.'
+    renderError.value = 'Unable to render PDF directly. Please click "Open in New Tab" above.'
   }
 }
 

@@ -17,10 +17,10 @@ const AUTHOR_NAME = 'Hồ Ngọc Thiện (ThienHN)'
 const SITE_NAME = 'Hồ Ngọc Thiện (ThienHN) - Personal Portfolio'
 const DEFAULT_TITLE = SITE_NAME
 const DEFAULT_DESCRIPTION =
-  'Trang cá nhân của Hồ Ngọc Thiện (ThienHN) - Full Stack Software Engineer chuyên về Vue, React, Node.js, TypeScript và Kiến trúc phần mềm.'
+  'Personal portfolio of Hồ Ngọc Thiện (ThienHN) - Full Stack Software Engineer specializing in Vue 3, React, Node.js, TypeScript, and modern Web Architecture.'
 const DEFAULT_IMAGE = '/logo0004Croped.png'
 const DEFAULT_KEYWORDS =
-  'Hồ Ngọc Thiện, ThienHN, Full Stack Engineer, Web Developer, Vue.js, Node.js, TypeScript, React, Portfolio, Software Architecture'
+  'Hồ Ngọc Thiện, ThienHN, Ho Ngoc Thien, Full Stack Engineer, Web Developer, Vue.js, Node.js, TypeScript, React, Portfolio, Software Architecture'
 
 function resolveSiteOrigin(): string {
   const configured = import.meta.env.VITE_SITE_URL?.trim()
@@ -131,7 +131,7 @@ export function applySeo(meta: SeoMetaInput = {}): void {
 
   upsertMetaByProperty('og:type', seoType)
   upsertMetaByProperty('og:site_name', SITE_NAME)
-  upsertMetaByProperty('og:locale', 'vi_VN')
+  upsertMetaByProperty('og:locale', 'en_US')
   upsertMetaByProperty('og:title', pageTitle)
   upsertMetaByProperty('og:description', pageDescription)
   upsertMetaByProperty('og:url', canonicalUrl)
@@ -151,7 +151,7 @@ export function applySeo(meta: SeoMetaInput = {}): void {
     name: 'Hồ Ngọc Thiện',
     alternateName: ['ThienHN', 'Ho Ngoc Thien'],
     jobTitle: 'Full Stack Software Engineer',
-    description: 'Full Stack Software Engineer chuyên nghiệp phát triển các ứng dụng Web hiện đại, tối ưu hiệu năng và trải nghiệm người dùng.',
+    description: 'Full Stack Software Engineer specializing in modern Web applications, high-performance architecture, and UX engineering.',
     url: origin,
     image: imageUrl,
     sameAs: [
@@ -165,7 +165,7 @@ export function applySeo(meta: SeoMetaInput = {}): void {
     url: origin,
     name: SITE_NAME,
     publisher: { '@id': `${origin}/#person` },
-    inLanguage: 'vi-VN',
+    inLanguage: 'en-US',
   }
 
   let mainEntity: object = {
@@ -199,4 +199,3 @@ export function applySeo(meta: SeoMetaInput = {}): void {
     '@graph': [personEntity, websiteEntity, mainEntity],
   })
 }
-

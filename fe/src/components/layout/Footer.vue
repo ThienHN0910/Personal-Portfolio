@@ -15,7 +15,7 @@
           </RouterLink>
 
           <p class="text-sm text-slate-400 leading-relaxed max-w-md">
-            {{ brandDescription || 'Full Stack Software Engineer chuyên nghiệp phát triển các ứng dụng Web cao cấp, hiện đại và tối ưu hiệu năng.' }}
+            {{ brandDescription || 'Full Stack Software Engineer specializing in modern, high-performance web applications and software architecture.' }}
           </p>
 
           <div class="flex items-center gap-3 pt-2">
@@ -35,7 +35,7 @@
 
         <!-- Quick Navigation -->
         <div class="md:col-span-3 flex flex-col gap-3">
-          <h4 class="font-mono text-xs text-cyber-cyan uppercase tracking-wider font-semibold">Điều Hướng</h4>
+          <h4 class="font-mono text-xs text-cyber-cyan uppercase tracking-wider font-semibold">NAVIGATION</h4>
           <ul class="flex flex-col gap-2.5">
             <li v-for="link in navLinks" :key="link.to">
               <RouterLink :to="link.to" class="text-sm text-slate-300 hover:text-white transition-colors flex items-center gap-2">
@@ -48,7 +48,7 @@
 
         <!-- Connection & Socials -->
         <div class="md:col-span-4 flex flex-col gap-3">
-          <h4 class="font-mono text-xs text-cyber-cyan uppercase tracking-wider font-semibold">Kết Nối</h4>
+          <h4 class="font-mono text-xs text-cyber-cyan uppercase tracking-wider font-semibold">CONNECT</h4>
           <ul class="flex flex-col gap-2.5">
             <li v-for="link in connectLinks" :key="link.label">
               <a :href="link.href" target="_blank" rel="noopener noreferrer" class="text-sm text-slate-300 hover:text-cyber-cyan transition-colors flex items-center gap-2">
@@ -78,7 +78,7 @@
           class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-slate-400 hover:text-cyber-cyan hover:border-cyber-cyan/40 transition-all"
           @click="scrollToTop"
         >
-          <span>Về đầu trang</span>
+          <span>Back to top</span>
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
           </svg>
@@ -112,12 +112,12 @@ const contactItems = computed(() => getFooterContactItems(about.value))
 const socialIconLinks = computed(() => getFooterIconLinks(about.value))
 
 const navLinks = [
-  { to: '/', label: 'Trang Chủ' },
-  { to: '/about', label: 'Giới Thiệu' },
-  { to: '/projects', label: 'Dự Án' },
-  { to: '/blog', label: 'Bài Viết' },
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
+  { to: '/projects', label: 'Projects' },
+  { to: '/blog', label: 'Articles' },
   { to: '/cv', label: 'CV' },
-  { to: '/contact', label: 'Liên Hệ' },
+  { to: '/contact', label: 'Contact' },
 ]
 
 function scrollToTop(): void {

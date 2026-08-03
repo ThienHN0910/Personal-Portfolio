@@ -8,7 +8,7 @@
       <div v-else-if="post" class="space-y-8">
         <!-- Breadcrumb Link -->
         <RouterLink to="/blog" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyber-cyan transition-colors text-sm font-mono">
-          <span>← Quay lại Góc Chia Sẻ</span>
+          <span>← Back to Articles</span>
         </RouterLink>
 
         <!-- Article Header Card -->
@@ -24,9 +24,9 @@
           </h1>
 
           <div class="flex items-center gap-3 text-xs font-mono text-slate-400 pt-2 border-t border-white/10">
-            <span>Đăng ngày {{ formatDate(post.createdAt) }}</span>
+            <span>Published on {{ formatDate(post.createdAt) }}</span>
             <span>•</span>
-            <span>Tác giả: Hồ Ngọc Thiện</span>
+            <span>Author: Hồ Ngọc Thiện (ThienHN)</span>
           </div>
         </div>
 
@@ -47,9 +47,9 @@
       </div>
 
       <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono">
-        <p class="text-lg">Không tìm thấy bài viết này.</p>
+        <p class="text-lg">Article not found.</p>
         <RouterLink to="/blog" class="inline-block mt-4 px-6 py-2.5 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan text-sm font-bold">
-          Quay về danh sách bài viết
+          Back to Articles List
         </RouterLink>
       </div>
     </div>
@@ -78,7 +78,7 @@ const sanitizedContent = computed(() => {
 
 function formatDate(date?: string): string {
   if (!date) return ''
-  return new Date(date).toLocaleDateString('vi-VN', {
+  return new Date(date).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
@@ -102,8 +102,8 @@ async function loadPost(id: string): Promise<void> {
   } else {
     post.value = null
     applySeo({
-      title: 'Bài Viết Không Tồn Tại',
-      description: 'Bài viết yêu cầu không tồn tại hoặc đã bị xóa.',
+      title: 'Article Not Found',
+      description: 'The requested article does not exist or has been removed.',
       url: `/blog/${id}`,
       noindex: true,
     })

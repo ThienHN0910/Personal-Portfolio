@@ -4,10 +4,10 @@
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
           <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-2">
-            <span>DỰ ÁN TIÊU BIỂU</span>
+            <span>FEATURED SHOWCASE</span>
           </div>
           <h2 class="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
-            Sản Phẩm & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Dự Án Đã Triển Khai</span>
+            Featured <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Projects & Engineering</span>
           </h2>
         </div>
 
@@ -15,7 +15,7 @@
           to="/projects"
           class="inline-flex items-center gap-2 text-sm font-semibold text-cyber-cyan hover:text-white transition-colors group"
         >
-          <span>Xem tất cả dự án</span>
+          <span>View All Projects</span>
           <span class="group-hover:translate-x-1 transition-transform">→</span>
         </RouterLink>
       </div>
@@ -27,7 +27,7 @@
       </div>
 
       <div v-else class="glass-panel p-8 text-center text-slate-400">
-        Hiện chưa có dự án nổi bật nào được đánh dấu.
+        No featured projects currently marked.
       </div>
     </div>
   </section>

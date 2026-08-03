@@ -6,13 +6,13 @@
       <!-- Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow text-center">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
-          <span>KẾT NỐI & HỢP TÁC</span>
+          <span>GET IN TOUCH</span>
         </div>
         <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Liên Hệ Với <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Hồ Ngọc Thiện</span>
+          Contact <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Hồ Ngọc Thiện</span>
         </h1>
         <p class="mt-3 text-slate-300 text-base max-w-xl mx-auto leading-relaxed">
-          Bạn có dự án mới, ý tưởng cần tư vấn hoặc cơ hội nghề nghiệp? Hãy gửi tin nhắn trực tiếp qua biểu mẫu bên dưới.
+          Have a new project, software architecture inquiry, or engineering opportunity? Send a message directly via the contact form below.
         </p>
       </div>
 
@@ -22,12 +22,12 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <!-- Name Input -->
             <div class="space-y-1.5">
-              <label for="name" class="block text-xs font-mono text-slate-300 uppercase">Họ và tên *</label>
+              <label for="name" class="block text-xs font-mono text-slate-300 uppercase">Full Name *</label>
               <input
                 id="name"
                 v-model="form.name"
                 type="text"
-                placeholder="Nhập họ và tên của bạn"
+                placeholder="Enter your full name"
                 required
                 class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
               />
@@ -35,7 +35,7 @@
 
             <!-- Email Input -->
             <div class="space-y-1.5">
-              <label for="email" class="block text-xs font-mono text-slate-300 uppercase">Địa chỉ Email *</label>
+              <label for="email" class="block text-xs font-mono text-slate-300 uppercase">Email Address *</label>
               <input
                 id="email"
                 v-model="form.email"
@@ -49,12 +49,12 @@
 
           <!-- Subject Input -->
           <div class="space-y-1.5">
-            <label for="subject" class="block text-xs font-mono text-slate-300 uppercase">Tiêu đề tin nhắn *</label>
+            <label for="subject" class="block text-xs font-mono text-slate-300 uppercase">Message Subject *</label>
             <input
               id="subject"
               v-model="form.subject"
               type="text"
-              placeholder="Chủ đề công việc / dự án"
+              placeholder="Project / Hiring Opportunity"
               required
               class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
             />
@@ -62,13 +62,13 @@
 
           <!-- Message Textarea -->
           <div class="space-y-1.5">
-            <label for="message" class="block text-xs font-mono text-slate-300 uppercase">Nội dung tin nhắn *</label>
+            <label for="message" class="block text-xs font-mono text-slate-300 uppercase">Message Content *</label>
             <textarea
               id="message"
               v-model="form.message"
               rows="6"
               maxlength="2000"
-              placeholder="Mô tả chi tiết nội dung cần trao đổi..."
+              placeholder="Detailed description of your project or inquiry..."
               required
               class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
             />
@@ -85,7 +85,7 @@
           <!-- Success Alert -->
           <div v-if="contactStore.success" class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-mono flex items-center gap-2">
             <span class="text-base">✓</span>
-            <span>Tin nhắn đã được gửi thành công! Tôi sẽ phản hồi sớm nhất có thể.</span>
+            <span>Your message has been sent successfully! I will respond as soon as possible.</span>
           </div>
 
           <!-- Submit Button -->
@@ -94,8 +94,8 @@
             class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan via-indigo-500 to-violet-500 text-slate-950 font-bold text-sm font-mono uppercase tracking-wider hover:shadow-[0_0_25px_rgba(0,242,255,0.4)] transition-all disabled:opacity-50"
             :disabled="contactStore.loading"
           >
-            <span v-if="contactStore.loading">ĐANG GỬI TIN NHẮN...</span>
-            <span v-else>Gửi Tin Nhắn Phản Hồi</span>
+            <span v-if="contactStore.loading">SENDING MESSAGE...</span>
+            <span v-else>Send Message</span>
           </button>
         </form>
       </div>
@@ -127,7 +127,7 @@ const turnstileWidgetId = ref<string | null>(null)
 
 async function handleSubmit() {
   if (!turnstileToken.value) {
-    contactStore.error = 'Vui lòng xác nhận CAPTCHA để gửi tin nhắn'
+    contactStore.error = 'Please complete the CAPTCHA verification to submit the form'
     return
   }
 
@@ -172,7 +172,7 @@ onMounted(async () => {
           contactStore.error = null
         },
         'error-callback': () => {
-          contactStore.error = 'Lỗi CAPTCHA. Vui lòng làm mới trang và thử lại.'
+          contactStore.error = 'CAPTCHA error. Please refresh the page and try again.'
         }
       })
       turnstileWidgetId.value = widgetId

@@ -6,13 +6,13 @@
       <!-- Page Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
-          <span>DANH MỤC DỰ ÁN</span>
+          <span>PROJECT PORTFOLIO</span>
         </div>
         <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Bộ Sưu Tập <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-indigo-400 to-violet-400">Dự Án Phần Mềm</span>
+          Software & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-indigo-400 to-violet-400">Engineering Case Studies</span>
         </h1>
         <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed">
-          Khám phá các sản phẩm phần mềm, ứng dụng web, hệ thống backend và công cụ mã nguồn mở được thiết kế & phát triển bởi Hồ Ngọc Thiện (ThienHN).
+          Showcase of software solutions, web applications, backend APIs, and open-source tools architected and developed by Hồ Ngọc Thiện (ThienHN).
         </p>
       </div>
 
@@ -26,7 +26,7 @@
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Tìm kiếm dự án, công nghệ, danh mục (Vue, React, Node.js...)"
+            placeholder="Search projects, technologies, categories (Vue, React, Node.js...)"
             class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
           />
         </div>
@@ -39,7 +39,7 @@
             :class="activeCategory === '' ? 'bg-cyber-cyan/20 text-cyber-cyan border-cyber-cyan/50 font-bold' : 'bg-white/5 text-slate-300 border-white/10 hover:border-white/20'"
             @click="activeCategory = ''"
           >
-            Tất Cả
+            All
           </button>
           <button
             v-for="category in projectCategoryOptions"
@@ -57,7 +57,7 @@
       <!-- Loading State -->
       <LoadingSpinner v-if="initialLoading" />
 
-      <!-- Projects Masonry / Grid Showcase -->
+      <!-- Projects Grid Showcase -->
       <div
         v-else-if="projectsStore.projects.length"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
@@ -72,14 +72,14 @@
 
       <!-- Empty State -->
       <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono">
-        Không tìm thấy dự án nào phù hợp với từ khóa hoặc danh mục đã chọn.
+        No projects found matching the selected search query or category filter.
       </div>
 
       <!-- Infinite Scroll Sentinel -->
       <div ref="sentinelRef" class="flex justify-center py-8">
         <div v-if="hasMoreProjects || loadingMore" class="glass-panel px-6 py-3 flex items-center gap-3 text-sm text-slate-300 font-mono">
           <LoadingSpinner v-if="loadingMore" />
-          <span>{{ loadingMore ? 'Đang tải thêm dự án...' : 'Cuộn xuống để xem thêm' }}</span>
+          <span>{{ loadingMore ? 'Loading more projects...' : 'Scroll to load more' }}</span>
         </div>
       </div>
     </div>

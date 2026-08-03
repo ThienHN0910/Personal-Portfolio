@@ -74,7 +74,7 @@
     <!-- Footer -->
     <div class="mt-5 pt-3 border-t border-white/10 flex items-center justify-between gap-3 text-xs font-mono">
       <span class="text-slate-400">{{ formatTimestamp(post.createdAt) }}</span>
-      <span class="text-cyber-cyan group-hover:translate-x-1 transition-transform">Đọc bài →</span>
+      <span class="text-cyber-cyan group-hover:translate-x-1 transition-transform">Read Article →</span>
     </div>
   </RouterLink>
 </template>
@@ -120,6 +120,6 @@ const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.l
 
 function formatTimestamp(date?: string): string {
   if (!date) return ''
-  return new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: 'short', day: 'numeric' })
+  return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })
 }
 </script>

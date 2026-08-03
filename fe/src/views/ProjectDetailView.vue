@@ -8,7 +8,7 @@
       <div v-else-if="project" class="space-y-8">
         <!-- Breadcrumb Link -->
         <RouterLink to="/projects" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyber-cyan transition-colors text-sm font-mono">
-          <span>← Quay lại Danh Sách Dự Án</span>
+          <span>← Back to Projects</span>
         </RouterLink>
 
         <!-- Header -->
@@ -18,7 +18,7 @@
               Case Study
             </span>
             <span v-if="project.featured" class="text-xs font-mono px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold">
-              ★ Dự Án Nổi Bật
+              ★ Featured Project
             </span>
           </div>
 
@@ -55,23 +55,23 @@
 
           <!-- Right Sidebar Specs -->
           <aside class="lg:col-span-4 glass-panel p-6 border border-cyber-border/30 space-y-6 lg:sticky lg:top-24">
-            <h2 class="text-lg font-bold text-white pb-3 border-b border-white/10">Thông Số Kỹ Thuật</h2>
+            <h2 class="text-lg font-bold text-white pb-3 border-b border-white/10">Technical Specifications</h2>
 
-            <!-- Duration & Priority -->
+            <!-- Duration & Status -->
             <div class="grid grid-cols-2 gap-3">
               <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-                <span class="text-[10px] font-mono uppercase text-slate-400 block">Thời Gian</span>
-                <span class="text-sm font-bold text-slate-200 mt-1 block">{{ project.duration || 'Liên tục' }}</span>
+                <span class="text-[10px] font-mono uppercase text-slate-400 block">Duration</span>
+                <span class="text-sm font-bold text-slate-200 mt-1 block">{{ project.duration || 'Ongoing' }}</span>
               </div>
               <div class="p-3 rounded-xl bg-white/5 border border-white/10">
-                <span class="text-[10px] font-mono uppercase text-slate-400 block">Trạng Thái</span>
-                <span class="text-sm font-bold text-cyber-cyan mt-1 block">{{ project.liveUrl ? 'Đang hoạt động' : 'Hoàn thành' }}</span>
+                <span class="text-[10px] font-mono uppercase text-slate-400 block">Status</span>
+                <span class="text-sm font-bold text-cyber-cyan mt-1 block">{{ project.liveUrl ? 'Active Production' : 'Completed' }}</span>
               </div>
             </div>
 
             <!-- Tech Stack -->
             <div class="space-y-2">
-              <span class="text-xs font-mono text-slate-400 uppercase block">Công Nghệ Sử Dụng</span>
+              <span class="text-xs font-mono text-slate-400 uppercase block">Tech Stack</span>
               <div class="flex flex-wrap gap-2">
                 <span
                   v-for="tech in project.technologies"
@@ -85,7 +85,7 @@
 
             <!-- External Links Buttons -->
             <div class="space-y-3 pt-2">
-              <span class="text-xs font-mono text-slate-400 uppercase block">Liên Kết Trực Tiếp</span>
+              <span class="text-xs font-mono text-slate-400 uppercase block">Links & Repository</span>
 
               <div v-if="hasProjectLinks" class="flex flex-col gap-2.5">
                 <a
@@ -95,7 +95,7 @@
                   rel="noopener noreferrer"
                   class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 font-bold text-xs font-mono text-center hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all flex items-center justify-center gap-2"
                 >
-                  <span>Truy Cập Live Demo ↗</span>
+                  <span>Launch Live Demo ↗</span>
                 </a>
 
                 <a
@@ -105,11 +105,11 @@
                   rel="noopener noreferrer"
                   class="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-slate-200 font-semibold text-xs font-mono text-center hover:bg-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-2"
                 >
-                  <span>Mã Nguồn GitHub</span>
+                  <span>GitHub Repository</span>
                 </a>
               </div>
 
-              <p v-else class="text-xs text-slate-500 font-mono">Không có liên kết công khai.</p>
+              <p v-else class="text-xs text-slate-500 font-mono">No public links available.</p>
             </div>
           </aside>
         </div>
@@ -118,13 +118,13 @@
         <section v-if="relatedPost" class="glass-panel p-6 sm:p-10 border border-cyber-border/40 space-y-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
             <div>
-              <span class="text-xs font-mono text-cyber-cyan uppercase">BÀI VIẾT LIÊN QUAN</span>
+              <span class="text-xs font-mono text-cyber-cyan uppercase">RELATED TECHNICAL ARTICLE</span>
               <h2 class="text-2xl font-bold text-white mt-1">{{ relatedPost.title }}</h2>
-              <p class="text-xs text-slate-400 mt-1">Đăng ngày {{ formatDate(relatedPost.createdAt) }}</p>
+              <p class="text-xs text-slate-400 mt-1">Published on {{ formatDate(relatedPost.createdAt) }}</p>
             </div>
 
             <RouterLink :to="`/blog/${relatedPost.slug || relatedPost._id}`" class="px-4 py-2 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono font-bold hover:bg-cyber-cyan/20 transition-all shrink-0">
-              Đọc Bài Viết Đầy Đủ →
+              Read Full Article →
             </RouterLink>
           </div>
 
@@ -134,9 +134,9 @@
       </div>
 
       <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono">
-        <p class="text-lg">Không tìm thấy thông tin dự án này.</p>
+        <p class="text-lg">Project not found.</p>
         <RouterLink to="/projects" class="inline-block mt-4 px-6 py-2.5 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan text-sm font-bold">
-          Quay về danh sách dự án
+          Back to Projects List
         </RouterLink>
       </div>
     </div>
@@ -171,7 +171,7 @@ const sanitizedRelatedContent = computed(() => {
 
 function formatDate(date?: string): string {
   if (!date) return ''
-  return new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })
+  return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 async function loadProject(id: string): Promise<void> {
@@ -198,8 +198,8 @@ async function loadProject(id: string): Promise<void> {
     project.value = null
     relatedPost.value = null
     applySeo({
-      title: 'Dự Án Không Tồn Tại',
-      description: 'Dự án yêu cầu không tồn tại hoặc đã bị gỡ bỏ.',
+      title: 'Project Not Found',
+      description: 'The requested project does not exist or has been removed.',
       url: `/projects/${id}`,
       noindex: true,
     })

@@ -6,13 +6,13 @@
       <!-- Page Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
-          <span>TIỂU SỬ & KỸ NĂNG</span>
+          <span>BIOGRAPHY & SKILLS</span>
         </div>
         <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
           Hồ Ngọc Thiện <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-indigo-400 to-violet-400">(ThienHN)</span>
         </h1>
         <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed">
-          Hành trình phát triển sự nghiệp, kinh nghiệm thực chiến, bằng cấp chuyên môn và định hướng kiến trúc phần mềm.
+          Career background, technical skill matrix, work history, academic credentials, and software architecture philosophy.
         </p>
       </div>
 
@@ -58,7 +58,7 @@
 
             <div v-if="about?.resumeUrl" class="w-full pt-2">
               <RouterLink to="/cv" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 font-bold text-sm block hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all">
-                Xem & Tải CV
+                View & Download CV
               </RouterLink>
             </div>
           </div>
@@ -66,12 +66,12 @@
           <!-- Right Bio Narrative -->
           <div class="lg:col-span-8 glass-panel p-6 sm:p-8 border border-cyber-border/30 space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-white/10">
-              <h2 class="text-xl font-bold text-white">Giới Thiệu Tổng Quan</h2>
+              <h2 class="text-xl font-bold text-white">Biography Overview</h2>
               <span class="text-xs font-mono text-slate-400">#BIO_OVERVIEW</span>
             </div>
 
             <p class="text-slate-300 text-base leading-relaxed">
-              {{ about?.bio || 'Lập trình viên Full Stack nhiệt huyết với niềm đam mê xây dựng các sản phẩm công nghệ hiện đại, chất lượng cao, tối ưu cả về mặt giao diện lẫn hệ thống xử lý phía sau.' }}
+              {{ about?.bio || 'Passionate Full Stack Software Engineer specializing in modern Web applications, performance engineering, scalable system design, and high-impact user experiences.' }}
             </p>
           </div>
         </div>
@@ -79,7 +79,7 @@
         <!-- Skills Matrix -->
         <div v-if="about?.skills?.length" class="glass-panel p-6 sm:p-8 border border-cyber-border/30 space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
-            <h2 class="text-xl font-bold text-white">Ma Trận Kỹ Năng Kỹ Thuật</h2>
+            <h2 class="text-xl font-bold text-white">Technical Skill Matrix</h2>
             <span class="text-xs font-mono text-slate-400">#CORE_SKILLS</span>
           </div>
 
@@ -98,7 +98,7 @@
         <!-- Experience Timeline -->
         <div v-if="about?.experience?.length" class="space-y-4">
           <div class="glass-panel p-6 border border-cyber-border/30 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-white">Kinh Nghiệm Làm Việc</h2>
+            <h2 class="text-xl font-bold text-white">Work Experience</h2>
             <span class="text-xs font-mono text-slate-400">#EXPERIENCE</span>
           </div>
 
@@ -114,7 +114,7 @@
                   <span class="text-xs font-mono text-cyber-cyan">{{ exp.company }}</span>
                 </div>
                 <span class="text-xs font-mono text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                  {{ exp.startDate }} – {{ exp.endDate || 'Hiện tại' }}
+                  {{ exp.startDate }} – {{ exp.endDate || 'Present' }}
                 </span>
               </div>
 
@@ -127,7 +127,7 @@
         <!-- Education -->
         <div v-if="about?.education?.length" class="space-y-4">
           <div class="glass-panel p-6 border border-cyber-border/30 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-white">Học Vấn & Đào Tạo</h2>
+            <h2 class="text-xl font-bold text-white">Education & Training</h2>
             <span class="text-xs font-mono text-slate-400">#EDUCATION</span>
           </div>
 
@@ -143,7 +143,7 @@
                   <span class="text-xs font-mono text-indigo-400">{{ edu.institution }}</span>
                 </div>
                 <span class="text-xs font-mono text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                  {{ edu.startDate }} – {{ edu.endDate || 'Hiện tại' }}
+                  {{ edu.startDate }} – {{ edu.endDate || 'Present' }}
                 </span>
               </div>
               <p v-if="edu.gpa" class="text-xs font-mono text-slate-300">GPA: {{ edu.gpa }}</p>
@@ -154,7 +154,7 @@
         <!-- Licenses & Certifications -->
         <div v-if="licensesCertifications.length" class="space-y-4">
           <div class="glass-panel p-6 border border-cyber-border/30 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-white">Chứng Chỉ & Bằng Cấp</h2>
+            <h2 class="text-xl font-bold text-white">Licenses & Certifications</h2>
             <span class="text-xs font-mono text-slate-400">#CERTIFICATIONS</span>
           </div>
 
@@ -167,7 +167,7 @@
               <h3 class="text-base font-bold text-white">{{ item.name }}</h3>
               <p v-if="item.issuer" class="text-xs font-mono text-violet-400">{{ item.issuer }}</p>
               <p v-if="item.issueDate || item.expirationDate" class="text-xs font-mono text-slate-400">
-                {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'Không thời hạn' }}
+                {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No Expiration' }}
               </p>
               <a
                 v-if="item.credentialUrl"
@@ -176,7 +176,7 @@
                 rel="noopener noreferrer"
                 class="inline-block text-xs font-mono text-cyber-cyan hover:underline pt-1"
               >
-                Xác minh chứng chỉ ↗
+                Verify Credential ↗
               </a>
             </div>
           </div>

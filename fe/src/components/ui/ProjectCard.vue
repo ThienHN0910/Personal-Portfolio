@@ -180,7 +180,7 @@ const actionItems = computed<CardAction[]>(() => {
   if (props.project._id) {
     actions.push({
       key: 'detail',
-      label: 'Chi tiết dự án',
+      label: 'Project Case Study',
       icon: 'detail',
       to: `/projects/${props.project.slug || props.project._id}`,
     })
@@ -189,7 +189,7 @@ const actionItems = computed<CardAction[]>(() => {
   if (props.project.relatedBlogId) {
     actions.push({
       key: 'blog',
-      label: 'Bài viết liên quan',
+      label: 'Related Technical Article',
       icon: 'article',
       to: `/blog/${props.project.relatedBlogId}`,
     })
@@ -207,7 +207,7 @@ const actionItems = computed<CardAction[]>(() => {
   if (props.project.liveUrl) {
     actions.push({
       key: 'live',
-      label: 'Trực tiếp Live Demo',
+      label: 'Live Production Demo',
       icon: 'external',
       href: props.project.liveUrl,
     })

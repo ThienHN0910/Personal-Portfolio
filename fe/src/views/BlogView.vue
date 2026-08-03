@@ -6,13 +6,13 @@
       <!-- Page Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
-          <span>CHIA SẺ KỸ THUẬT</span>
+          <span>TECHNICAL ARTICLES</span>
         </div>
         <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Bài Viết & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-indigo-400 to-violet-400">Góc Chia Sẻ</span>
+          Articles & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-indigo-400 to-violet-400">Engineering Insights</span>
         </h1>
         <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed">
-          Tổng hợp các bài viết phân tích chuyên sâu về Vue 3, TypeScript, tối ưu hiệu năng web, kiến trúc phần mềm và trải nghiệm lập trình của Hồ Ngọc Thiện.
+          In-depth articles covering Vue 3, TypeScript, web performance tuning, software architecture, and full-stack engineering practices by Hồ Ngọc Thiện (ThienHN).
         </p>
       </div>
 
@@ -25,7 +25,7 @@
           <input
             v-model="searchQuery"
             type="text"
-            placeholder="Tìm kiếm bài viết, chủ đề, thẻ (Vue 3, TypeScript, Performance...)"
+            placeholder="Search articles, topics, tags (Vue 3, TypeScript, Performance...)"
             class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
           />
         </div>
@@ -37,7 +37,7 @@
             :class="activeCategory === '' ? 'bg-cyber-cyan/20 text-cyber-cyan border-cyber-cyan/50 font-bold' : 'bg-white/5 text-slate-300 border-white/10 hover:border-white/20'"
             @click="activeCategory = ''"
           >
-            Tất Cả
+            All
           </button>
           <button
             v-for="category in blogCategoryOptions"
@@ -70,14 +70,14 @@
 
       <!-- Empty State -->
       <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono">
-        Không tìm thấy bài viết nào phù hợp.
+        No articles found matching the selected search query or category.
       </div>
 
       <!-- Infinite Scroll Sentinel -->
       <div ref="sentinelRef" class="flex justify-center py-8">
         <div v-if="hasMorePosts || loadingMore" class="glass-panel px-6 py-3 flex items-center gap-3 text-sm text-slate-300 font-mono">
           <LoadingSpinner v-if="loadingMore" />
-          <span>{{ loadingMore ? 'Đang tải thêm bài viết...' : 'Cuộn xuống để xem thêm' }}</span>
+          <span>{{ loadingMore ? 'Loading more articles...' : 'Scroll to load more' }}</span>
         </div>
       </div>
     </div>

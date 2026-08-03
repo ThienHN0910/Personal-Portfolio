@@ -83,11 +83,11 @@ import { ref } from 'vue'
 const isMobileMenuOpen = ref(false)
 
 const navLinks = [
-  { to: '/', label: 'Trang Chủ' },
-  { to: '/about', label: 'Giới Thiệu' },
-  { to: '/projects', label: 'Dự Án' },
-  { to: '/blog', label: 'Bài Viết' },
+  { to: '/', label: 'Home' },
+  { to: '/about', label: 'About' },
+  { to: '/projects', label: 'Projects' },
+  { to: '/blog', label: 'Articles' },
   { to: '/cv', label: 'CV' },
-  { to: '/contact', label: 'Liên Hệ' },
+  { to: '/contact', label: 'Contact' },
 ]
 </script>

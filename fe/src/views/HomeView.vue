@@ -11,8 +11,8 @@
       <div class="glass-panel p-6 sm:p-8 border border-cyber-border/30 shadow-glass-card">
         <div class="flex items-center justify-between gap-3 mb-6">
           <div>
-            <div class="font-mono text-xs text-cyber-cyan uppercase tracking-wider font-semibold">TỔNG QUAN HỆ THỐNG</div>
-            <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">Định Hướng Chuyên Môn & Năng Lực</h2>
+            <div class="font-mono text-xs text-cyber-cyan uppercase tracking-wider font-semibold">SYSTEM OVERVIEW</div>
+            <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">Core Competencies & Navigation</h2>
           </div>
           <div class="hidden sm:block font-mono text-xs text-slate-500 uppercase">#THIENHN_PORTFOLIO</div>
         </div>
@@ -29,11 +29,11 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                 </svg>
               </div>
-              <h3 class="text-lg font-bold text-white group-hover:text-cyber-cyan transition-colors">Tiểu Sử & Kỹ Năng</h3>
-              <p class="mt-2 text-sm text-slate-400 leading-relaxed">Khám phá hành trình sự nghiệp, kinh nghiệm thực tế và ma trận kỹ năng kỹ thuật của Hồ Ngọc Thiện.</p>
+              <h3 class="text-lg font-bold text-white group-hover:text-cyber-cyan transition-colors">Biography & Skills</h3>
+              <p class="mt-2 text-sm text-slate-400 leading-relaxed">Discover Hồ Ngọc Thiện's career journey, hands-on experience, and technical skill matrix.</p>
             </div>
             <div class="mt-4 flex items-center gap-2 text-xs font-mono text-cyber-cyan group-hover:translate-x-1 transition-transform">
-              <span>Xem chi tiết</span>
+              <span>Read Details</span>
               <span>→</span>
             </div>
           </RouterLink>
@@ -49,11 +49,11 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
-              <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors">Dự Án Đã Triển Khai</h3>
-              <p class="mt-2 text-sm text-slate-400 leading-relaxed">Tổng hợp các sản phẩm phần mềm, ứng dụng web thực tế kèm mô tả kiến trúc và đường dẫn xem trực tiếp.</p>
+              <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors">Engineering Projects</h3>
+              <p class="mt-2 text-sm text-slate-400 leading-relaxed">Explore software applications, architecture case studies, and live production deployments.</p>
             </div>
             <div class="mt-4 flex items-center gap-2 text-xs font-mono text-indigo-400 group-hover:translate-x-1 transition-transform">
-              <span>Khám phá ngay</span>
+              <span>Explore Projects</span>
               <span>→</span>
             </div>
           </RouterLink>
@@ -69,11 +69,11 @@
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
               </div>
-              <h3 class="text-lg font-bold text-white group-hover:text-violet-400 transition-colors">Hợp Tác & Thảo Luận</h3>
-              <p class="mt-2 text-slate-400 text-sm leading-relaxed">Liên hệ trực tiếp để trao đổi công việc, tư vấn thiết kế kiến trúc phần mềm hoặc các cơ hội hợp tác mới.</p>
+              <h3 class="text-lg font-bold text-white group-hover:text-violet-400 transition-colors">Get In Touch</h3>
+              <p class="mt-2 text-slate-400 text-sm leading-relaxed">Reach out directly for project collaborations, software architecture consulting, or technical inquiries.</p>
             </div>
             <div class="mt-4 flex items-center gap-2 text-xs font-mono text-violet-400 group-hover:translate-x-1 transition-transform">
-              <span>Gửi tin nhắn</span>
+              <span>Send Message</span>
               <span>→</span>
             </div>
           </RouterLink>
