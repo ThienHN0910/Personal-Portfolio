@@ -1,7 +1,7 @@
 <template>
   <RouterLink
     :to="`/blog/${post.slug || post._id}`"
-    class="glass-panel p-5 border border-cyber-border/30 hover:border-cyber-cyan/50 hover:shadow-cyan-glow transition-all duration-300 flex flex-col justify-between group cursor-pointer h-full"
+    class="bento-card bento-card--stark border-2 border-cyber-cyan/30 hover:border-cyber-cyan shadow-[4px_4px_0px_0px_rgba(0,242,255,0.2)] hover:shadow-[6px_6px_0px_0px_#00f2ff] transition-all duration-300 flex flex-col justify-between group cursor-pointer h-full"
     :class="[`blog-card--${layout}`]"
   >
     <!-- Media / Cover Image -->
@@ -28,11 +28,6 @@
           </svg>
         </div>
       </template>
-
-      <!-- Overlay Code Badge -->
-      <span class="absolute top-3 left-3 z-10 text-[10px] font-mono tracking-wider px-2 py-0.5 rounded bg-slate-950/80 text-cyber-cyan border border-cyber-cyan/30">
-        #0x{{ postCode }}
-      </span>
     </div>
 
     <!-- Body -->
@@ -92,8 +87,6 @@ const props = withDefaults(
     layout: 'standard',
   },
 )
-
-const postCode = computed(() => (props.post._id ? props.post._id.slice(-4).toUpperCase() : '0000'))
 
 const mediaClass = computed(() => {
   if (props.layout === 'featured') return 'h-56 md:h-64'

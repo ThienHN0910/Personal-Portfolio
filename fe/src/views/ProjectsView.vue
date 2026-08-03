@@ -60,11 +60,14 @@
       <!-- Projects Grid Showcase -->
       <div
         v-else-if="projectsStore.projects.length"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+        class="bento-grid"
       >
         <div
           v-for="(project, index) in projectsStore.projects"
           :key="project._id"
+          :class="[
+            index % 7 === 0 ? 'col-span-12 lg:col-span-8' : (index % 7 === 3 ? 'col-span-12 lg:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4')
+          ]"
         >
           <ProjectCard :project="project" :layout="getMasonryLayout(index)" />
         </div>

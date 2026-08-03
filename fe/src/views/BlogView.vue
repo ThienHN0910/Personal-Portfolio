@@ -58,11 +58,14 @@
       <!-- Blog Grid -->
       <div
         v-else-if="blogStore.posts.length"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
+        class="bento-grid"
       >
         <div
           v-for="(post, index) in blogStore.posts"
           :key="post._id"
+          :class="[
+            index % 5 === 0 ? 'col-span-12 lg:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4'
+          ]"
         >
           <BlogCard :post="post" :layout="getMasonryLayout(index)" />
         </div>

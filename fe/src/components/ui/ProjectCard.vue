@@ -1,9 +1,9 @@
 <template>
   <article
-    class="glass-panel p-5 border border-cyber-border/30 hover:border-cyber-cyan/50 hover:shadow-cyan-glow transition-all duration-300 flex flex-col justify-between group cursor-pointer h-full"
+    class="bento-card bento-card--stark border-2 border-cyber-cyan/30 hover:border-cyber-cyan shadow-[4px_4px_0px_0px_rgba(0,242,255,0.2)] hover:shadow-[6px_6px_0px_0px_#00f2ff] transition-all duration-300 flex flex-col justify-between group cursor-pointer h-full"
     :class="[
       `project-card--${layout}`,
-      { 'border-cyber-cyan/40 bg-cyber-cyan/5': project.featured }
+      { 'border-cyber-cyan/60 bg-cyber-cyan/5 shadow-[6px_6px_0px_0px_#00f2ff]': project.featured }
     ]"
     role="link"
     tabindex="0"
@@ -37,11 +37,8 @@
       </template>
 
       <!-- Overlay Badges -->
-      <div class="absolute top-3 left-3 z-10 flex items-center gap-2">
-        <span class="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded bg-slate-950/80 text-cyber-cyan border border-cyber-cyan/30">
-          #0x{{ projectCode }}
-        </span>
-        <span v-if="project.featured" class="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">
+      <div v-if="project.featured" class="absolute top-3 left-3 z-10 flex items-center gap-2">
+        <span class="text-[10px] font-mono tracking-wider px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">
           ★ FEATURED
         </span>
       </div>
@@ -149,7 +146,6 @@ type CardAction = {
 
 const categoryPreview = computed(() => (props.project.categories || []).slice(0, CATEGORY_PREVIEW_LIMIT))
 const categoryOverflowCount = computed(() => Math.max((props.project.categories || []).length - CATEGORY_PREVIEW_LIMIT, 0))
-const projectCode = computed(() => (props.project._id ? props.project._id.slice(-4).toUpperCase() : '0000'))
 
 const mediaClass = computed(() => {
   if (props.layout === 'featured') return 'h-56 md:h-64'

@@ -58,19 +58,72 @@ body {
 
 /* Glass panel base */
 .glass-panel {
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.75), rgba(11, 15, 25, 0.85));
-  border: 1px solid var(--os-border);
-  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.82), rgba(9, 14, 26, 0.92));
+  border: 2px solid var(--os-border);
+  border-radius: 18px;
   backdrop-filter: blur(var(--os-backdrop-blur));
   -webkit-backdrop-filter: blur(var(--os-backdrop-blur));
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  box-shadow: 4px 4px 0px 0px rgba(0, 242, 255, 0.18);
   position: relative;
   overflow: hidden;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  transition: border-color 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-panel:hover {
   border-color: var(--os-border-hover);
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px 0px rgba(0, 242, 255, 0.35);
+}
+
+/* Bento Grid Utilities */
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+
+.bento-card {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.9), rgba(9, 14, 26, 0.95));
+  border: 2px solid rgba(0, 242, 255, 0.25);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+  box-shadow: 4px 4px 0px 0px rgba(0, 242, 255, 0.2);
+
+  &:hover {
+    border-color: rgba(0, 242, 255, 0.7);
+    transform: translate(-3px, -3px);
+    box-shadow: 7px 7px 0px 0px rgba(0, 242, 255, 0.45);
+  }
+}
+
+.bento-card--stark {
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 4px 4px 0px 0px rgba(255, 255, 255, 0.15);
+
+  &:hover {
+    border-color: #00F2FF;
+    box-shadow: 6px 6px 0px 0px #00F2FF;
+  }
+}
+
+.brutal-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid rgba(0, 242, 255, 0.4);
+  background: rgba(0, 242, 255, 0.08);
+  color: #00F2FF;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  box-shadow: 2px 2px 0px 0px rgba(0, 242, 255, 0.3);
 }
 
 /* Cut-corner (diagonal chamfer) */
