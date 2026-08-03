@@ -117,7 +117,7 @@ export function applySeo(meta: SeoMetaInput = {}): void {
   const canonicalUrl = toAbsoluteUrl(meta.url || (typeof window !== 'undefined' ? window.location.pathname : '/'))
   const imageUrl = toAbsoluteUrl(meta.image || DEFAULT_IMAGE)
   const seoType: SeoType = meta.type || 'website'
-  const robotsContent = meta.noindex
+  const robotsContent = meta.noindex === true
     ? 'noindex, nofollow'
     : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'
 

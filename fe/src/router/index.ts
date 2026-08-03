@@ -98,6 +98,17 @@ const router = createRouter({
       },
     },
     {
+      path: '/privacy',
+      name: 'privacy',
+      component: () => import('@/views/PrivacyView.vue'),
+      meta: {
+        seo: {
+          title: 'Privacy Policy',
+          description: 'Privacy policy and data protection guidelines.',
+        } satisfies RouteSeoMeta,
+      },
+    },
+    {
       path: '/auth/callback',
       name: 'auth-callback',
       component: () => import('@/views/AuthCallbackView.vue'),
@@ -124,6 +135,12 @@ const router = createRouter({
           path: '',
           name: 'admin',
           component: () => import('@/views/admin/AdminDashboard.vue'),
+        },
+        {
+          path: 'analytics',
+          name: 'admin-analytics',
+          component: () => import('@/views/admin/AdminAnalytics.vue'),
+          meta: { requiresAuth: true },
         },
         {
           path: 'projects',
@@ -185,6 +202,13 @@ router.afterEach((to) => {
     ...routeSeo,
     url: to.path,
   })
+
+  if (!to.path.startsWith('/admin') && !to.path.startsWith('/auth/callback')) {
+    import('@/stores/analytics').then(({ useAnalyticsStore }) => {
+      const analyticsStore = useAnalyticsStore()
+      void analyticsStore.trackVisit(to.path)
+    }).catch(() => {})
+  }
 })
 
 export default router

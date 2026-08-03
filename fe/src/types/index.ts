@@ -154,3 +154,20 @@ export interface AuthState {
   token: string | null
   isAuthenticated: boolean
 }
+
+export interface VisitorLogItem {
+  _id: string
+  ip: string
+  path: string
+  userAgent?: string
+  referrer?: string
+  createdAt: string
+}
+
+export interface AnalyticsStats {
+  totalViews: number
+  uniqueVisitors: number
+  viewsPast24h: number
+  topPages: Array<{ path: string; count: number }>
+}
+

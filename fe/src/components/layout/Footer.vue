@@ -69,8 +69,10 @@
 
       <!-- Bottom Credits & Back to Top -->
       <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-        <div class="flex items-center gap-2">
+        <div class="flex items-center gap-3">
           <span>© {{ currentYear }} {{ brandName }}. Built with Vue 3 & TypeScript.</span>
+          <span>•</span>
+          <RouterLink to="/privacy" class="hover:text-cyber-cyan transition-colors">Privacy Policy</RouterLink>
         </div>
 
         <button
@@ -118,6 +120,7 @@ const navLinks = [
   { to: '/blog', label: 'Articles' },
   { to: '/cv', label: 'CV' },
   { to: '/contact', label: 'Contact' },
+  { to: '/privacy', label: 'Privacy Policy' },
 ]
 
 function scrollToTop(): void {

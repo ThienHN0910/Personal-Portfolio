@@ -193,15 +193,16 @@ async function loadProject(id: string): Promise<void> {
     applySeo({
       ...getProjectDetailSeoMeta(fetchedProject, relatedPost.value),
       url: `/projects/${fetchedProject.slug || id}`,
+      noindex: false,
     })
   } else {
     project.value = null
     relatedPost.value = null
     applySeo({
-      title: 'Project Not Found',
-      description: 'The requested project does not exist or has been removed.',
+      title: 'Project Details',
+      description: 'Project case study details.',
       url: `/projects/${id}`,
-      noindex: true,
+      noindex: false,
     })
   }
 

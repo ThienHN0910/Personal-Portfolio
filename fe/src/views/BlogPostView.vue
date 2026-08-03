@@ -98,14 +98,15 @@ async function loadPost(id: string): Promise<void> {
     applySeo({
       ...getBlogDetailSeoMeta(fetchedPost),
       url: `/blog/${fetchedPost.slug || id}`,
+      noindex: false,
     })
   } else {
     post.value = null
     applySeo({
-      title: 'Article Not Found',
-      description: 'The requested article does not exist or has been removed.',
+      title: 'Article Details',
+      description: 'Technical article details.',
       url: `/blog/${id}`,
-      noindex: true,
+      noindex: false,
     })
   }
 
