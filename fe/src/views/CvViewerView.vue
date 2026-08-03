@@ -1,33 +1,64 @@
 <template>
-  <div class="section min-h-screen pt-24">
-    <div class="container max-w-5xl">
-      <RouterLink to="/about" class="inline-flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors text-sm mb-6">
-        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-        </svg>
-        Back to About
+  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
+
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+      <!-- Breadcrumb Link -->
+      <RouterLink to="/about" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyber-cyan transition-colors text-sm font-mono">
+        <span>← Quay lại Giới Thiệu</span>
       </RouterLink>
 
-      <h1 class="section-title mb-3">My <span class="highlight">CV</span></h1>
-      <p class="section-subtitle mb-8">Xem CV PDF ngay tren trang nay.</p>
+      <!-- Page Header -->
+      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
+          <span>HỒ SƠ NĂNG LỰC</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          Curriculum Vitae <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">(CV)</span>
+        </h1>
+        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed">
+          Xem trực tiếp bản CV chính thức của Hồ Ngọc Thiện (ThienHN) hoặc tải về tệp PDF.
+        </p>
+      </div>
 
       <LoadingSpinner v-if="loading" />
 
-      <div v-else-if="!resumeUrl" class="card p-6 text-gray-400">
-        CV chưa được cập nhật.
+      <div v-else-if="!resumeUrl" class="glass-panel p-8 text-center text-slate-400 font-mono">
+        Bản CV chưa được cập nhật trong hệ thống.
       </div>
 
-      <div v-else class="space-y-4">
-        <div class="card p-4 flex flex-wrap items-center justify-between gap-3">
-          <p class="text-sm text-gray-400">{{ totalPages }} page(s)</p>
-          <a :href="resumeUrl" download class="btn btn--secondary btn--sm">Download CV</a>
+      <div v-else class="space-y-6">
+        <!-- PDF Actions Header Bar -->
+        <div class="glass-panel p-4 border border-cyber-border/30 flex flex-wrap items-center justify-between gap-4">
+          <div class="flex items-center gap-2 text-xs font-mono text-slate-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Tổng số trang: {{ totalPages }} trang</span>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <a
+              :href="resumeUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 text-xs font-mono font-semibold hover:bg-white/10 transition-all"
+            >
+              Mở Tab Mới ↗
+            </a>
+            <a
+              :href="resumeUrl"
+              download
+              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 text-xs font-mono font-bold hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all"
+            >
+              Tải CV (PDF) ↓
+            </a>
+          </div>
         </div>
 
-        <div v-if="renderError" class="card p-6 text-red-300">
+        <div v-if="renderError" class="glass-panel p-6 border border-rose-500/40 bg-rose-950/20 text-rose-300 text-sm font-mono">
           {{ renderError }}
         </div>
 
-        <div ref="pagesContainer" class="space-y-5" />
+        <div ref="pagesContainer" class="space-y-6" />
       </div>
     </div>
   </div>
@@ -92,6 +123,7 @@ async function renderPage(pageNumber: number, wrapper: HTMLDivElement): Promise<
     contextCanvas.style.height = 'auto'
     contextCanvas.style.display = 'block'
     contextCanvas.style.margin = '0 auto'
+    contextCanvas.style.borderRadius = '0.75rem'
 
     const context = contextCanvas.getContext('2d')
     if (!context) return
@@ -103,8 +135,8 @@ async function renderPage(pageNumber: number, wrapper: HTMLDivElement): Promise<
 
     wrapper.innerHTML = ''
     const title = document.createElement('p')
-    title.className = 'text-xs text-gray-500 mb-3'
-    title.textContent = `Page ${pageNumber}`
+    title.className = 'text-xs font-mono text-slate-400 mb-3'
+    title.textContent = `Trang ${pageNumber} / ${totalPages.value}`
     wrapper.appendChild(title)
     wrapper.appendChild(contextCanvas)
 
@@ -148,15 +180,15 @@ async function renderPdf(url: string): Promise<void> {
 
     for (let pageNumber = 1; pageNumber <= activePdf.numPages; pageNumber += 1) {
       const wrapper = document.createElement('div')
-      wrapper.className = 'card p-3 overflow-x-auto'
+      wrapper.className = 'glass-panel p-4 overflow-x-auto border border-cyber-border/30'
       wrapper.dataset.page = String(pageNumber)
 
       const title = document.createElement('p')
-      title.className = 'text-xs text-gray-500 mb-3'
-      title.textContent = `Page ${pageNumber} (loading...)`
+      title.className = 'text-xs font-mono text-slate-400 mb-3'
+      title.textContent = `Trang ${pageNumber} (Đang tải...)`
 
       const skeleton = document.createElement('div')
-      skeleton.className = 'h-52 rounded-lg bg-slate-800/70 animate-pulse'
+      skeleton.className = 'h-96 rounded-xl bg-slate-900 animate-pulse'
 
       wrapper.appendChild(title)
       wrapper.appendChild(skeleton)
@@ -169,7 +201,7 @@ async function renderPdf(url: string): Promise<void> {
       }
     }
   } catch {
-    renderError.value = 'Khong the hien thi file PDF. Vui long thu mo bang tab moi.'
+    renderError.value = 'Không thể hiển thị tệp PDF trực tiếp. Vui lòng mở bằng nút "Mở Tab Mới" ở trên.'
   }
 }
 

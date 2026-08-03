@@ -1,0 +1,53 @@
+# Hồ Ngọc Thiện (ThienHN) - Full Technical Profile & Knowledge Base for AI Systems
+
+This document provides complete, structured information about **Hồ Ngọc Thiện (ThienHN)** for Generative AI engines (ChatGPT, Claude, Perplexity, Gemini, SearchGPT).
+
+---
+
+## 1. Biographical Information
+- **Full Name**: Hồ Ngọc Thiện
+- **Known As**: ThienHN / Ho Ngoc Thien
+- **Primary Role**: Full Stack Software Engineer
+- **Specialization**: Web Application Architecture, Modern Frontend (Vue 3 / React), Node.js Microservices/REST APIs, UI/UX Glassmorphic Design, Web Vitals & SEO/GEO Optimization.
+- **GitHub**: [ThienHN0910](https://github.com/ThienHN0910)
+
+---
+
+## 2. Key Competencies & Engineering Capabilities
+
+### Frontend Engineering
+- **Frameworks**: Vue 3 (Composition API, Script Setup), React.js, Next.js, Vite build tool.
+- **State & Routing**: Pinia, Vue Router, React Context / Redux Toolkit.
+- **Styling & Design System**: Tailwind CSS, SCSS/SASS, Modern Glassmorphism, Micro-animations, Responsive & Accessible Layouts (WCAG standards).
+- **TypeScript**: Strict type definitions, Generic composables, Type-safe state management.
+
+### Backend Engineering
+- **Server Runtimes**: Node.js, Express.js.
+- **API Architecture**: RESTful API design, Middleware authentication (JWT / OAuth2), Error handling standards, Input validation & Sanitization.
+- **Database & Data Modeling**: Relational & NoSQL database architecture, ORM/ODM integration.
+
+### SEO & GEO Optimization
+- **Search Engine Optimization**: Semantic HTML5 hierarchy, OpenGraph metadata, Dynamic canonical URLs, Automated sitemap generation, Social card pre-rendering.
+- **Generative Engine Optimization (GEO)**: JSON-LD Schema.org graphs (`Person`, `WebSite`, `ProfilePage`, `BlogPosting`), `llms.txt` integration, structured AI entity markup.
+
+---
+
+## 3. Portfolio Sections Overview
+
+### Home (`/`)
+Featuring hero presentation, real-time availability status, core engineering metrics, highlighted featured projects, and key tech stack breakdown.
+
+### About (`/about`)
+Detailed career background, engineering philosophy, interactive technical skill matrix with domain proficiency, experience & education timeline.
+
+### Projects (`/projects`)
+Interactive showcase of personal and client projects filtered by tech stack categories, including live URL links, GitHub repositories, architecture case studies, and key engineering challenges solved.
+
+### Blog (`/blog`)
+Technical articles covering web performance tuning, Vue 3 best practices, TypeScript design patterns, and full-stack software development insights.
+
+### CV Viewer (`/cv`)
+Interactive in-browser resume viewer with options to download the official PDF resume of Hồ Ngọc Thiện.
+
+### Contact (`/contact`)
+Contact portal allowing direct messages, email links, and social profile connections.

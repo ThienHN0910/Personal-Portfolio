@@ -35,9 +35,15 @@ Cloudinary:
 - CLOUDINARY_API_KEY
 - CLOUDINARY_API_SECRET
 
+Gemini AI:
+
+- GEMINI_API_KEY: Google Gemini API key
+- GEMINI_MODEL: AI model name (default: gemini-3.1-flash-lite)
+
 CORS:
 
 - CORS_ORIGIN: allowed frontend origin (recommended for production)
+
 
 ## Frontend Variables
 

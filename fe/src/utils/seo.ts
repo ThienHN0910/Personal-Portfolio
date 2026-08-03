@@ -8,14 +8,19 @@ export interface SeoMetaInput {
   type?: SeoType
   keywords?: string
   noindex?: boolean
+  author?: string
+  datePublished?: string
+  dateModified?: string
 }
 
-const SITE_NAME = 'ThienHN Portfolio'
+const AUTHOR_NAME = 'Hồ Ngọc Thiện (ThienHN)'
+const SITE_NAME = 'Hồ Ngọc Thiện (ThienHN) - Personal Portfolio'
 const DEFAULT_TITLE = SITE_NAME
-const DEFAULT_DESCRIPTION = 'Personal portfolio showcasing projects, technical skills, and blog posts.'
+const DEFAULT_DESCRIPTION =
+  'Trang cá nhân của Hồ Ngọc Thiện (ThienHN) - Full Stack Software Engineer chuyên về Vue, React, Node.js, TypeScript và Kiến trúc phần mềm.'
 const DEFAULT_IMAGE = '/logo0004Croped.png'
 const DEFAULT_KEYWORDS =
-  'portfolio, full stack developer, web developer, vue portfolio, javascript, typescript, projects, blog'
+  'Hồ Ngọc Thiện, ThienHN, Full Stack Engineer, Web Developer, Vue.js, Node.js, TypeScript, React, Portfolio, Software Architecture'
 
 function resolveSiteOrigin(): string {
   const configured = import.meta.env.VITE_SITE_URL?.trim()
@@ -79,6 +84,18 @@ function upsertCanonicalLink(href: string): void {
   link.setAttribute('href', href)
 }
 
+function upsertJsonLdSchema(data: object): void {
+  const id = 'json-ld-schema'
+  let script = document.head.querySelector(`#${id}`) as HTMLScriptElement | null
+  if (!script) {
+    script = document.createElement('script')
+    script.setAttribute('id', id)
+    script.setAttribute('type', 'application/ld+json')
+    document.head.appendChild(script)
+  }
+  script.textContent = JSON.stringify(data, null, 2)
+}
+
 function normalizeDescription(description: string): string {
   const compact = description.replace(/\s+/g, ' ').trim()
   if (!compact) return DEFAULT_DESCRIPTION
@@ -88,7 +105,7 @@ function normalizeDescription(description: string): string {
 
 function buildTitle(title?: string): string {
   if (!title) return DEFAULT_TITLE
-  if (title.includes(SITE_NAME)) return title
+  if (title.includes('Hồ Ngọc Thiện') || title.includes('ThienHN')) return title
   return `${title} | ${SITE_NAME}`
 }
 
@@ -109,6 +126,7 @@ export function applySeo(meta: SeoMetaInput = {}): void {
   upsertCanonicalLink(canonicalUrl)
   upsertMetaByName('description', pageDescription)
   upsertMetaByName('keywords', meta.keywords || DEFAULT_KEYWORDS)
+  upsertMetaByName('author', AUTHOR_NAME)
   upsertMetaByName('robots', robotsContent)
 
   upsertMetaByProperty('og:type', seoType)
@@ -124,4 +142,61 @@ export function applySeo(meta: SeoMetaInput = {}): void {
   upsertMetaByName('twitter:title', pageTitle)
   upsertMetaByName('twitter:description', pageDescription)
   upsertMetaByName('twitter:image', imageUrl)
+
+  // GEO JSON-LD Structured Data Schema.org
+  const origin = resolveSiteOrigin()
+  const personEntity = {
+    '@type': 'Person',
+    '@id': `${origin}/#person`,
+    name: 'Hồ Ngọc Thiện',
+    alternateName: ['ThienHN', 'Ho Ngoc Thien'],
+    jobTitle: 'Full Stack Software Engineer',
+    description: 'Full Stack Software Engineer chuyên nghiệp phát triển các ứng dụng Web hiện đại, tối ưu hiệu năng và trải nghiệm người dùng.',
+    url: origin,
+    image: imageUrl,
+    sameAs: [
+      'https://github.com/ThienHN0910',
+    ],
+  }
+
+  const websiteEntity = {
+    '@type': 'WebSite',
+    '@id': `${origin}/#website`,
+    url: origin,
+    name: SITE_NAME,
+    publisher: { '@id': `${origin}/#person` },
+    inLanguage: 'vi-VN',
+  }
+
+  let mainEntity: object = {
+    '@type': 'ProfilePage',
+    '@id': `${canonicalUrl}#webpage`,
+    url: canonicalUrl,
+    name: pageTitle,
+    description: pageDescription,
+    isPartOf: { '@id': `${origin}/#website` },
+    mainEntity: { '@id': `${origin}/#person` },
+  }
+
+  if (seoType === 'article') {
+    mainEntity = {
+      '@type': 'BlogPosting',
+      '@id': `${canonicalUrl}#article`,
+      url: canonicalUrl,
+      headline: pageTitle,
+      description: pageDescription,
+      image: imageUrl,
+      author: personEntity,
+      publisher: personEntity,
+      mainEntityOfPage: canonicalUrl,
+      datePublished: meta.datePublished || new Date().toISOString(),
+      dateModified: meta.dateModified || meta.datePublished || new Date().toISOString(),
+    }
+  }
+
+  upsertJsonLdSchema({
+    '@context': 'https://schema.org',
+    '@graph': [personEntity, websiteEntity, mainEntity],
+  })
 }
+

@@ -1,51 +1,87 @@
 <template>
-  <div class="section min-h-screen pt-24 relative overflow-hidden bg-[#0c1324]">
-    <!-- Background Layers -->
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_36%),radial-gradient(circle_at_85%_20%,rgba(112,0,255,0.08),transparent_28%)] z-0" />
-    <div class="pointer-events-none absolute inset-0 opacity-[0.08] bg-[linear-gradient(rgba(0,242,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(0,242,255,0.8)_1px,transparent_1px)] bg-[size:40px_40px] z-0" />
+  <div class="min-h-screen pt-4 pb-16 relative overflow-hidden">
+    <!-- Ambient Radial Background Gradients -->
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%),radial-gradient(circle_at_85%_25%,rgba(99,102,241,0.08),transparent_30%)] z-0" />
 
-    <div class="container relative z-10 px-6 mx-auto">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-12">
       <!-- Hero Section -->
       <HeroSection :data="homeStore.homeData || {}" />
 
-      <!-- Dashboard Overview Module -->
-      <div class="mt-8 glass-panel cut-corners p-5 md:p-8 bg-surface-glass border border-border-cyan/30 backdrop-blur-md">
+      <!-- Quick Exploration Cards -->
+      <div class="glass-panel p-6 sm:p-8 border border-cyber-border/30 shadow-glass-card">
         <div class="flex items-center justify-between gap-3 mb-6">
           <div>
-            <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase opacity-70">System Modules</div>
-            <h2 class="font-display-os text-xl md:text-2xl uppercase tracking-[0.16em] text-white mt-1">Dashboard Overview</h2>
+            <div class="font-mono text-xs text-cyber-cyan uppercase tracking-wider font-semibold">TỔNG QUAN HỆ THỐNG</div>
+            <h2 class="text-xl sm:text-2xl font-bold text-white mt-1">Định Hướng Chuyên Môn & Năng Lực</h2>
           </div>
-          <div class="font-mono text-[10px] tracking-[0.2em] text-gray-500 uppercase">[HOME_PANEL]</div>
+          <div class="hidden sm:block font-mono text-xs text-slate-500 uppercase">#THIENHN_PORTFOLIO</div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Identity Card -->
-          <div class="glass-panel cut-corners p-6 bg-surface-container-low/50 border border-border-cyan/20 hover:bg-surface-variant/30 transition-all duration-300 group">
-            <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase">Identity</div>
-            <div class="mt-2 text-white font-display-os uppercase text-lg group-hover:text-cyan-300 transition-colors">Profile / Narrative</div>
-            <p class="mt-3 text-sm text-gray-400 font-mono leading-relaxed">System identity and technical direction. Deep dive into the core values and architectural philosophy.</p>
-          </div>
+          <!-- Card 1: About -->
+          <RouterLink
+            to="/about"
+            class="glass-panel p-6 border border-white/10 hover:border-cyber-cyan/50 hover:bg-cyber-cyan/5 transition-all duration-300 group flex flex-col justify-between"
+          >
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan mb-4 group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-white group-hover:text-cyber-cyan transition-colors">Tiểu Sử & Kỹ Năng</h3>
+              <p class="mt-2 text-sm text-slate-400 leading-relaxed">Khám phá hành trình sự nghiệp, kinh nghiệm thực tế và ma trận kỹ năng kỹ thuật của Hồ Ngọc Thiện.</p>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-xs font-mono text-cyber-cyan group-hover:translate-x-1 transition-transform">
+              <span>Xem chi tiết</span>
+              <span>→</span>
+            </div>
+          </RouterLink>
 
-          <!-- Workload Card -->
-          <div class="glass-panel cut-corners p-6 bg-surface-container-low/50 border border-border-cyan/20 hover:bg-surface-variant/30 transition-all duration-300 group">
-            <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase">Workload</div>
-            <div class="mt-2 text-white font-display-os uppercase text-lg group-hover:text-cyan-300 transition-colors">Projects / Blog</div>
-            <p class="mt-3 text-sm text-gray-400 font-mono leading-relaxed">Active modules and latest transmissions. Exploration of code repositories and technical write-ups.</p>
-          </div>
+          <!-- Card 2: Projects -->
+          <RouterLink
+            to="/projects"
+            class="glass-panel p-6 border border-white/10 hover:border-cyber-indigo/50 hover:bg-cyber-indigo/5 transition-all duration-300 group flex flex-col justify-between"
+          >
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mb-4 group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition-colors">Dự Án Đã Triển Khai</h3>
+              <p class="mt-2 text-sm text-slate-400 leading-relaxed">Tổng hợp các sản phẩm phần mềm, ứng dụng web thực tế kèm mô tả kiến trúc và đường dẫn xem trực tiếp.</p>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-xs font-mono text-indigo-400 group-hover:translate-x-1 transition-transform">
+              <span>Khám phá ngay</span>
+              <span>→</span>
+            </div>
+          </RouterLink>
 
-          <!-- Status Card -->
-          <div class="glass-panel cut-corners p-6 bg-primary-container/10 border border-primary-container/30 hover:bg-primary-container/20 transition-all duration-300 group">
-            <div class="font-mono text-[10px] tracking-[0.2em] text-cyan-400 uppercase">Status</div>
-            <div class="mt-2 text-white font-display-os uppercase text-lg group-hover:text-cyan-300 transition-colors">Available</div>
-            <p class="mt-3 text-sm text-gray-400 font-mono leading-relaxed">Currently open for collaboration. Accepting specialized tasks and system-level integrations.</p>
-          </div>
+          <!-- Card 3: Contact & Status -->
+          <RouterLink
+            to="/contact"
+            class="glass-panel p-6 border border-white/10 hover:border-violet-500/50 hover:bg-violet-500/5 transition-all duration-300 group flex flex-col justify-between"
+          >
+            <div>
+              <div class="w-10 h-10 rounded-lg bg-violet-500/10 border border-violet-500/30 flex items-center justify-center text-violet-400 mb-4 group-hover:scale-110 transition-transform">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <h3 class="text-lg font-bold text-white group-hover:text-violet-400 transition-colors">Hợp Tác & Thảo Luận</h3>
+              <p class="mt-2 text-slate-400 text-sm leading-relaxed">Liên hệ trực tiếp để trao đổi công việc, tư vấn thiết kế kiến trúc phần mềm hoặc các cơ hội hợp tác mới.</p>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-xs font-mono text-violet-400 group-hover:translate-x-1 transition-transform">
+              <span>Gửi tin nhắn</span>
+              <span>→</span>
+            </div>
+          </RouterLink>
         </div>
       </div>
 
-      <!-- Featured Projects Section -->
-      <div class="mt-12">
-        <FeaturedProjects />
-      </div>
+      <!-- Featured Projects Showcase -->
+      <FeaturedProjects />
     </div>
   </div>
 </template>
@@ -67,7 +103,6 @@ const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
 
 onMounted(async () => {
-  // Parallel data fetching for performance
   await Promise.all([
     homeStore.fetchHomeData(),
     aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
@@ -75,7 +110,6 @@ onMounted(async () => {
     blogStore.posts.length ? Promise.resolve() : blogStore.fetchPosts(),
   ])
 
-  // Apply dynamic SEO metadata
   applySeo({
     ...getHomeSeoMeta({
       home: homeStore.homeData,
@@ -87,26 +121,3 @@ onMounted(async () => {
   })
 })
 </script>
-
-<style scoped>
-/* Tactical UI Utilities */
-.glass-panel {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-.cut-corners {
-  clip-path: polygon(
-    0 10px, 10px 0, 
-    calc(100% - 10px) 0, 100% 10px, 
-    100% calc(100% - 10px), calc(100% - 10px) 100%, 
-    10px 100%, 0 calc(100% - 10px)
-  );
-}
-
-.font-display-os {
-  font-family: 'Space Grotesk', sans-serif; /* Fallback for Display OS */
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-</style>

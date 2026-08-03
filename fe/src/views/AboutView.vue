@@ -1,203 +1,183 @@
 <template>
-  <div class="section min-h-screen pt-24 relative overflow-hidden">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_36%),radial-gradient(circle_at_80%_20%,rgba(112,0,255,0.08),transparent_28%)]" />
-    <div class="pointer-events-none absolute inset-0 opacity-[0.08] bg-[linear-gradient(rgba(0,242,255,0.8)_1px,transparent_1px),linear-gradient(90deg,rgba(0,242,255,0.8)_1px,transparent_1px)] bg-[size:40px_40px]" />
+  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%),radial-gradient(circle_at_80%_20%,rgba(99,102,241,0.08),transparent_30%)]" />
 
-    <div class="container relative z-10">
-      <div class="glass-panel cut-corners p-6 md:p-8 mb-8">
-        <div class="flex flex-col gap-4">
-          <div class="flex items-center gap-3">
-            <span class="status-dot"></span>
-            <span class="font-mono text-xs tracking-[0.2em] text-cyan-300 uppercase">About</span>
-          </div>
-          <div>
-            <h1 class="section-title mb-3 font-os text-cyan-100 uppercase tracking-[0.16em]">
-              About <span class="highlight">Me</span>
-            </h1>
-            <p class="section-subtitle max-w-2xl text-gray-300">
-              Biography, skills, experience, and credentials.
-            </p>
-          </div>
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+      <!-- Page Header -->
+      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
+          <span>TIỂU SỬ & KỸ NĂNG</span>
         </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          Hồ Ngọc Thiện <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-indigo-400 to-violet-400">(ThienHN)</span>
+        </h1>
+        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed">
+          Hành trình phát triển sự nghiệp, kinh nghiệm thực chiến, bằng cấp chuyên môn và định hướng kiến trúc phần mềm.
+        </p>
       </div>
 
       <LoadingSpinner v-if="loading" />
 
       <template v-else>
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
-          <div class="lg:col-span-4 glass-panel cut-corners p-6">
-            <div class="flex flex-col items-center text-center gap-4">
-              <div class="relative w-40 h-40 glass-panel cut-corners p-2">
-                <img
-                  v-if="about?.avatarUrl"
-                  :src="about.avatarUrl"
-                  :alt="about.name"
-                  class="w-full h-full object-cover rounded-md border border-white/10"
-                />
-                <div
-                  v-else
-                  class="w-full h-full bg-gradient-to-br from-cyan-600/20 to-purple-600/20 flex items-center justify-center border border-white/10 rounded-md"
-                >
-                  <svg width="64" height="64" fill="none" stroke="currentColor" stroke-width="1" viewBox="0 0 24 24" class="text-cyan-300 opacity-60">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                  </svg>
-                </div>
+        <!-- Profile Card & Bio Overview -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Left Avatar Sidebar -->
+          <div class="lg:col-span-4 glass-panel p-6 border border-cyber-border/30 shadow-glass-card flex flex-col items-center text-center space-y-5">
+            <div class="relative w-40 h-40 rounded-2xl overflow-hidden bg-slate-900 border-2 border-cyber-cyan/40 shadow-cyan-glow">
+              <img
+                v-if="about?.avatarUrl"
+                :src="about.avatarUrl"
+                :alt="about.name"
+                class="w-full h-full object-cover"
+              />
+              <div
+                v-else
+                class="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex items-center justify-center text-cyber-cyan font-mono text-3xl font-bold"
+              >
+                HN
               </div>
+            </div>
 
-              <div>
-                <h2 class="font-os text-2xl uppercase tracking-[0.16em] text-cyan-100">{{ about?.name || 'About Me' }}</h2>
-                <p class="mt-2 font-mono text-cyan-300 text-sm uppercase tracking-[0.18em]">{{ about?.title || 'Full Stack Developer' }}</p>
-              </div>
+            <div>
+              <h2 class="text-2xl font-bold text-white">{{ about?.name || 'Hồ Ngọc Thiện' }}</h2>
+              <p class="text-sm font-mono text-cyber-cyan mt-1">{{ about?.title || 'Full Stack Software Engineer' }}</p>
+            </div>
 
-              <div v-if="publicSocialLinks.length" class="flex flex-wrap justify-center gap-3">
-                <a
-                  v-for="link in publicSocialLinks"
-                  :key="link.label"
-                  :href="link.href"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="px-3 py-2 text-xs font-mono tracking-[0.2em] uppercase text-cyan-100 border border-white/10 rounded bg-white/3 hover:border-cyan-300/40 hover:bg-cyan-300/10 transition-colors"
-                >
-                  {{ link.label }}
-                </a>
-              </div>
+            <div v-if="publicSocialLinks.length" class="flex flex-wrap justify-center gap-2">
+              <a
+                v-for="link in publicSocialLinks"
+                :key="link.label"
+                :href="link.href"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-3 py-1.5 rounded-lg text-xs font-mono text-slate-300 bg-white/5 border border-white/10 hover:text-cyber-cyan hover:border-cyber-cyan/40 transition-all"
+              >
+                {{ link.label }}
+              </a>
+            </div>
 
-              <div v-if="about?.resumeUrl" class="w-full">
-                <RouterLink to="/cv" class="btn btn--primary w-full font-os uppercase tracking-[0.18em]">
-                  View My CV
-                </RouterLink>
-              </div>
+            <div v-if="about?.resumeUrl" class="w-full pt-2">
+              <RouterLink to="/cv" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 font-bold text-sm block hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all">
+                Xem & Tải CV
+              </RouterLink>
             </div>
           </div>
 
-          <div class="lg:col-span-8 glass-panel cut-corners p-6 md:p-7">
-            <div class="flex items-center justify-between gap-3 mb-5">
-              <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Overview</h2>
-              <span class="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">[PROFILE_MODULE]</span>
+          <!-- Right Bio Narrative -->
+          <div class="lg:col-span-8 glass-panel p-6 sm:p-8 border border-cyber-border/30 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+              <h2 class="text-xl font-bold text-white">Giới Thiệu Tổng Quan</h2>
+              <span class="text-xs font-mono text-slate-400">#BIO_OVERVIEW</span>
             </div>
-            <p class="font-mono text-sm md:text-base text-gray-300 leading-relaxed">
-              {{ about?.bio || 'A passionate developer who loves building great web experiences.' }}
+
+            <p class="text-slate-300 text-base leading-relaxed">
+              {{ about?.bio || 'Lập trình viên Full Stack nhiệt huyết với niềm đam mê xây dựng các sản phẩm công nghệ hiện đại, chất lượng cao, tối ưu cả về mặt giao diện lẫn hệ thống xử lý phía sau.' }}
             </p>
-
           </div>
         </div>
 
-        <div v-if="about?.contactInfo && hasContactInfo" class="mb-8 glass-panel cut-corners p-6 md:p-7">
-          <div class="flex items-center justify-between gap-3 mb-5">
-            <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Contact</h2>
-            <span class="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">[CHANNELS]</span>
+        <!-- Skills Matrix -->
+        <div v-if="about?.skills?.length" class="glass-panel p-6 sm:p-8 border border-cyber-border/30 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <h2 class="text-xl font-bold text-white">Ma Trận Kỹ Năng Kỹ Thuật</h2>
+            <span class="text-xs font-mono text-slate-400">#CORE_SKILLS</span>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div v-if="about.contactInfo.email" class="glass-panel cut-corners px-4 py-3 text-sm">
-              <p class="text-gray-400 mb-1 font-mono text-xs uppercase tracking-[0.2em]">Email</p>
-              <a :href="`mailto:${about.contactInfo.email}`" class="text-cyan-300 hover:text-cyan-200 transition-colors font-mono">{{ about.contactInfo.email }}</a>
-            </div>
-            <div v-if="about.contactInfo.phone" class="glass-panel cut-corners px-4 py-3 text-sm">
-              <p class="text-gray-400 mb-1 font-mono text-xs uppercase tracking-[0.2em]">Phone</p>
-              <a :href="`tel:${about.contactInfo.phone}`" class="text-cyan-300 hover:text-cyan-200 transition-colors font-mono">{{ about.contactInfo.phone }}</a>
-            </div>
-            <div v-if="about.contactInfo.location" class="glass-panel cut-corners px-4 py-3 text-sm">
-              <p class="text-gray-400 mb-1 font-mono text-xs uppercase tracking-[0.2em]">Location</p>
-              <p class="text-gray-300 font-mono">{{ about.contactInfo.location }}</p>
-            </div>
-            <div v-if="about.contactInfo.website" class="glass-panel cut-corners px-4 py-3 text-sm">
-              <p class="text-gray-400 mb-1 font-mono text-xs uppercase tracking-[0.2em]">Website</p>
-              <a :href="about.contactInfo.website" target="_blank" rel="noopener noreferrer" class="text-cyan-300 hover:text-cyan-200 transition-colors font-mono">{{ about.contactInfo.website }}</a>
+
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div
+              v-for="skill in about.skills"
+              :key="skill"
+              class="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-cyber-cyan/40 hover:bg-cyber-cyan/10 transition-all font-mono text-xs text-slate-200 flex items-center gap-2"
+            >
+              <span class="w-2 h-2 rounded-full bg-cyber-cyan"></span>
+              <span>{{ skill }}</span>
             </div>
           </div>
         </div>
 
-        <div v-if="about?.skills?.length" class="mb-8 glass-panel cut-corners p-6 md:p-7">
-          <div class="flex items-center justify-between gap-3 mb-5">
-            <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Skills</h2>
-            <span class="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">[LOADING_SEQUENCES]</span>
+        <!-- Experience Timeline -->
+        <div v-if="about?.experience?.length" class="space-y-4">
+          <div class="glass-panel p-6 border border-cyber-border/30 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-white">Kinh Nghiệm Làm Việc</h2>
+            <span class="text-xs font-mono text-slate-400">#EXPERIENCE</span>
           </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
-            <div v-for="skill in about.skills" :key="skill" class="p-4 bg-white/3 border border-white/6 rounded-md font-mono text-sm text-cyan-100">
-              <div class="text-xs uppercase tracking-[0.18em] text-gray-300">{{ skill }}</div>
-            </div>
-          </div>
-        </div>
 
-        <div v-if="about?.experience?.length" class="mb-8">
-          <div class="glass-panel cut-corners p-6 md:p-7 mb-4">
-            <div class="flex items-center justify-between gap-3">
-              <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Experience</h2>
-              <span class="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">[DATA_STREAM]</span>
-            </div>
-          </div>
           <div class="space-y-4">
-            <div v-for="(exp, i) in sortedExperiences" :key="i" class="glass-panel cut-corners p-5">
-              <div class="flex items-start gap-4">
-                <div class="w-2 h-20 bg-gradient-to-b from-cyan-400/60 to-transparent rounded-sm" />
-                <div class="flex-1 space-y-3">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <h3 class="font-os text-lg text-cyan-100 uppercase tracking-[0.12em]">{{ exp.position }}</h3>
-                    <span class="font-mono text-sm text-gray-400">{{ exp.startDate }} – {{ exp.endDate || 'Present' }}</span>
-                  </div>
-                  <p class="font-mono text-sm text-cyan-300 uppercase tracking-[0.18em]">{{ exp.company }}</p>
-                  <div class="experience-content text-gray-300 text-sm leading-relaxed" v-html="sanitizeHtml(exp.description)" />
+            <div
+              v-for="(exp, i) in sortedExperiences"
+              :key="i"
+              class="glass-panel p-6 border border-cyber-border/30 hover:border-cyber-cyan/40 transition-all space-y-3"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-white/10">
+                <div>
+                  <h3 class="text-lg font-bold text-white">{{ exp.position }}</h3>
+                  <span class="text-xs font-mono text-cyber-cyan">{{ exp.company }}</span>
                 </div>
+                <span class="text-xs font-mono text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                  {{ exp.startDate }} – {{ exp.endDate || 'Hiện tại' }}
+                </span>
               </div>
+
+              <!-- eslint-disable-next-line vue/no-v-html -->
+              <div class="text-slate-300 text-sm leading-relaxed" v-html="sanitizeHtml(exp.description)" />
             </div>
           </div>
         </div>
 
-        <div v-if="about?.education?.length" class="mb-8">
-          <div class="glass-panel cut-corners p-6 md:p-7 mb-4">
-            <div class="flex items-center justify-between gap-3">
-              <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Education</h2>
-              <span class="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">[RECORDS]</span>
-            </div>
+        <!-- Education -->
+        <div v-if="about?.education?.length" class="space-y-4">
+          <div class="glass-panel p-6 border border-cyber-border/30 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-white">Học Vấn & Đào Tạo</h2>
+            <span class="text-xs font-mono text-slate-400">#EDUCATION</span>
           </div>
+
           <div class="space-y-4">
-            <div v-for="(edu, i) in sortedEducation" :key="i" class="glass-panel cut-corners p-5">
-              <div class="flex items-start gap-4">
-                <div class="w-2 h-20 bg-gradient-to-b from-purple-400/60 to-transparent rounded-sm" />
-                <div class="flex-1 space-y-3">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <h3 class="font-os text-lg text-cyan-100 uppercase tracking-[0.12em]">{{ edu.degree }} in {{ edu.field }}</h3>
-                    <span class="font-mono text-sm text-gray-400">{{ edu.startDate }} – {{ edu.endDate || 'Present' }}</span>
-                  </div>
-                  <p class="font-mono text-sm text-cyan-300 uppercase tracking-[0.18em]">{{ edu.institution }}</p>
-                  <p v-if="edu.gpa" class="font-mono text-sm text-gray-300">GPA: {{ edu.gpa }}</p>
+            <div
+              v-for="(edu, i) in sortedEducation"
+              :key="i"
+              class="glass-panel p-6 border border-cyber-border/30 hover:border-indigo-500/40 transition-all space-y-2"
+            >
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <div>
+                  <h3 class="text-lg font-bold text-white">{{ edu.degree }} {{ edu.field ? `in ${edu.field}` : '' }}</h3>
+                  <span class="text-xs font-mono text-indigo-400">{{ edu.institution }}</span>
                 </div>
+                <span class="text-xs font-mono text-slate-400 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                  {{ edu.startDate }} – {{ edu.endDate || 'Hiện tại' }}
+                </span>
               </div>
+              <p v-if="edu.gpa" class="text-xs font-mono text-slate-300">GPA: {{ edu.gpa }}</p>
             </div>
           </div>
         </div>
 
-        <div v-if="licensesCertifications.length" class="mb-8">
-          <div class="glass-panel cut-corners p-6 md:p-7 mb-4">
-            <div class="flex items-center justify-between gap-3">
-              <h2 class="font-os text-xl uppercase tracking-[0.16em] text-cyan-100">Licenses &amp; Certifications</h2>
-              <span class="font-mono text-[10px] tracking-[0.2em] text-gray-400 uppercase">[VERIFIED_MODULES]</span>
-            </div>
+        <!-- Licenses & Certifications -->
+        <div v-if="licensesCertifications.length" class="space-y-4">
+          <div class="glass-panel p-6 border border-cyber-border/30 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-white">Chứng Chỉ & Bằng Cấp</h2>
+            <span class="text-xs font-mono text-slate-400">#CERTIFICATIONS</span>
           </div>
-          <div class="space-y-4">
-            <div v-for="(item, i) in licensesCertifications" :key="`${item.name}-${item.issuer}-${i}`" class="glass-panel cut-corners p-5">
-              <div class="flex items-start gap-4">
-                <div class="text-cyan-400 text-lg mt-1">»</div>
-                <div class="flex-1 space-y-3">
-                  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                    <h3 class="font-os text-lg text-cyan-100 uppercase tracking-[0.12em]">{{ item.name }}</h3>
-                    <span v-if="item.issueDate || item.expirationDate" class="font-mono text-sm text-gray-400">
-                      {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No expiration' }}
-                    </span>
-                  </div>
-                  <p v-if="item.issuer" class="font-mono text-sm text-cyan-300 uppercase tracking-[0.18em]">{{ item.issuer }}</p>
-                  <p v-if="item.credentialId" class="font-mono text-xs text-gray-400">ID: {{ item.credentialId }}</p>
-                  <a
-                    v-if="item.credentialUrl"
-                    :href="item.credentialUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center text-xs text-cyan-300 hover:text-cyan-200 transition-colors font-mono uppercase tracking-[0.18em]"
-                  >
-                    [VERIFY]
-                  </a>
-                </div>
-              </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              v-for="(item, i) in licensesCertifications"
+              :key="`${item.name}-${item.issuer}-${i}`"
+              class="glass-panel p-5 border border-cyber-border/30 hover:border-violet-500/40 transition-all space-y-2"
+            >
+              <h3 class="text-base font-bold text-white">{{ item.name }}</h3>
+              <p v-if="item.issuer" class="text-xs font-mono text-violet-400">{{ item.issuer }}</p>
+              <p v-if="item.issueDate || item.expirationDate" class="text-xs font-mono text-slate-400">
+                {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'Không thời hạn' }}
+              </p>
+              <a
+                v-if="item.credentialUrl"
+                :href="item.credentialUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-block text-xs font-mono text-cyber-cyan hover:underline pt-1"
+              >
+                Xác minh chứng chỉ ↗
+              </a>
             </div>
           </div>
         </div>
@@ -213,7 +193,7 @@ import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
-import { hasAnyContactInfo, getPublicSocialLinks } from '@/utils/aboutPresentation'
+import { getPublicSocialLinks } from '@/utils/aboutPresentation'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
 import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
@@ -229,7 +209,6 @@ const publicSocialLinks = computed(() => getPublicSocialLinks(about.value))
 const sortedExperiences = computed(() => sortExperiencesDescending(about.value?.experience || []))
 const sortedEducation = computed(() => sortExperiencesDescending(about.value?.education || []))
 const licensesCertifications = computed(() => about.value?.licensesCertifications || [])
-const hasContactInfo = computed(() => hasAnyContactInfo(about.value))
 
 function sanitizeHtml(html: string): string {
   return sanitizeRichContent(html)

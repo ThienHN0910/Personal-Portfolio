@@ -3,4 +3,21 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/callback
 
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+
 Sitemap: https://thienhn0910.vercel.app/sitemap.xml
+

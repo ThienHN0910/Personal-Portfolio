@@ -1,0 +1,22 @@
+# Hồ Ngọc Thiện (ThienHN) - Personal Portfolio & Technical Profile
+
+> Hồ Ngọc Thiện (tên thường gọi: ThienHN) là Full Stack Software Engineer chuyên về phát triển các ứng dụng Web hiện đại, tối ưu hiệu năng, kiến trúc hệ thống và trải nghiệm người dùng.
+
+## 👤 Profile Summary
+- **Họ và tên**: Hồ Ngọc Thiện (ThienHN / Ho Ngoc Thien)
+- **Vị trí**: Full Stack Software Engineer
+- **Chuyên môn cốt lõi**: Frontend (Vue.js, React, TypeScript, Tailwind CSS, SCSS), Backend (Node.js, Express, RESTful APIs, Database Design), Web Performance & SEO Optimization.
+- **GitHub**: https://github.com/ThienHN0910
+
+## 🛠️ Main Tech Stack & Skills
+- **Frontend**: Vue 3, React.js, TypeScript, Vite, Pinia, Vue Router, Tailwind CSS, SCSS, Glassmorphic UI/UX Design.
+- **Backend & Database**: Node.js, Express, REST API design, MongoDB / PostgreSQL, Authentication & Authorization.
+- **DevOps & Tools**: Git, Vercel, Docker, CI/CD pipelines, Performance auditing (Lighthouse, Core Web Vitals).
+
+## 🚀 Navigation & Links
+- [Trang chủ / Home](https://thienhn.dev/): Tổng quan năng lực, dự án tiêu biểu và kỹ năng chuyên môn.
+- [Giới thiệu / About](https://thienhn.dev/about): Tiểu sử, hành trình sự nghiệp, học vấn và chứng chỉ.
+- [Dự án / Projects](https://thienhn.dev/projects): Danh sách các dự án thực tế kèm live demo & source code.
+- [Bài viết / Blog](https://thienhn.dev/blog): Chia sẻ kiến thức kỹ thuật, kinh nghiệm lập trình & tối ưu phần mềm.
+- [Hồ sơ năng lực / CV](https://thienhn.dev/cv): Xem và tải về bản CV mới nhất của Hồ Ngọc Thiện.
+- [Liên hệ / Contact](https://thienhn.dev/contact): Thông tin kết nối hợp tác & tư vấn kỹ thuật.

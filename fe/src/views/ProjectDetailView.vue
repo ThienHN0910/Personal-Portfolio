@@ -1,128 +1,143 @@
 <template>
-  <div class="section min-h-screen pt-24">
-    <div class="container">
+  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
       <LoadingSpinner v-if="loading" />
 
       <div v-else-if="project" class="space-y-8">
-        <RouterLink to="/projects" class="inline-flex items-center gap-2 text-gray-400 hover:text-blue-400 transition-colors text-sm">
-          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-          </svg>
-          Back to Projects
+        <!-- Breadcrumb Link -->
+        <RouterLink to="/projects" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyber-cyan transition-colors text-sm font-mono">
+          <span>← Quay lại Danh Sách Dự Án</span>
         </RouterLink>
 
-        <header class="space-y-2">
-          <h1 class="text-3xl md:text-4xl font-bold text-white">{{ project.title }}</h1>
-          <p class="text-sm text-gray-400">Project Detail</p>
-        </header>
+        <!-- Header -->
+        <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="text-xs font-mono px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan uppercase font-bold">
+              Case Study
+            </span>
+            <span v-if="project.featured" class="text-xs font-mono px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-bold">
+              ★ Dự Án Nổi Bật
+            </span>
+          </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
-          <article class="card xl:col-span-2 overflow-hidden">
-            <img
-              v-if="project.imageUrl"
-              :src="project.imageUrl"
-              :alt="project.title"
-              class="card__image h-80 md:h-[26rem]"
-            />
+          <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight leading-tight">
+            {{ project.title }}
+          </h1>
 
-            <div
-              v-else
-              class="h-80 md:h-[26rem] flex items-center justify-center bg-gradient-to-br from-blue-600/20 to-purple-600/20"
-            >
-              <svg width="72" height="72" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" class="text-blue-400 opacity-50">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75 22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3-4.5 16.5" />
-              </svg>
+          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed max-w-3xl border-l-2 border-cyber-cyan/40 pl-4">
+            {{ project.description }}
+          </p>
+        </div>
+
+        <!-- Project Main Body & Sidebar Specs -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <!-- Left Media / Showcase -->
+          <div class="lg:col-span-8 space-y-6">
+            <div class="glass-panel overflow-hidden border border-cyber-border/40 rounded-2xl bg-slate-950">
+              <img
+                v-if="project.imageUrl"
+                :src="project.imageUrl"
+                :alt="project.title"
+                class="w-full h-auto max-h-[500px] object-cover"
+              />
+              <div
+                v-else
+                class="h-80 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-cyber-cyan/30"
+              >
+                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                </svg>
+              </div>
             </div>
-          </article>
+          </div>
 
-          <aside class="card p-6 xl:sticky xl:top-28 space-y-6">
-            <section class="space-y-3">
-              <h2 class="text-lg font-semibold text-white">Overview</h2>
-              <div class="grid grid-cols-2 gap-3">
-                <div class="border border-white/10 rounded-lg px-3 py-2 bg-white/[0.03]">
-                  <p class="text-xs uppercase tracking-wider text-gray-500">Priority</p>
-                  <p class="text-base font-semibold text-blue-300">{{ project.priority || 0 }}</p>
-                </div>
-                <div class="border border-white/10 rounded-lg px-3 py-2 bg-white/[0.03]">
-                  <p class="text-xs uppercase tracking-wider text-gray-500">Duration</p>
-                  <p class="text-base font-semibold text-gray-200">{{ project.duration || 'N/A' }}</p>
-                </div>
+          <!-- Right Sidebar Specs -->
+          <aside class="lg:col-span-4 glass-panel p-6 border border-cyber-border/30 space-y-6 lg:sticky lg:top-24">
+            <h2 class="text-lg font-bold text-white pb-3 border-b border-white/10">Thông Số Kỹ Thuật</h2>
+
+            <!-- Duration & Priority -->
+            <div class="grid grid-cols-2 gap-3">
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                <span class="text-[10px] font-mono uppercase text-slate-400 block">Thời Gian</span>
+                <span class="text-sm font-bold text-slate-200 mt-1 block">{{ project.duration || 'Liên tục' }}</span>
               </div>
-            </section>
-
-            <section class="space-y-2">
-              <h2 class="text-lg font-semibold text-white">Description</h2>
-              <p class="text-gray-300 leading-7">{{ project.description }}</p>
-            </section>
-
-            <section class="space-y-3">
-              <h2 class="text-lg font-semibold text-white">Technologies</h2>
-              <div class="card__tags mb-0">
-                <span v-for="tech in project.technologies" :key="tech" class="card__tag">{{ tech }}</span>
+              <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+                <span class="text-[10px] font-mono uppercase text-slate-400 block">Trạng Thái</span>
+                <span class="text-sm font-bold text-cyber-cyan mt-1 block">{{ project.liveUrl ? 'Đang hoạt động' : 'Hoàn thành' }}</span>
               </div>
-            </section>
+            </div>
 
-            <section class="space-y-3">
-              <h2 class="text-lg font-semibold text-white">URLs</h2>
-
-              <div v-if="hasProjectLinks" class="flex flex-col gap-2">
-                <a
-                  v-if="project.githubUrl"
-                  :href="project.githubUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="card__link"
+            <!-- Tech Stack -->
+            <div class="space-y-2">
+              <span class="text-xs font-mono text-slate-400 uppercase block">Công Nghệ Sử Dụng</span>
+              <div class="flex flex-wrap gap-2">
+                <span
+                  v-for="tech in project.technologies"
+                  :key="tech"
+                  class="px-2.5 py-1 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono"
                 >
-                  GitHub Repository
-                </a>
+                  {{ tech }}
+                </span>
+              </div>
+            </div>
 
+            <!-- External Links Buttons -->
+            <div class="space-y-3 pt-2">
+              <span class="text-xs font-mono text-slate-400 uppercase block">Liên Kết Trực Tiếp</span>
+
+              <div v-if="hasProjectLinks" class="flex flex-col gap-2.5">
                 <a
                   v-if="project.liveUrl"
                   :href="project.liveUrl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="card__link"
+                  class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 font-bold text-xs font-mono text-center hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all flex items-center justify-center gap-2"
                 >
-                  Live Demo
+                  <span>Truy Cập Live Demo ↗</span>
+                </a>
+
+                <a
+                  v-if="project.githubUrl"
+                  :href="project.githubUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-slate-200 font-semibold text-xs font-mono text-center hover:bg-white/10 hover:border-white/20 transition-all flex items-center justify-center gap-2"
+                >
+                  <span>Mã Nguồn GitHub</span>
                 </a>
               </div>
 
-              <p v-else class="text-sm text-gray-500">No public URLs available.</p>
-            </section>
+              <p v-else class="text-xs text-slate-500 font-mono">Không có liên kết công khai.</p>
+            </div>
           </aside>
         </div>
 
-        <section v-if="relatedPost" class="card p-6 md:p-8 space-y-6">
-          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <!-- Related Blog Post -->
+        <section v-if="relatedPost" class="glass-panel p-6 sm:p-10 border border-cyber-border/40 space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
             <div>
-              <p class="text-sm uppercase tracking-[0.12em] text-blue-300 mb-2">Related Blog</p>
-              <h2 class="text-2xl font-bold text-white">{{ relatedPost.title }}</h2>
-              <div class="card__tags mt-3 mb-0">
-                <span v-for="tag in relatedPost.tags" :key="tag" class="card__tag">{{ tag }}</span>
-              </div>
-              <p class="text-gray-500 text-sm mt-3">Published {{ formatDate(relatedPost.createdAt) }}</p>
+              <span class="text-xs font-mono text-cyber-cyan uppercase">BÀI VIẾT LIÊN QUAN</span>
+              <h2 class="text-2xl font-bold text-white mt-1">{{ relatedPost.title }}</h2>
+              <p class="text-xs text-slate-400 mt-1">Đăng ngày {{ formatDate(relatedPost.createdAt) }}</p>
             </div>
 
-            <RouterLink :to="`/blog/${relatedPost.slug || relatedPost._id}`" class="card__link shrink-0">
-              Open Full Post
+            <RouterLink :to="`/blog/${relatedPost.slug || relatedPost._id}`" class="px-4 py-2 rounded-lg bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan text-xs font-mono font-bold hover:bg-cyber-cyan/20 transition-all shrink-0">
+              Đọc Bài Viết Đầy Đủ →
             </RouterLink>
           </div>
-
-          <!-- <img
-            v-if="relatedPost.coverImage"
-            :src="relatedPost.coverImage"
-            :alt="relatedPost.title"
-            class="w-full h-64 object-cover rounded-xl"
-          /> -->
 
           <!-- eslint-disable-next-line vue/no-v-html -->
           <div class="blog-content" v-html="sanitizedRelatedContent" />
         </section>
       </div>
 
-      <div v-else class="text-center py-20">
-        <p class="text-gray-500 text-xl">Project not found.</p>
-        <RouterLink to="/projects" class="btn btn--primary mt-4">Back to Projects</RouterLink>
+      <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono">
+        <p class="text-lg">Không tìm thấy thông tin dự án này.</p>
+        <RouterLink to="/projects" class="inline-block mt-4 px-6 py-2.5 rounded-xl bg-cyber-cyan/20 border border-cyber-cyan/40 text-cyber-cyan text-sm font-bold">
+          Quay về danh sách dự án
+        </RouterLink>
       </div>
     </div>
   </div>
@@ -156,7 +171,7 @@ const sanitizedRelatedContent = computed(() => {
 
 function formatDate(date?: string): string {
   if (!date) return ''
-  return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  return new Date(date).toLocaleDateString('vi-VN', { year: 'numeric', month: 'long', day: 'numeric' })
 }
 
 async function loadProject(id: string): Promise<void> {
@@ -183,8 +198,8 @@ async function loadProject(id: string): Promise<void> {
     project.value = null
     relatedPost.value = null
     applySeo({
-      title: 'Project Not Found',
-      description: 'The requested project does not exist or has been removed.',
+      title: 'Dự Án Không Tồn Tại',
+      description: 'Dự án yêu cầu không tồn tại hoặc đã bị gỡ bỏ.',
       url: `/projects/${id}`,
       noindex: true,
     })
@@ -206,7 +221,7 @@ watch(
 
 <style scoped lang="scss">
 .blog-content {
-  color: #d1d5db;
+  color: #cbd5e1;
   line-height: 1.8;
 }
 
@@ -224,82 +239,12 @@ watch(
   margin-bottom: 1rem;
 }
 
-.blog-content :deep(ul),
-.blog-content :deep(ol) {
-  margin-left: 1.25rem;
-  margin-bottom: 1rem;
-}
-
-.blog-content :deep(ul) {
-  list-style: disc;
-}
-
-.blog-content :deep(ol) {
-  list-style: decimal;
-}
-
-.blog-content :deep(blockquote) {
-  margin: 1.25rem 0;
-  border-left: 3px solid rgba(59, 130, 246, 0.75);
-  padding-left: 1rem;
-  color: #93c5fd;
-}
-
 .blog-content :deep(pre) {
-  background: #0f172a;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #090d16;
+  border: 1px solid rgba(0, 242, 255, 0.2);
   border-radius: 0.75rem;
-  padding: 0.875rem 1rem;
+  padding: 1rem;
   overflow-x: auto;
   margin-bottom: 1rem;
-}
-
-.blog-content :deep(a) {
-  color: #93c5fd;
-  text-decoration: underline;
-}
-
-.blog-content :deep(.image) {
-  display: table;
-  margin: 1.25rem auto;
-}
-
-.blog-content :deep(.image img) {
-  border-radius: 0.75rem;
-  max-width: 100%;
-  height: auto;
-}
-
-.blog-content :deep(table) {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 1rem;
-}
-
-.blog-content :deep(th),
-.blog-content :deep(td) {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  padding: 0.5rem 0.75rem;
-}
-
-.blog-content :deep(.media) {
-  margin: 1.25rem 0;
-}
-
-.blog-content :deep(.rich-embed__ratio) {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  background: rgba(15, 23, 42, 0.85);
-}
-
-.blog-content :deep(.rich-embed__ratio iframe) {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  border: 0;
 }
 </style>

@@ -1,52 +1,103 @@
 <template>
-  <div class="section min-h-screen pt-24">
-    <div class="container">
-      <div class="max-w-2xl mx-auto">
-        <div class="text-center mb-12">
-          <h1 class="section-title">Get In <span class="highlight">Touch</span></h1>
-          <p class="section-subtitle mx-auto">Have a project in mind or want to collaborate? Send me a message.</p>
+  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+      <!-- Header -->
+      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
+          <span>KẾT NỐI & HỢP TÁC</span>
         </div>
+        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          Liên Hệ Với <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Hồ Ngọc Thiện</span>
+        </h1>
+        <p class="mt-3 text-slate-300 text-base max-w-xl mx-auto leading-relaxed">
+          Bạn có dự án mới, ý tưởng cần tư vấn hoặc cơ hội nghề nghiệp? Hãy gửi tin nhắn trực tiếp qua biểu mẫu bên dưới.
+        </p>
+      </div>
 
-        <div class="glass-panel cut-corners p-6">
-          <form @submit.prevent="handleSubmit" class="font-mono">
-            <div class="form-group">
-              <label for="name">Name</label>
-              <input id="name" v-model="form.name" type="text" placeholder="Your name" required class="bg-transparent border border-white/8 py-2 px-3" />
+      <!-- Contact Form & Info Grid -->
+      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/30 shadow-glass-card">
+        <form class="space-y-5" @submit.prevent="handleSubmit">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <!-- Name Input -->
+            <div class="space-y-1.5">
+              <label for="name" class="block text-xs font-mono text-slate-300 uppercase">Họ và tên *</label>
+              <input
+                id="name"
+                v-model="form.name"
+                type="text"
+                placeholder="Nhập họ và tên của bạn"
+                required
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+              />
             </div>
 
-            <div class="form-group">
-              <label for="email">Email</label>
-              <input id="email" v-model="form.email" type="email" placeholder="your@email.com" required class="bg-transparent border border-white/8 py-2 px-3" />
+            <!-- Email Input -->
+            <div class="space-y-1.5">
+              <label for="email" class="block text-xs font-mono text-slate-300 uppercase">Địa chỉ Email *</label>
+              <input
+                id="email"
+                v-model="form.email"
+                type="email"
+                placeholder="email@domain.com"
+                required
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+              />
             </div>
+          </div>
 
-            <div class="form-group">
-              <label for="subject">Subject</label>
-              <input id="subject" v-model="form.subject" type="text" placeholder="What's this about?" required class="bg-transparent border border-white/8 py-2 px-3" />
-            </div>
+          <!-- Subject Input -->
+          <div class="space-y-1.5">
+            <label for="subject" class="block text-xs font-mono text-slate-300 uppercase">Tiêu đề tin nhắn *</label>
+            <input
+              id="subject"
+              v-model="form.subject"
+              type="text"
+              placeholder="Chủ đề công việc / dự án"
+              required
+              class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+            />
+          </div>
 
-            <div class="form-group">
-              <label for="message">Message</label>
-              <textarea id="message" v-model="form.message" rows="6" maxlength="2000" placeholder="Tell me about your project..." required class="bg-transparent border border-white/8 py-2 px-3 font-mono" />
-            </div>
+          <!-- Message Textarea -->
+          <div class="space-y-1.5">
+            <label for="message" class="block text-xs font-mono text-slate-300 uppercase">Nội dung tin nhắn *</label>
+            <textarea
+              id="message"
+              v-model="form.message"
+              rows="6"
+              maxlength="2000"
+              placeholder="Mô tả chi tiết nội dung cần trao đổi..."
+              required
+              class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+            />
+          </div>
 
-            <div id="turnstile-container" class="mt-4 mb-4 min-h-[65px]"></div>
+          <!-- Cloudflare Turnstile Container -->
+          <div id="turnstile-container" class="min-h-[65px] flex items-center justify-center pt-2"></div>
 
-            <div v-if="contactStore.error" class="text-red-400 text-sm mb-4">
-              {{ contactStore.error }}
-            </div>
+          <!-- Error Alert -->
+          <div v-if="contactStore.error" class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm font-mono">
+            {{ contactStore.error }}
+          </div>
 
-            <div v-if="contactStore.success" class="text-green-400 text-sm mb-4 bg-green-400/10 border border-green-400/20 rounded-lg p-3">
-              Ã¢Å“â€œ Message sent! I'll get back to you soon.
-            </div>
+          <!-- Success Alert -->
+          <div v-if="contactStore.success" class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-mono flex items-center gap-2">
+            <span class="text-base">✓</span>
+            <span>Tin nhắn đã được gửi thành công! Tôi sẽ phản hồi sớm nhất có thể.</span>
+          </div>
 
-            <button type="submit" class="btn btn--primary w-full font-os" :disabled="contactStore.loading">
-              <span v-if="contactStore.loading">ESTABLISHING...</span>
-              <span v-else>Send Message</span>
-            </button>
-          </form>
-
-          <div class="mt-6"><div class="w-full h-40 bg-white/3 border border-white/6 rounded"></div></div>
-        </div>
+          <!-- Submit Button -->
+          <button
+            type="submit"
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan via-indigo-500 to-violet-500 text-slate-950 font-bold text-sm font-mono uppercase tracking-wider hover:shadow-[0_0_25px_rgba(0,242,255,0.4)] transition-all disabled:opacity-50"
+            :disabled="contactStore.loading"
+          >
+            <span v-if="contactStore.loading">ĐANG GỬI TIN NHẮN...</span>
+            <span v-else>Gửi Tin Nhắn Phản Hồi</span>
+          </button>
+        </form>
       </div>
     </div>
   </div>
@@ -76,11 +127,11 @@ const turnstileWidgetId = ref<string | null>(null)
 
 async function handleSubmit() {
   if (!turnstileToken.value) {
-    contactStore.error = 'Vui lòng xác nhận CAPTCHA'
+    contactStore.error = 'Vui lòng xác nhận CAPTCHA để gửi tin nhắn'
     return
   }
 
-  await contactStore.sendMessage({ 
+  await contactStore.sendMessage({
     ...form,
     cfTurnstileResponse: turnstileToken.value
   })
@@ -121,7 +172,7 @@ onMounted(async () => {
           contactStore.error = null
         },
         'error-callback': () => {
-          contactStore.error = 'CAPTCHA error. Please refresh and try again.'
+          contactStore.error = 'Lỗi CAPTCHA. Vui lòng làm mới trang và thử lại.'
         }
       })
       turnstileWidgetId.value = widgetId
