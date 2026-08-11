@@ -155,19 +155,53 @@ export interface AuthState {
   isAuthenticated: boolean
 }
 
+export interface IpInfoData {
+  city?: string
+  region?: string
+  country?: string
+  countryCode?: string
+  org?: string
+  loc?: string
+  timezone?: string
+  isBogon?: boolean
+}
+
 export interface VisitorLogItem {
   _id: string
   ip: string
   path: string
   userAgent?: string
   referrer?: string
+  fromCompany?: string
+  ipInfo?: IpInfoData
   createdAt: string
+}
+
+export interface GroupedIpItem {
+  ip: string
+  totalViews: number
+  firstSeen: string
+  lastSeen: string
+  companies: string[]
+  ipInfo?: IpInfoData
+  latestUserAgent?: string
+  history: Array<{
+    _id: string
+    path: string
+    referrer?: string
+    userAgent?: string
+    fromCompany?: string
+    createdAt: string
+  }>
 }
 
 export interface AnalyticsStats {
   totalViews: number
   uniqueVisitors: number
   viewsPast24h: number
+  companyViews: number
   topPages: Array<{ path: string; count: number }>
+  topCompanies: Array<{ company: string; count: number; lastVisit?: string }>
 }
+
 

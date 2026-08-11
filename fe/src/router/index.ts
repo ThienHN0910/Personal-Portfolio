@@ -204,11 +204,30 @@ router.afterEach((to) => {
   })
 
   if (!to.path.startsWith('/admin') && !to.path.startsWith('/auth/callback')) {
+    const queryFrom = typeof to.query.from === 'string' ? to.query.from.trim() : ''
+    if (queryFrom && typeof sessionStorage !== 'undefined') {
+      try {
+        sessionStorage.setItem('cv_from', queryFrom)
+      } catch {
+        // Ignore storage errors
+      }
+    }
+
+    let fromCompany = queryFrom
+    if (!fromCompany && typeof sessionStorage !== 'undefined') {
+      try {
+        fromCompany = sessionStorage.getItem('cv_from') || ''
+      } catch {
+        fromCompany = ''
+      }
+    }
+
     import('@/stores/analytics').then(({ useAnalyticsStore }) => {
       const analyticsStore = useAnalyticsStore()
-      void analyticsStore.trackVisit(to.path)
+      void analyticsStore.trackVisit(to.fullPath || to.path, fromCompany)
     }).catch(() => {})
   }
 })
+
 
 export default router
