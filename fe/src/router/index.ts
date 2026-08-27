@@ -180,6 +180,18 @@ const router = createRouter({
         },
       ],
     },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'not-found',
+      component: () => import('@/views/NotFoundView.vue'),
+      meta: {
+        seo: {
+          title: '404 - Page Not Found',
+          description: 'The requested page could not be found.',
+          noindex: true,
+        } satisfies RouteSeoMeta,
+      },
+    },
   ],
   scrollBehavior(_to, _from, savedPosition) {
     if (savedPosition) return savedPosition

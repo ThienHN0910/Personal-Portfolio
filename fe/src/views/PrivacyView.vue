@@ -4,19 +4,20 @@
 
     <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
       <!-- Breadcrumb Link -->
-      <RouterLink to="/" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyber-cyan transition-colors text-sm font-mono">
-        <span>← Back to Home</span>
+      <RouterLink to="/" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm font-mono group active:scale-95">
+        <span class="group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Back to Home</span>
       </RouterLink>
 
       <!-- Page Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
+        <div class="brutal-badge mb-3">
           <span>DATA PROTECTION & PRIVACY</span>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Privacy <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Policy</span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
+          Privacy <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">Policy</span>
         </h1>
-        <p class="mt-3 text-slate-300 text-base leading-relaxed">
+        <p class="mt-3 text-slate-300 text-base leading-relaxed border-l-2 border-cyan-400/60 pl-4 font-normal">
           Information regarding data collection, system security logging, and user rights.
         </p>
       </div>

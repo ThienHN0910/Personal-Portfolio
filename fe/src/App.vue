@@ -1,8 +1,16 @@
 <template>
   <div id="app">
+    <!-- Accessible Skip to Content Link -->
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2.5 focus:rounded-xl focus:bg-cyan-400 focus:text-slate-950 focus:font-mono focus:font-bold focus:shadow-[0_0_25px_rgba(0,229,255,0.6)] focus:outline-none"
+    >
+      Skip to main content
+    </a>
+
     <Analytics />
     <Navbar v-if="!isAdminRoute" />
-    <main>
+    <main id="main-content" tabindex="-1">
       <RouterView v-slot="{ Component }">
         <Transition name="page" mode="out-in">
           <component :is="Component" />
@@ -10,17 +18,40 @@
       </RouterView>
     </main>
     <Footer v-if="!isAdminRoute" />
+
+    <!-- Global Command Palette & Notifications -->
+    <CommandPalette />
+    <ToastNotification />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, onUnmounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
 
 import Navbar from '@/components/layout/Navbar.vue'
 import Footer from '@/components/layout/Footer.vue'
+import CommandPalette from '@/components/ui/CommandPalette.vue'
+import ToastNotification from '@/components/ui/ToastNotification.vue'
+import { useCommandPalette } from '@/composables/useCommandPalette'
 
 const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
+const { togglePalette } = useCommandPalette()
+
+function handleGlobalKeydown(e: KeyboardEvent) {
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+    e.preventDefault()
+    togglePalette()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', handleGlobalKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleGlobalKeydown)
+})
 </script>

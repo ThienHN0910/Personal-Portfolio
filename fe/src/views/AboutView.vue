@@ -4,14 +4,14 @@
 
     <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
       <!-- Page Header -->
-      <div class="bento-card border-2 border-cyber-cyan/40 bg-slate-950/90 shadow-[6px_6px_0px_0px_rgba(0,242,255,0.25)]">
+      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
         <div class="brutal-badge mb-3">
           <span>BIOGRAPHY & SKILLS</span>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Hồ Ngọc Thiện <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan via-indigo-400 to-violet-400">(ThienHN)</span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
+          Hồ Ngọc Thiện <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">(ThienHN)</span>
         </h1>
-        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed border-l-4 border-cyber-cyan pl-4 font-normal">
+        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed border-l-2 border-cyan-400/60 pl-4 font-normal">
           Career background, technical skill matrix, work history, academic credentials, and software architecture philosophy.
         </p>
       </div>
@@ -22,25 +22,25 @@
         <!-- Profile Card & Bio Overview Bento Grid -->
         <div class="bento-grid">
           <!-- Left Avatar Sidebar (Span 4) -->
-          <div class="col-span-12 lg:col-span-4 bento-card bento-card--stark flex flex-col items-center text-center space-y-5">
-            <div class="relative w-40 h-40 rounded-2xl overflow-hidden bg-slate-900 border-2 border-cyber-cyan shadow-[4px_4px_0px_0px_#00f2ff]">
+          <div class="col-span-12 lg:col-span-4 glass-panel p-6 border border-cyber-border/30 shadow-glass-card flex flex-col items-center text-center space-y-5">
+            <div class="relative w-40 h-40 rounded-2xl overflow-hidden bg-slate-900 border border-cyan-400/40 shadow-inner-glow group">
               <img
                 v-if="about?.avatarUrl"
                 :src="about.avatarUrl"
                 :alt="about.name"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
               <div
                 v-else
-                class="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex items-center justify-center text-cyber-cyan font-mono text-3xl font-bold"
+                class="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 flex items-center justify-center text-cyan-400 font-mono text-3xl font-bold"
               >
                 HN
               </div>
             </div>
 
             <div>
-              <h2 class="text-2xl font-bold text-white">{{ about?.name || 'Hồ Ngọc Thiện' }}</h2>
-              <p class="text-xs font-mono text-cyber-cyan font-semibold mt-1 uppercase tracking-wider">{{ about?.title || 'Full Stack Software Engineer' }}</p>
+              <h2 class="text-2xl font-bold font-display text-white">{{ about?.name || 'Hồ Ngọc Thiện' }}</h2>
+              <p class="text-xs font-mono text-cyan-400 font-semibold mt-1 uppercase tracking-wider">{{ about?.title || 'Full Stack Software Engineer' }}</p>
             </div>
 
             <div v-if="publicSocialLinks.length" class="flex flex-wrap justify-center gap-2">
@@ -50,81 +50,81 @@
                 :href="link.href"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="px-3 py-1.5 rounded-lg text-xs font-mono text-slate-200 bg-white/5 border-2 border-white/20 hover:border-cyber-cyan hover:text-cyber-cyan transition-all shadow-[2px_2px_0px_0px_rgba(255,255,255,0.1)]"
+                class="px-3 py-1.5 rounded-lg text-xs font-mono text-slate-200 bg-white/5 border border-white/15 hover:border-cyan-400/50 hover:text-cyan-400 hover:bg-cyan-400/5 transition-all shadow-inner-glow active:scale-95"
               >
                 {{ link.label }}
               </a>
             </div>
 
             <div v-if="about?.resumeUrl" class="w-full pt-2">
-              <RouterLink to="/cv" class="w-full py-3 rounded-xl bg-cyber-cyan text-slate-950 font-mono font-bold text-xs uppercase tracking-wider block border-2 border-cyber-cyan shadow-[4px_4px_0px_0px_#ffffff] hover:shadow-[6px_6px_0px_0px_#ffffff] transition-all">
+              <RouterLink to="/cv" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-300 text-slate-950 font-mono font-bold text-xs uppercase tracking-wider block shadow-[0_4px_20px_-2px_rgba(0,229,255,0.4)] hover:-translate-y-0.5 hover:shadow-[0_8px_28px_-2px_rgba(0,229,255,0.55)] active:scale-[0.98] transition-all text-center">
                 View & Download CV
               </RouterLink>
             </div>
           </div>
 
           <!-- Right Bio Narrative (Span 8) -->
-          <div class="col-span-12 lg:col-span-8 bento-card border-2 border-cyber-cyan/30 bg-slate-950/80 shadow-[4px_4px_0px_0px_rgba(0,242,255,0.2)] flex flex-col justify-between space-y-4">
+          <div class="col-span-12 lg:col-span-8 glass-panel p-6 sm:p-8 border border-cyber-border/30 shadow-glass-card flex flex-col justify-between space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-white/10">
-              <h2 class="text-xl font-bold text-white">Biography Overview</h2>
-              <span class="text-xs font-mono text-cyber-cyan font-bold">#BIO_OVERVIEW</span>
+              <h2 class="text-xl font-bold font-display text-white">Biography Overview</h2>
+              <span class="text-xs font-mono text-cyan-400 font-semibold">#BIO_OVERVIEW</span>
             </div>
 
             <p class="text-slate-300 text-base leading-relaxed">
               {{ about?.bio || 'Passionate Full Stack Software Engineer specializing in modern Web applications, performance engineering, scalable system design, and high-impact user experiences.' }}
             </p>
 
-            <div class="p-4 rounded-xl bg-white/5 border-2 border-white/10 font-mono text-xs text-slate-300 space-y-2">
+            <div class="p-4 rounded-xl bg-white/5 border border-white/10 font-mono text-xs text-slate-300 space-y-2.5 shadow-inner-glow">
               <div class="flex items-center justify-between">
                 <span class="text-slate-400">CORE FOCUS:</span>
-                <span class="text-white font-bold">Full Stack & Performance Engineering</span>
+                <span class="text-white font-medium">Full Stack & Performance Engineering</span>
               </div>
               <div class="flex items-center justify-between">
                 <span class="text-slate-400">ARCHITECTURE:</span>
-                <span class="text-cyber-cyan font-bold">Microservices & SPA / SSR</span>
+                <span class="text-cyan-400 font-semibold">Microservices & SPA / SSR</span>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Skills Matrix Bento -->
-        <div v-if="about?.skills?.length" class="bento-card border-2 border-cyber-cyan/30 bg-slate-950/80 shadow-[4px_4px_0px_0px_rgba(0,242,255,0.2)] space-y-4">
+        <div v-if="about?.skills?.length" class="glass-panel p-6 sm:p-8 border border-cyber-border/30 shadow-glass-card space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
-            <h2 class="text-xl font-bold text-white">Technical Skill Matrix</h2>
-            <span class="text-xs font-mono text-cyber-cyan font-bold">#CORE_SKILLS</span>
+            <h2 class="text-xl font-bold font-display text-white">Technical Skill Matrix</h2>
+            <span class="text-xs font-mono text-cyan-400 font-semibold">#CORE_SKILLS</span>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             <div
               v-for="skill in about.skills"
               :key="skill"
-              class="p-3.5 rounded-xl bg-white/5 border-2 border-white/10 hover:border-cyber-cyan hover:bg-cyber-cyan/10 transition-all font-mono text-xs text-slate-200 flex items-center gap-2 shadow-[2px_2px_0px_0px_rgba(255,255,255,0.08)]"
+              class="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-cyan-400/40 hover:bg-cyan-400/5 hover:text-cyan-300 transition-all font-mono text-xs text-slate-200 flex items-center gap-2.5 shadow-inner-glow"
             >
-              <span class="w-2.5 h-2.5 rounded-full bg-cyber-cyan"></span>
-              <span class="font-bold">{{ skill }}</span>
+              <span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#00e5ff]"></span>
+              <span class="font-medium">{{ skill }}</span>
             </div>
           </div>
         </div>
 
         <!-- Experience Timeline -->
         <div v-if="about?.experience?.length" class="space-y-4">
-          <div class="bento-card border-2 border-cyber-cyan/30 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-white">Work Experience</h2>
-            <span class="text-xs font-mono text-cyber-cyan font-bold">#EXPERIENCE</span>
+          <div class="glass-panel p-5 border border-cyber-border/30 flex items-center justify-between">
+            <h2 class="text-xl font-bold font-display text-white">Work Experience</h2>
+            <span class="text-xs font-mono text-cyan-400 font-semibold">#EXPERIENCE</span>
           </div>
 
           <div class="space-y-4">
             <div
               v-for="(exp, i) in sortedExperiences"
               :key="i"
-              class="bento-card bento-card--stark space-y-3"
+              class="glass-panel p-6 sm:p-7 border border-cyber-border/30 shadow-glass-card space-y-3"
             >
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-white/10">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-white/10">
                 <div>
-                  <h3 class="text-lg font-bold text-white">{{ exp.position }}</h3>
-                  <span class="text-xs font-mono text-cyber-cyan font-bold uppercase">{{ exp.company }}</span>
+                  <h3 class="text-lg font-bold font-display text-white">{{ exp.position }}</h3>
+                  <span class="text-xs font-mono text-cyan-400 font-semibold uppercase">{{ exp.company }}</span>
                 </div>
-                <span class="text-xs font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-lg border-2 border-white/20">
+                <span class="text-xs font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-lg border border-white/15 tabular-nums">
                   {{ exp.startDate }} – {{ exp.endDate || 'Present' }}
                 </span>
               </div>
@@ -137,47 +137,47 @@
 
         <!-- Education -->
         <div v-if="about?.education?.length" class="space-y-4">
-          <div class="bento-card border-2 border-cyber-cyan/30 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-white">Education & Training</h2>
-            <span class="text-xs font-mono text-cyber-cyan font-bold">#EDUCATION</span>
+          <div class="glass-panel p-5 border border-cyber-border/30 flex items-center justify-between">
+            <h2 class="text-xl font-bold font-display text-white">Education & Training</h2>
+            <span class="text-xs font-mono text-cyan-400 font-semibold">#EDUCATION</span>
           </div>
 
           <div class="space-y-4">
             <div
               v-for="(edu, i) in sortedEducation"
               :key="i"
-              class="bento-card bento-card--stark space-y-2"
+              class="glass-panel p-6 border border-cyber-border/30 shadow-glass-card space-y-2"
             >
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                  <h3 class="text-lg font-bold text-white">{{ edu.degree }} {{ edu.field ? `in ${edu.field}` : '' }}</h3>
-                  <span class="text-xs font-mono text-indigo-400 font-bold uppercase">{{ edu.institution }}</span>
+                  <h3 class="text-lg font-bold font-display text-white">{{ edu.degree }} {{ edu.field ? `in ${edu.field}` : '' }}</h3>
+                  <span class="text-xs font-mono text-indigo-400 font-semibold uppercase">{{ edu.institution }}</span>
                 </div>
-                <span class="text-xs font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-lg border-2 border-white/20">
+                <span class="text-xs font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-lg border border-white/15 tabular-nums">
                   {{ edu.startDate }} – {{ edu.endDate || 'Present' }}
                 </span>
               </div>
-              <p v-if="edu.gpa" class="text-xs font-mono text-slate-300">GPA: {{ edu.gpa }}</p>
+              <p v-if="edu.gpa" class="text-xs font-mono text-slate-300 tabular-nums">GPA: {{ edu.gpa }}</p>
             </div>
           </div>
         </div>
 
         <!-- Licenses & Certifications -->
         <div v-if="licensesCertifications.length" class="space-y-4">
-          <div class="bento-card border-2 border-cyber-cyan/30 flex items-center justify-between">
-            <h2 class="text-xl font-bold text-white">Licenses & Certifications</h2>
-            <span class="text-xs font-mono text-cyber-cyan font-bold">#CERTIFICATIONS</span>
+          <div class="glass-panel p-5 border border-cyber-border/30 flex items-center justify-between">
+            <h2 class="text-xl font-bold font-display text-white">Licenses & Certifications</h2>
+            <span class="text-xs font-mono text-cyan-400 font-semibold">#CERTIFICATIONS</span>
           </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div
               v-for="(item, i) in licensesCertifications"
               :key="`${item.name}-${item.issuer}-${i}`"
-              class="bento-card bento-card--stark space-y-2"
+              class="glass-panel p-5 border border-cyber-border/30 shadow-glass-card space-y-2"
             >
-              <h3 class="text-base font-bold text-white">{{ item.name }}</h3>
-              <p v-if="item.issuer" class="text-xs font-mono text-violet-400 font-bold uppercase">{{ item.issuer }}</p>
-              <p v-if="item.issueDate || item.expirationDate" class="text-xs font-mono text-slate-400">
+              <h3 class="text-base font-bold font-display text-white">{{ item.name }}</h3>
+              <p v-if="item.issuer" class="text-xs font-mono text-purple-400 font-semibold uppercase">{{ item.issuer }}</p>
+              <p v-if="item.issueDate || item.expirationDate" class="text-xs font-mono text-slate-400 tabular-nums">
                 {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No Expiration' }}
               </p>
               <a
@@ -185,9 +185,10 @@
                 :href="item.credentialUrl"
                 target="_blank"
                 rel="noopener noreferrer"
-                class="inline-block text-xs font-mono text-cyber-cyan font-bold hover:underline pt-1"
+                class="inline-flex items-center gap-1 text-xs font-mono text-cyan-400 font-semibold hover:underline pt-1"
               >
-                Verify Credential ↗
+                <span>Verify Credential</span>
+                <span>↗</span>
               </a>
             </div>
           </div>

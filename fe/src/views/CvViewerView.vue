@@ -4,35 +4,37 @@
 
     <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
       <!-- Breadcrumb Link -->
-      <RouterLink to="/about" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyber-cyan transition-colors text-sm font-mono">
-        <span>← Back to About</span>
+      <RouterLink to="/about" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm font-mono group active:scale-95">
+        <span class="group-hover:-translate-x-1 transition-transform">←</span>
+        <span>Back to About</span>
       </RouterLink>
 
       <!-- Page Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
+        <div class="brutal-badge mb-3">
           <span>CURRICULUM VITAE</span>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Interactive <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Curriculum Vitae (CV)</span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
+          Interactive <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">Curriculum Vitae (CV)</span>
         </h1>
-        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed">
+        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed border-l-2 border-cyan-400/60 pl-4 font-normal">
           Preview the official CV of Hồ Ngọc Thiện (ThienHN) directly in your browser or download the PDF version.
         </p>
       </div>
 
       <LoadingSpinner v-if="loading" />
 
-      <div v-else-if="!resumeUrl" class="glass-panel p-8 text-center text-slate-400 font-mono">
-        Curriculum Vitae (CV) is not currently uploaded.
+      <div v-else-if="!resumeUrl" class="glass-panel p-12 text-center text-slate-400 font-mono space-y-3">
+        <p class="text-base text-slate-200 font-sans font-medium">Curriculum Vitae (CV) is not currently uploaded.</p>
+        <p class="text-xs text-slate-400">Please check back soon or contact me directly.</p>
       </div>
 
       <div v-else class="space-y-6">
         <!-- PDF Actions Header Bar -->
-        <div class="glass-panel p-4 border border-cyber-border/30 flex flex-wrap items-center justify-between gap-4">
+        <div class="glass-panel p-4 sm:p-5 border border-cyber-border/30 shadow-glass-card flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-2 text-xs font-mono text-slate-300">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Total Pages: {{ totalPages }} pages</span>
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span class="tabular-nums">Total Pages: {{ totalPages }} pages</span>
           </div>
 
           <div class="flex items-center gap-3">
@@ -40,21 +42,21 @@
               :href="resumeUrl"
               target="_blank"
               rel="noopener noreferrer"
-              class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 text-xs font-mono font-semibold hover:bg-white/10 transition-all"
+              class="px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 text-slate-200 text-xs font-mono font-semibold hover:border-cyan-400/40 hover:text-cyan-400 hover:bg-cyan-400/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all shadow-inner-glow"
             >
               Open in New Tab ↗
             </a>
             <a
               :href="resumeUrl"
               download
-              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 text-xs font-mono font-bold hover:shadow-[0_0_20px_rgba(0,242,255,0.4)] transition-all"
+              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-300 text-slate-950 text-xs font-mono font-bold shadow-[0_4px_20px_-2px_rgba(0,229,255,0.4)] hover:shadow-[0_8px_28px_-2px_rgba(0,229,255,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all"
             >
               Download CV (PDF) ↓
             </a>
           </div>
         </div>
 
-        <div v-if="renderError" class="glass-panel p-6 border border-rose-500/40 bg-rose-950/20 text-rose-300 text-sm font-mono">
+        <div v-if="renderError" class="glass-panel p-6 border border-rose-500/40 bg-rose-950/20 text-rose-300 text-sm font-mono shadow-inner-glow">
           {{ renderError }}
         </div>
 

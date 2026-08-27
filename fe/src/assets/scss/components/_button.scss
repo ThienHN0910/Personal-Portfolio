@@ -8,14 +8,24 @@
   justify-content: center;
   gap: $spacing-sm;
   padding: $spacing-sm $spacing-xl;
-  border-radius: $radius-lg;
+  border-radius: $radius-xl;
   font-size: $font-sm;
   font-weight: 600;
   text-decoration: none;
-  border: 2px solid transparent;
+  border: 1px solid transparent;
   cursor: pointer;
-  @include transition;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   white-space: nowrap;
+  user-select: none;
+
+  &:active:not(:disabled) {
+    transform: translateY(1px) scale(0.98);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--os-cyan, #00E5FF);
+    outline-offset: 2px;
+  }
 
   &:disabled {
     opacity: 0.5;
@@ -23,36 +33,41 @@
   }
 
   &--primary {
-    background: linear-gradient(135deg, var(--theme-primary, #3b82f6), var(--theme-secondary, #8b5cf6));
-    color: $white;
-    box-shadow: 0 4px 18px color-mix(in srgb, var(--theme-primary, #3b82f6) 40%, transparent);
+    background: linear-gradient(135deg, #00E5FF, #6366f1);
+    color: #030712;
+    font-weight: 700;
+    box-shadow: 0 4px 20px -2px rgba(0, 229, 255, 0.35), inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 9px 26px color-mix(in srgb, var(--theme-primary, #3b82f6) 55%, transparent);
+      box-shadow: 0 8px 28px -2px rgba(0, 229, 255, 0.5), inset 0 1px 0 0 rgba(255, 255, 255, 0.6);
     }
   }
 
   &--secondary {
-    background: transparent;
-    color: $white;
-    border-color: rgba($white, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+    color: #f8fafc;
+    border-color: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(8px);
 
     &:hover:not(:disabled) {
-      border-color: var(--theme-primary, #3b82f6);
-      color: var(--theme-primary, #3b82f6);
-      background: color-mix(in srgb, var(--theme-primary, #3b82f6) 10%, transparent);
+      border-color: rgba(0, 229, 255, 0.4);
+      color: #00E5FF;
+      background: rgba(0, 229, 255, 0.08);
+      box-shadow: 0 4px 20px -4px rgba(0, 229, 255, 0.2);
     }
   }
 
   &--outline {
     background: transparent;
-    color: var(--theme-primary, #3b82f6);
-    border-color: var(--theme-primary, #3b82f6);
+    color: #00E5FF;
+    border-color: rgba(0, 229, 255, 0.35);
 
     &:hover:not(:disabled) {
-      background: var(--theme-primary, #3b82f6);
-      color: $white;
+      background: rgba(0, 229, 255, 0.1);
+      border-color: #00E5FF;
+      color: #ffffff;
+      box-shadow: 0 0 20px -4px rgba(0, 229, 255, 0.3);
     }
   }
 

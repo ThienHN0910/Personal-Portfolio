@@ -5,11 +5,11 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
       <!-- Header -->
       <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow text-center">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyber-cyan/10 border border-cyber-cyan/30 text-cyber-cyan font-mono text-xs mb-3">
+        <div class="brutal-badge mb-3">
           <span>GET IN TOUCH</span>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-          Contact <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyber-cyan to-indigo-400">Hồ Ngọc Thiện</span>
+        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
+          Contact <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">Hồ Ngọc Thiện</span>
         </h1>
         <p class="mt-3 text-slate-300 text-base max-w-xl mx-auto leading-relaxed">
           Have a new project, software architecture inquiry, or engineering opportunity? Send a message directly via the contact form below.
@@ -29,7 +29,7 @@
                 type="text"
                 placeholder="Enter your full name"
                 required
-                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
               />
             </div>
 
@@ -42,7 +42,7 @@
                 type="email"
                 placeholder="email@domain.com"
                 required
-                class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+                class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
               />
             </div>
           </div>
@@ -56,7 +56,7 @@
               type="text"
               placeholder="Project / Hiring Opportunity"
               required
-              class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+              class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
             />
           </div>
 
@@ -70,7 +70,7 @@
               maxlength="2000"
               placeholder="Detailed description of your project or inquiry..."
               required
-              class="w-full px-4 py-3 rounded-xl bg-slate-900/80 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyber-cyan focus:ring-1 focus:ring-cyber-cyan/50 transition-all"
+              class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
             />
           </div>
 
@@ -78,12 +78,12 @@
           <div id="turnstile-container" class="min-h-[65px] flex items-center justify-center pt-2"></div>
 
           <!-- Error Alert -->
-          <div v-if="contactStore.error" class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm font-mono">
+          <div v-if="contactStore.error" class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm font-mono shadow-inner-glow">
             {{ contactStore.error }}
           </div>
 
           <!-- Success Alert -->
-          <div v-if="contactStore.success" class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-mono flex items-center gap-2">
+          <div v-if="contactStore.success" class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-mono flex items-center gap-2 shadow-inner-glow">
             <span class="text-base">✓</span>
             <span>Your message has been sent successfully! I will respond as soon as possible.</span>
           </div>
@@ -91,7 +91,7 @@
           <!-- Submit Button -->
           <button
             type="submit"
-            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyber-cyan via-indigo-500 to-violet-500 text-slate-950 font-bold text-sm font-mono uppercase tracking-wider hover:shadow-[0_0_25px_rgba(0,242,255,0.4)] transition-all disabled:opacity-50"
+            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 via-cyan-300 to-indigo-400 text-slate-950 font-bold text-sm font-mono uppercase tracking-wider shadow-[0_4px_20px_-2px_rgba(0,229,255,0.4)] hover:shadow-[0_8px_32px_-2px_rgba(0,229,255,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50"
             :disabled="contactStore.loading"
           >
             <span v-if="contactStore.loading">SENDING MESSAGE...</span>
