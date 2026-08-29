@@ -63,3 +63,47 @@ _Avoid_: Linked blog post, Project companion post
 **Design-System-Constrained AI Synthesis**:
 AI content generation strictly constrained to standard semantic HTML tags and predefined design system CSS classes (`.article-*`, `.project-*`, `.editorial-*`), allowing inline styles *exclusively* for creative CSS Grid layout orchestration.
 _Avoid_: Unconstrained HTML dump, Ad-hoc inline colors/fonts
+
+---
+
+## Editorial Component Catalog & Class Registry
+
+When generating or editing rich content for **Articles** (`/blog`) and **Case Studies** (`/projects`), AI agents and authors must strictly use the following semantic HTML tags and CSS class registry:
+
+### 1. Typography & Hierarchy
+
+| Semantic Tag | Predefined CSS Class | Purpose & Rendering |
+| :--- | :--- | :--- |
+| `<h1>` / `<h2>` | `.article-hero-title`, `.project-hero-title` | Display serif headline (clamp 2.2rem - 3.5rem), high-contrast serif with negative tracking. |
+| `<p>` | `.article-lead`, `.project-lead` | Editorial summary paragraph, italic serif, 1.25rem with generous line-height. |
+| `<h2>` | `.article-h2`, `.project-h2` | Major section header with top divider line (`border-top: 1px solid var(--stroke)`). |
+| `<h3>` | `.article-h3`, `.project-h3` | Subsection header with balanced letter-spacing. |
+| `<p>` | `.article-p`, `.project-p` | Readable body paragraph with max 68ch reading length and 1.85 line-height. |
+
+### 2. Architectural Callouts, Quotes & Metrics
+
+| Semantic Tag | Predefined CSS Class | Purpose & Rendering |
+| :--- | :--- | :--- |
+| `<blockquote>` | `.article-pullquote` | Standout pullquote with glowing left border accent, bone background, and hover shift (`translateX(4px)`). |
+| `<div>` | `.project-architecture-callout`, `.article-callout` | Double-bezel container for architecture tradeoffs (ADRs) with soft gradient background and hover lift. |
+| `<div>` | `.project-metric-grid` | Responsive CSS Grid container for performance and scale metrics. |
+| `<div>` | `.project-metric-card` | Bento metric card with `.metric-value` (monospace 2.25rem) and `.metric-label` with 60fps hover lift (`translateY(-4px)`). |
+
+### 3. Code, Tables & Figures
+
+| Semantic Tag | Predefined CSS Class | Purpose & Rendering |
+| :--- | :--- | :--- |
+| `<pre><code>` | `.project-codeblock`, `.article-codeblock` | Obsidian terminal code container (`#0B0D11`) with interactive copy-to-clipboard button and language badge. |
+| `<table>` | `.project-spec-table`, `.article-table` | Monospace specification table with uppercase headers and smooth row hover highlight. |
+| `<figure>` | `.project-figure`, `.article-figure` | Embedded image or architectural diagram with rounded frame (`14px`), zoom on hover (`scale(1.02)`), and monospace `<figcaption>`. |
+
+### 4. Strict Inline Style Rules for AI Generation
+
+- **Permitted**: Structural layout attributes on `<div>`, `<section>`, `<figure>`:
+  - `style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem;"`
+  - `style="grid-column: span 8;"`, `style="grid-column: span 4;"`, `style="grid-column: span 7;"`, `style="grid-column: span 5;"`
+  - `style="display: flex; justify-content: space-between; align-items: stretch; gap: 1.25rem;"`
+  - `style="margin-top: 3rem; margin-bottom: 2rem;"`
+- **Strictly Prohibited**: Inline colors (`color: ...`), background colors (`background: ...`), custom fonts (`font-family: ...`), font sizes (`font-size: ...`), or border-radius. All visual identity is governed exclusively by the CSS classes above.
+- **Creative Direction Dials**: `DESIGN_VARIANCE: 8` (asymmetric bento grids), `MOTION_INTENSITY: 8` (60fps GPU acceleration), `VISUAL_DENSITY: 3` (airy negative space).
+
