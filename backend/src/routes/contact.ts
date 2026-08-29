@@ -2,6 +2,7 @@ import { Router } from 'express'
 
 import { requireAdmin } from '../lib/auth'
 import { connectToDatabase } from '../lib/mongodb'
+import { sendTelegramNotification } from '../lib/telegram'
 import Contact from '../models/Contact'
 
 const router = Router()
@@ -68,6 +69,8 @@ router.post('/', async (req, res) => {
     }
 
     await Contact.create({ name, email, subject, message })
+    void sendTelegramNotification({ name, email, subject, message })
+
     return res.status(201).json({ success: true, message: 'Message sent successfully' })
   } catch (err) {
     console.error('Contact post error:', err)
