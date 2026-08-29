@@ -24,25 +24,25 @@ html {
 }
 
 :root {
-  /* Premium Utilitarian Monochrome Design System */
-  --canvas: #FBFBFA;
-  --bone: #F7F6F3;
-  --surface: #FFFFFF;
-  --ink: #111111;
-  --ink-secondary: #787774;
-  --ink-tertiary: #AEACAB;
-  --stroke: #EAEAEA;
-  --stroke-soft: rgba(0, 0, 0, 0.06);
+  /* High-end Creative Obsidian Dark Mode System */
+  --canvas: #090A0C;
+  --bone: #12141A;
+  --surface: #181A22;
+  --ink: #F5F5F7;
+  --ink-secondary: #8E919A;
+  --ink-tertiary: #565963;
+  --stroke: rgba(255, 255, 255, 0.08);
+  --stroke-soft: rgba(255, 255, 255, 0.04);
 
-  /* Pastel accent palette — semantic, scarce use only */
-  --pastel-red: #FDEBEC;
-  --pastel-red-text: #9F2F2D;
-  --pastel-blue: #E1F3FE;
-  --pastel-blue-text: #1F6C9F;
-  --pastel-green: #EDF3EC;
-  --pastel-green-text: #346538;
-  --pastel-amber: #FBF3DB;
-  --pastel-amber-text: #956400;
+  /* Dark mode spot pastel accents */
+  --pastel-red: #281014;
+  --pastel-red-text: #F87171;
+  --pastel-blue: #0E1F36;
+  --pastel-blue-text: #60A5FA;
+  --pastel-green: #0E2616;
+  --pastel-green-text: #4ADE80;
+  --pastel-amber: #281D08;
+  --pastel-amber-text: #FBBF24;
 
   /* Typography */
   --font-sans: 'Plus Jakarta Sans', 'SF Pro Display', 'Helvetica Neue', system-ui, sans-serif;
@@ -70,19 +70,19 @@ body::before {
   top: -20vmax;
   left: -15vmax;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(251, 243, 219, 0.55) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(96, 165, 250, 0.035) 0%, rgba(74, 222, 128, 0.015) 45%, transparent 70%);
   animation: drift 28s ease-in-out infinite alternate;
   z-index: 0;
   will-change: transform;
 }
 
-/* Film grain / paper texture — fixed, pointer-events none */
+/* Film grain texture — fixed, pointer-events none */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
   pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
   z-index: 1;
   opacity: 1;
 }
@@ -99,48 +99,45 @@ body::after {
   to { transform: translate(60px, 40px) scale(1.08); }
 }
 
-/* ─── Editorial Card (replaces glass-panel) ──────────────────────────────── */
-/* Double-Bezel / Doppelrand architecture: outer shell + inner core           */
+/* ─── Editorial Card (Doppelrand Double-Bezel Architecture) ──────────────── */
 .editorial-card {
-  /* Outer shell */
   background: var(--bone);
   border: 1px solid var(--stroke);
   border-radius: 12px;
   padding: 1.5px;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.4);
   transition: box-shadow 200ms cubic-bezier(0.16,1,0.3,1), border-color 200ms cubic-bezier(0.16,1,0.3,1);
   position: relative;
   overflow: hidden;
 
   &:hover {
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.05);
-    border-color: rgba(0,0,0,0.12);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.16);
   }
 }
 
 .editorial-card__inner {
-  /* Inner core — mathematically smaller radius */
   background: var(--surface);
   border-radius: calc(12px - 2px);
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.9);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.06);
   height: 100%;
   width: 100%;
   overflow: hidden;
 }
 
-/* Legacy alias kept for any components not yet migrated */
+/* Legacy alias */
 .glass-panel {
   background: var(--surface);
   border: 1px solid var(--stroke);
   border-radius: 12px;
-  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.04);
+  box-shadow: 0 4px 20px 0 rgba(0, 0, 0, 0.4);
   position: relative;
   overflow: hidden;
   transition: box-shadow 200ms cubic-bezier(0.16,1,0.3,1), border-color 200ms cubic-bezier(0.16,1,0.3,1);
 
   &:hover {
-    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.05);
-    border-color: rgba(0,0,0,0.12);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
+    border-color: rgba(255, 255, 255, 0.16);
   }
 }
 
@@ -247,24 +244,6 @@ a {
   @include transition(color);
 }
 
-
-// Scrollbar
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: color-mix(in srgb, var(--os-bg) 80%, black);
-}
-
-::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--os-cyan) 45%, transparent);
-  border-radius: $radius-full;
-
-  &:hover {
-    background: var(--os-cyan);
-  }
-}
 
 // Scrollbar
 ::-webkit-scrollbar {

@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted } from 'vue'
+import { computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { Analytics } from '@vercel/analytics/vue'
 
@@ -36,10 +36,12 @@ import Footer from '@/components/layout/Footer.vue'
 import CommandPalette from '@/components/ui/CommandPalette.vue'
 import ToastNotification from '@/components/ui/ToastNotification.vue'
 import { useCommandPalette } from '@/composables/useCommandPalette'
+import { useSmoothScroll } from '@/composables/useSmoothScroll'
 
 const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
 const { togglePalette } = useCommandPalette()
+const { initSmoothScroll, destroySmoothScroll, scrollTo } = useSmoothScroll()
 
 function handleGlobalKeydown(e: KeyboardEvent) {
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
@@ -48,11 +50,20 @@ function handleGlobalKeydown(e: KeyboardEvent) {
   }
 }
 
+watch(
+  () => route.fullPath,
+  () => {
+    scrollTo(0, { immediate: true })
+  }
+)
+
 onMounted(() => {
+  initSmoothScroll()
   window.addEventListener('keydown', handleGlobalKeydown)
 })
 
 onUnmounted(() => {
+  destroySmoothScroll()
   window.removeEventListener('keydown', handleGlobalKeydown)
 })
 </script>

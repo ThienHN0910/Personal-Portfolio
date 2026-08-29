@@ -2,18 +2,18 @@
   <header class="sticky top-0 z-[200] w-full flex justify-center pt-5 px-4 pointer-events-none">
     <!-- Floating Island Pill -->
     <div
-      class="pointer-events-auto flex items-center justify-between gap-6 px-4 py-2.5 rounded-full bg-surface border border-stroke shadow-island w-full max-w-3xl backdrop-blur-sm transition-shadow duration-[700ms] ease-[cubic-bezier(0.32,0.72,0,1)]"
-      :class="isScrolled ? 'shadow-island-hover' : 'shadow-island'"
+      class="pointer-events-auto flex items-center justify-between gap-6 px-4 py-2.5 rounded-full bg-surface/90 border border-stroke shadow-island w-full max-w-3xl backdrop-blur-md transition-all duration-[500ms] ease-[cubic-bezier(0.32,0.72,0,1)]"
+      :class="isScrolled ? 'shadow-island-hover border-stroke/90' : 'shadow-island'"
     >
       <!-- Logo & Brand -->
       <RouterLink to="/" class="flex items-center gap-2.5 group active:scale-[0.98] transition-transform duration-200">
         <!-- Double-bezel logo mark -->
-        <div class="w-8 h-8 rounded-full bg-bone border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] group-hover:border-ink/20 transition-colors duration-300">
+        <div class="w-8 h-8 rounded-full bg-bone border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:border-ink/30 transition-colors duration-300">
           <span class="font-mono text-ink text-xs font-semibold tracking-tighter">T/</span>
         </div>
         <div class="flex flex-col leading-none">
-          <span class="font-sans font-semibold text-sm tracking-tight text-ink group-hover:text-ink/70 transition-colors duration-300">Hồ Ngọc Thiện</span>
-          <span class="font-mono text-[9px] text-ink-secondary tracking-widest uppercase">Portfolio</span>
+          <span class="font-sans font-semibold text-sm tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300">Hồ Ngọc Thiện</span>
+          <span class="font-mono text-[9px] text-ink-tertiary tracking-widest uppercase">Portfolio</span>
         </div>
       </RouterLink>
 

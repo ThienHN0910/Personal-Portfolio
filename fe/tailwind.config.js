@@ -7,28 +7,28 @@ export default {
   theme: {
     extend: {
       colors: {
-        canvas: '#FBFBFA',
-        bone: '#F7F6F3',
-        surface: '#FFFFFF',
+        canvas: '#090A0C',
+        bone: '#12141A',
+        surface: '#181A22',
         ink: {
-          DEFAULT: '#111111',
-          secondary: '#787774',
-          tertiary: '#AEACAB',
+          DEFAULT: '#F5F5F7',
+          secondary: '#8E919A',
+          tertiary: '#565963',
         },
         stroke: {
-          DEFAULT: '#EAEAEA',
-          soft: 'rgba(0,0,0,0.06)',
+          DEFAULT: 'rgba(255, 255, 255, 0.08)',
+          soft: 'rgba(255, 255, 255, 0.04)',
         },
-        // Muted pastel accents — scarce, semantic only
+        // Muted dark-mode spot pastels
         pastel: {
-          red: '#FDEBEC',
-          'red-text': '#9F2F2D',
-          blue: '#E1F3FE',
-          'blue-text': '#1F6C9F',
-          green: '#EDF3EC',
-          'green-text': '#346538',
-          amber: '#FBF3DB',
-          'amber-text': '#956400',
+          red: '#281014',
+          'red-text': '#F87171',
+          blue: '#0E1F36',
+          'blue-text': '#60A5FA',
+          green: '#0E2616',
+          'green-text': '#4ADE80',
+          amber: '#281D08',
+          'amber-text': '#FBBF24',
         },
       },
       fontFamily: {
@@ -37,17 +37,14 @@ export default {
         mono: ['DM Mono', 'SF Mono', 'JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       boxShadow: {
-        // Ultra-diffuse, near-invisible shadows as per skill protocol (<0.05 opacity)
-        'ambient': '0 2px 16px 0 rgba(0,0,0,0.04)',
-        'ambient-hover': '0 4px 24px 0 rgba(0,0,0,0.07)',
-        'card': '0 1px 4px 0 rgba(0,0,0,0.04)',
-        'card-hover': '0 2px 8px 0 rgba(0,0,0,0.05)',
-        // Double-bezel inner highlight
-        'bezel-inner': 'inset 0 1px 1px rgba(255,255,255,0.8)',
-        'bezel-outer': '0 0 0 1px rgba(0,0,0,0.05)',
-        // Floating island nav
-        'island': '0 4px 24px 0 rgba(0,0,0,0.06), 0 1px 2px 0 rgba(0,0,0,0.04)',
-        'island-hover': '0 8px 32px 0 rgba(0,0,0,0.08), 0 1px 2px 0 rgba(0,0,0,0.04)',
+        'ambient': '0 4px 30px 0 rgba(0,0,0,0.5)',
+        'ambient-hover': '0 8px 40px 0 rgba(0,0,0,0.7)',
+        'card': '0 4px 20px 0 rgba(0,0,0,0.4)',
+        'card-hover': '0 8px 32px 0 rgba(0,0,0,0.6)',
+        'bezel-inner': 'inset 0 1px 1px rgba(255,255,255,0.08)',
+        'bezel-outer': '0 0 0 1px rgba(255,255,255,0.06)',
+        'island': '0 12px 36px 0 rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.08)',
+        'island-hover': '0 20px 48px 0 rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.14)',
       },
       animation: {
         'fade-up': 'fadeUp 600ms cubic-bezier(0.16,1,0.3,1) both',

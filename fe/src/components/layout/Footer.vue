@@ -10,10 +10,10 @@
         <div class="md:col-span-5 flex flex-col gap-5">
           <RouterLink to="/" class="flex items-center gap-2.5 group active:scale-[0.98] transition-transform duration-200">
             <!-- Double-bezel logo mark -->
-            <div class="w-8 h-8 rounded-full bg-surface border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] group-hover:border-ink/20 transition-colors duration-300">
+            <div class="w-8 h-8 rounded-full bg-surface border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:border-ink/30 transition-colors duration-300">
               <span class="font-mono text-ink text-xs font-semibold tracking-tighter">T/</span>
             </div>
-            <span class="font-sans font-semibold text-sm tracking-tight text-ink group-hover:text-ink/70 transition-colors duration-300">{{ brandName }}</span>
+            <span class="font-sans font-semibold text-sm tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300">{{ brandName }}</span>
           </RouterLink>
 
           <p class="text-sm text-ink-secondary leading-relaxed max-w-sm font-light">
@@ -28,7 +28,7 @@
               :href="link.href"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-8 h-8 rounded-full bg-surface border border-stroke shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] flex items-center justify-center text-ink-secondary hover:text-ink hover:border-ink/20 hover:-translate-y-px active:scale-95 transition-all duration-200"
+              class="w-8 h-8 rounded-full bg-surface border border-stroke shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] flex items-center justify-center text-ink-secondary hover:text-ink hover:border-ink/30 hover:-translate-y-px active:scale-95 transition-all duration-200"
               :aria-label="link.label"
             >
               <IconGlyph :name="link.icon" :size="15" />
@@ -100,6 +100,7 @@ import { computed, onMounted } from 'vue'
 
 import IconGlyph from '@/components/ui/IconGlyph.vue'
 import { useAboutStore } from '@/stores/about'
+import { useSmoothScroll } from '@/composables/useSmoothScroll'
 import {
   getBrandDescription,
   getBrandName,
@@ -109,6 +110,7 @@ import {
 } from '@/utils/aboutPresentation'
 
 const aboutStore = useAboutStore()
+const { scrollTo } = useSmoothScroll()
 const about = computed(() => aboutStore.aboutData)
 
 const currentYear = computed(() => new Date().getFullYear())
@@ -129,7 +131,7 @@ const navLinks = [
 ]
 
 function scrollToTop(): void {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
+  scrollTo(0, { duration: 1 })
 }
 
 onMounted(() => {
