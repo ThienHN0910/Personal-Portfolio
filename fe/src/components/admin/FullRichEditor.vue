@@ -88,7 +88,7 @@
             :disabled="isImproving"
             @click="handleRunAi"
           >
-            {{ isImproving ? 'Synthesizing...' : '✨ Generate &amp; Format in CKEditor' }}
+            {{ isImproving ? 'Synthesizing...' : '✨ Generate with Design System' }}
           </button>
         </div>
       </div>

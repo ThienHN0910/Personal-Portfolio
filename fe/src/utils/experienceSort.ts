@@ -95,3 +95,6 @@ export function sortExperiencesDescending<T extends Pick<Experience, 'startDate'
     return rankB - rankA
   })
 }
+
+export const sortChronologyDescending = sortExperiencesDescending
+
