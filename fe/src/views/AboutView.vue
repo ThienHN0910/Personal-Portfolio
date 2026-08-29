@@ -260,7 +260,7 @@ import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
 import { getPublicSocialLinks } from '@/utils/aboutPresentation'
-import { sortExperiencesDescending } from '@/utils/experienceSort'
+import { sortChronologyDescending } from '@/utils/experienceSort'
 import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
 import { getAboutSeoMeta } from '@/utils/seoPriority'
@@ -272,8 +272,8 @@ const blogStore = useBlogStore()
 const loading = computed(() => aboutStore.loading)
 const about = computed(() => aboutStore.aboutData)
 const publicSocialLinks = computed(() => getPublicSocialLinks(about.value))
-const sortedExperiences = computed(() => sortExperiencesDescending(about.value?.experience || []))
-const sortedEducation = computed(() => sortExperiencesDescending(about.value?.education || []))
+const sortedExperiences = computed(() => sortChronologyDescending(about.value?.experience || []))
+const sortedEducation = computed(() => sortChronologyDescending(about.value?.education || []))
 const licensesCertifications = computed(() => about.value?.licensesCertifications || [])
 
 function sanitizeHtml(html: string): string {

@@ -1,5 +1,5 @@
 import mongoose, { Schema, type Document } from 'mongoose'
-import { generateSlug } from '../lib/slugify'
+import { resolveUniqueSlug } from '../lib/slugify'
 
 export interface IBlogPost extends Document {
   title: string
@@ -28,21 +28,7 @@ const BlogPostSchema = new Schema<IBlogPost>(
 
 BlogPostSchema.pre('save', async function (next) {
   if (this.isModified('title') || !this.slug) {
-    let baseSlug = generateSlug(this.title)
-    if (!baseSlug) baseSlug = 'blog-post'
-    let currentSlug = baseSlug
-    let counter = 1
-    
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const existing = await mongoose.models.BlogPost.findOne({ slug: currentSlug, _id: { $ne: this._id } })
-      if (!existing) {
-        this.slug = currentSlug
-        break
-      }
-      currentSlug = `${baseSlug}-${counter}`
-      counter++
-    }
+    this.slug = await resolveUniqueSlug(mongoose.models.BlogPost, this.title, this._id, 'article')
   }
   next()
 })

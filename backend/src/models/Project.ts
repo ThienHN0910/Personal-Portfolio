@@ -1,12 +1,12 @@
 import mongoose, { Schema, type Document } from 'mongoose'
-import { generateSlug } from '../lib/slugify'
+import { resolveUniqueSlug } from '../lib/slugify'
 
 export interface IProject extends Document {
   title: string
   description: string
   context?: string
   duration?: string
-  priority: number
+  priority?: number
   categories: string[]
   technologies: string[]
   imageUrl?: string
@@ -21,7 +21,7 @@ const ProjectSchema = new Schema<IProject>(
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
     context: { type: String },
-    duration: { type: String, trim: true },
+    duration: { type: String },
     priority: { type: Number, default: 0 },
     categories: { type: [{ type: String }], default: [] },
     technologies: [{ type: String }],
@@ -36,21 +36,7 @@ const ProjectSchema = new Schema<IProject>(
 
 ProjectSchema.pre('save', async function (next) {
   if (this.isModified('title') || !this.slug) {
-    let baseSlug = generateSlug(this.title)
-    if (!baseSlug) baseSlug = 'project'
-    let currentSlug = baseSlug
-    let counter = 1
-    
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const existing = await mongoose.models.Project.findOne({ slug: currentSlug, _id: { $ne: this._id } })
-      if (!existing) {
-        this.slug = currentSlug
-        break
-      }
-      currentSlug = `${baseSlug}-${counter}`
-      counter++
-    }
+    this.slug = await resolveUniqueSlug(mongoose.models.Project, this.title, this._id, 'project')
   }
   next()
 })

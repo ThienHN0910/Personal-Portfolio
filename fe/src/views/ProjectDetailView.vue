@@ -118,23 +118,6 @@
               </div>
             </div>
 
-            <!-- Additional Gallery Images if available -->
-            <div v-if="galleryImages.length > 1" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div
-                v-for="(img, idx) in galleryImages.slice(1)"
-                :key="idx"
-                class="editorial-card"
-              >
-                <div class="editorial-card__inner overflow-hidden bg-bone border border-stroke p-0 aspect-[16/10]">
-                  <img
-                    :src="img"
-                    :alt="`${project.title} gallery frame ${idx + 2}`"
-                    class="w-full h-full object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-500"
-                  />
-                </div>
-              </div>
-            </div>
-
             <!-- ── Executive Overview Card ──────────────────────────────── -->
             <div class="editorial-card">
               <div class="editorial-card__inner p-8 sm:p-10 space-y-4">
@@ -157,7 +140,7 @@
                       <span class="w-2 h-2 rounded-full bg-green-400"></span>
                       <span class="text-xs font-mono uppercase tracking-widest text-ink-tertiary">System Architecture Dossier</span>
                     </div>
-                    <p class="text-xs text-ink-tertiary font-mono">In-depth technical analysis &amp; engineering seams</p>
+                    <p class="text-xs text-ink-tertiary font-mono">Technical Context &amp; Engineering Seams</p>
                   </div>
                 </div>
 
@@ -305,22 +288,6 @@ watch(sanitizedProjectContext, () => {
   scheduleEnhance()
 })
 
-const rawProject = computed(() => project.value as any)
-const galleryImages = computed<string[]>(() => {
-  if (!rawProject.value) return []
-  const imgs: string[] = []
-  if (rawProject.value.imageUrl) imgs.push(rawProject.value.imageUrl)
-  if (Array.isArray(rawProject.value.images) && rawProject.value.images.length) {
-    for (const img of rawProject.value.images) {
-      if (typeof img === 'string' && !imgs.includes(img)) imgs.push(img)
-    }
-  }
-  if (rawProject.value.secondaryImage && !imgs.includes(rawProject.value.secondaryImage)) {
-    imgs.push(rawProject.value.secondaryImage)
-  }
-  return imgs
-})
-
 async function loadProject(id: string): Promise<void> {
   loading.value = true
   const fetchedProject = await projectsStore.fetchProject(id)
@@ -340,8 +307,8 @@ async function loadProject(id: string): Promise<void> {
   } else {
     project.value = null
     applySeo({
-      title: 'Project Details',
-      description: 'Project case study details.',
+      title: 'Case Study Details',
+      description: 'Production architecture case study and engineering breakdown.',
       url: `/projects/${id}`,
       noindex: false,
     })

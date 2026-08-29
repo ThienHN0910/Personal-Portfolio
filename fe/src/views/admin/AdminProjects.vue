@@ -1,11 +1,11 @@
 <template>
   <div class="section admin-shell min-h-screen py-8">
     <div class="container">
-      <AdminSectionHeader kicker="Portfolio Control" title-before="Manage " title-highlight="Projects">
+      <AdminSectionHeader kicker="Portfolio Control" title-before="Manage " title-highlight="Case Studies">
         <template #actions>
           <button class="btn btn--primary inline-flex items-center gap-2" @click="openModal()">
             <IconGlyph name="add" :size="14" />
-            Add Project
+            Add Case Study
           </button>
         </template>
       </AdminSectionHeader>
@@ -124,10 +124,10 @@
                 <div class="form-group">
                   <CategoryCheckboxGroup
                     v-model="selectedCategories"
-                    label="Project categories"
-                    description="Choose the best categories for this project."
+                    label="Case study categories"
+                    description="Choose the best categories for this case study."
                     :options="projectCategoryOptions"
-                    empty-message="No project categories available. Open Admin Categories to add some."
+                    empty-message="No case study categories available. Open Admin Categories to add some."
                   />
                 </div>
                 <div class="form-group">
@@ -177,8 +177,8 @@
 
       <ConfirmDialog
         :open="isDeleteDialogOpen"
-        title="Delete project"
-        message="This project will be permanently removed."
+        title="Delete case study"
+        message="This case study will be permanently removed."
         confirm-text="Delete"
         @cancel="cancelDelete"
         @confirm="confirmDelete"
@@ -296,7 +296,7 @@ function openModal(project?: Project) {
 async function handleGenerateMetadata() {
   const combinedContent = `${form.description}\n\n${form.context}`.trim()
   if (!form.title && !combinedContent) {
-    alert('Please enter a project title, description, or context first.')
+    alert('Please enter a case study title, description, or context first.')
     return
   }
 
@@ -325,7 +325,7 @@ async function handleGenerateMetadata() {
       }
     }
   } catch (error) {
-    console.error('Error generating metadata for project:', error)
+    console.error('Error generating metadata for case study:', error)
   } finally {
     isGeneratingMetadata.value = false
   }
@@ -334,7 +334,7 @@ async function handleGenerateMetadata() {
 async function handleSubmit() {
   const technologies = selectedTechnologies.value
   if (technologies.length === 0) {
-    alert('Hay chon it nhat 1 technology tu Skills.')
+    alert('Please select at least 1 technology from Skills.')
     return
   }
 

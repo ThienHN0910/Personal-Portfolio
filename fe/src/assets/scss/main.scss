@@ -764,6 +764,56 @@ a {
   }
 }
 
+.article-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 1.75rem 0;
+
+  li {
+    position: relative;
+    padding-left: 1.75rem;
+    margin-bottom: 0.75rem;
+    color: var(--ink-secondary);
+    font-family: var(--font-sans);
+    line-height: 1.75;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.65em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--pastel-blue-text);
+      box-shadow: 0 0 8px var(--pastel-blue);
+    }
+  }
+}
+
+.project-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 9999px;
+  background: var(--bone);
+  border: 1px solid var(--stroke);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-secondary);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    box-shadow: 0 0 6px rgba(16, 185, 129, 0.4);
+  }
+}
+
 
 .section-title {
   font-size: $font-3xl;
