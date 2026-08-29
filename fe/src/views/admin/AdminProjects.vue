@@ -79,9 +79,31 @@
                   <input v-model="form.title" type="text" required placeholder="Project title" />
                 </div>
                 <div class="form-group">
-                  <label>Architectural Analysis &amp; Content</label>
-                  <FullRichEditor
+                  <label>Executive Overview (Short summary for cards &amp; overview)</label>
+                  <textarea
                     v-model="form.description"
+                    required
+                    rows="3"
+                    class="w-full bg-slate-900/80 border border-white/10 rounded-lg p-3 text-sm text-gray-200 focus:border-blue-500 focus:outline-none"
+                    placeholder="Brief executive summary of the system architecture and objectives..."
+                  />
+                </div>
+                <div class="form-group">
+                  <div class="flex items-center justify-between gap-2 mb-1.5">
+                    <label class="!mb-0">Technical Context / Architecture Dossier (Rich CKEditor)</label>
+                    <button
+                      type="button"
+                      class="btn btn--sm text-xs py-1 px-3 border border-indigo-400/40 rounded bg-slate-900/90 text-indigo-300 hover:text-white hover:bg-indigo-600/30 flex items-center gap-1.5 transition-all"
+                      :disabled="isGeneratingMetadata || (!form.title && !form.description && !form.context)"
+                      @click="handleGenerateMetadata"
+                    >
+                      <span v-if="isGeneratingMetadata" class="animate-spin">⏳</span>
+                      <span v-else>✨</span>
+                      {{ isGeneratingMetadata ? 'Analyzing...' : 'AI Auto-Detect Category & Stack' }}
+                    </button>
+                  </div>
+                  <FullRichEditor
+                    v-model="form.context"
                     :editor-key="editorRenderKey"
                     :sticky-top="0"
                     upload-folder="portfolio/projects/content"
@@ -97,19 +119,6 @@
                     <label>Priority (higher first)</label>
                     <input v-model.number="form.priority" type="number" min="0" step="1" />
                   </div>
-                </div>
-
-                <div class="flex items-center justify-between pt-2">
-                  <button
-                    type="button"
-                    class="btn btn--sm text-xs py-1 px-3 border border-indigo-400/40 rounded bg-slate-900/90 text-indigo-300 hover:text-white hover:bg-indigo-600/30 flex items-center gap-1.5 transition-all"
-                    :disabled="isGeneratingMetadata || (!form.title && !form.description)"
-                    @click="handleGenerateMetadata"
-                  >
-                    <span v-if="isGeneratingMetadata" class="animate-spin">⏳</span>
-                    <span v-else>✨</span>
-                    {{ isGeneratingMetadata ? 'Analyzing...' : 'AI Auto-Detect Category & Stack' }}
-                  </button>
                 </div>
 
                 <div class="form-group">
@@ -203,6 +212,7 @@ const FullRichEditor = defineAsyncComponent({
 interface ProjectFormState {
   title: string
   description: string
+  context: string
   duration: string
   priority: number
   categories: string[]
@@ -216,6 +226,7 @@ function createInitialFormState(): ProjectFormState {
   return {
     title: '',
     description: '',
+    context: '',
     duration: '',
     priority: 0,
     categories: [],
@@ -258,7 +269,8 @@ function resetForm(): void {
 
 function fillFormFromProject(project: Project): void {
   form.title = project.title
-  form.description = project.description
+  form.description = project.description || ''
+  form.context = project.context || ''
   form.duration = project.duration || ''
   form.priority = project.priority || 0
   form.categories = [...(project.categories || [])]
@@ -282,8 +294,9 @@ function openModal(project?: Project) {
 }
 
 async function handleGenerateMetadata() {
-  if (!form.title && !form.description) {
-    alert('Please enter a project title or write architectural description first.')
+  const combinedContent = `${form.description}\n\n${form.context}`.trim()
+  if (!form.title && !combinedContent) {
+    alert('Please enter a project title, description, or context first.')
     return
   }
 
@@ -291,7 +304,7 @@ async function handleGenerateMetadata() {
   try {
     const res = await api.post<{ success: boolean; data: { excerpt?: string; tags?: string[]; suggestedCategory?: string } }>('/ai/generate-metadata', {
       title: form.title,
-      content: form.description,
+      content: combinedContent,
     })
 
     if (res.data.success && res.data.data) {

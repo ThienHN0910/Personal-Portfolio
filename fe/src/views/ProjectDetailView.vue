@@ -135,11 +135,36 @@
               </div>
             </div>
 
-            <!-- Deep Dive / Technical Overview Body -->
-            <div v-if="sanitizedProjectContent" class="editorial-card">
-              <div ref="projectBodyRef" class="editorial-card__inner p-8 sm:p-12">
-                <!-- eslint-disable-next-line vue/no-v-html -->
-                <div class="prose-editorial" v-html="sanitizedProjectContent" />
+            <!-- ── Executive Overview Card ──────────────────────────────── -->
+            <div class="editorial-card">
+              <div class="editorial-card__inner p-8 sm:p-10 space-y-4">
+                <div class="flex items-center gap-2 pb-3 border-b border-stroke">
+                  <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse-soft"></span>
+                  <span class="text-xs font-mono uppercase tracking-widest text-ink-tertiary">Executive Overview</span>
+                </div>
+                <div class="text-ink-secondary text-base sm:text-lg leading-relaxed font-sans font-light">
+                  <p class="whitespace-pre-line">{{ project.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- ── Architecture Dossier Card (if context exists) ───────── -->
+            <div v-if="sanitizedProjectContext" class="editorial-card">
+              <div class="editorial-card__inner p-8 sm:p-12 space-y-6">
+                <div class="flex items-center justify-between pb-4 border-b border-stroke">
+                  <div class="space-y-1">
+                    <div class="flex items-center gap-2">
+                      <span class="w-2 h-2 rounded-full bg-green-400"></span>
+                      <span class="text-xs font-mono uppercase tracking-widest text-ink-tertiary">System Architecture Dossier</span>
+                    </div>
+                    <p class="text-xs text-ink-tertiary font-mono">In-depth technical analysis &amp; engineering seams</p>
+                  </div>
+                </div>
+
+                <div ref="projectBodyRef">
+                  <!-- eslint-disable-next-line vue/no-v-html -->
+                  <div class="prose-editorial" v-html="sanitizedProjectContext" />
+                </div>
               </div>
             </div>
           </div>
@@ -271,12 +296,12 @@ const projectBodyRef = ref<HTMLElement | null>(null)
 
 const { lightbox, closeLightbox, scheduleEnhance } = useRichContentEnhancer(projectBodyRef)
 
-const sanitizedProjectContent = computed(() => {
-  const raw = (project.value as any)?.content || (project.value as any)?.details || project.value?.description || ''
-  return sanitizeRichContent(raw)
+const sanitizedProjectContext = computed(() => {
+  const raw = project.value?.context || ''
+  return raw ? sanitizeRichContent(raw) : ''
 })
 
-watch(sanitizedProjectContent, () => {
+watch(sanitizedProjectContext, () => {
   scheduleEnhance()
 })
 

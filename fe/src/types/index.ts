@@ -2,6 +2,7 @@ export interface Project {
   _id?: string
   title: string
   description: string
+  context?: string
   duration?: string
   priority?: number
   categories: string[]
