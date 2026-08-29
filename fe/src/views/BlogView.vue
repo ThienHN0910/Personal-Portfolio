@@ -1,54 +1,66 @@
 <template>
-  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
-
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+  <div class="min-h-[100dvh] bg-canvas">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-12">
       <!-- Page Header -->
-      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
-        <div class="brutal-badge mb-3">
-          <span>TECHNICAL ARTICLES</span>
+      <div class="editorial-card">
+        <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
+          <div class="flex items-center justify-between gap-3">
+            <span class="eyebrow-tag">
+              <span class="status-dot"></span>
+              Publications &amp; Notes
+            </span>
+            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
+              {{ blogStore.posts.length }} Articles
+            </span>
+          </div>
+
+          <div class="space-y-3 max-w-2xl">
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.05] text-ink">
+              Technical writings
+              <span class="block italic text-ink-secondary mt-1">&amp; architectural insights</span>
+            </h1>
+            <p class="text-base text-ink-secondary leading-relaxed font-sans font-light">
+              Deep dives covering Vue 3, TypeScript, web performance engineering, system design, and software architecture by Hồ Ngọc Thiện.
+            </p>
+          </div>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
-          Articles & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">Engineering Insights</span>
-        </h1>
-        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed border-l-2 border-cyan-400/60 pl-4 font-normal">
-          In-depth articles covering Vue 3, TypeScript, web performance tuning, software architecture, and full-stack engineering practices by Hồ Ngọc Thiện (ThienHN).
-        </p>
       </div>
 
       <!-- Search & Category Filters -->
-      <div class="glass-panel p-4 sm:p-6 border border-cyber-border/30 shadow-glass-card space-y-4">
-        <div class="relative">
-          <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400/70 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-          </svg>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search articles, topics, tags (Vue 3, TypeScript, Performance...)"
-            class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
-          />
-        </div>
+      <div class="editorial-card">
+        <div class="editorial-card__inner p-5 sm:p-6 space-y-4">
+          <div class="relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-ink-tertiary w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search articles, technical topics, keywords (Vue 3, TypeScript, Performance...)"
+              class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all"
+            />
+          </div>
 
-        <div class="flex flex-wrap items-center gap-2 pt-1">
-          <button
-            type="button"
-            class="px-4 py-2 rounded-xl text-xs font-mono transition-all border active:scale-95 shadow-inner-glow"
-            :class="activeCategory === '' ? 'bg-cyan-400/20 text-cyan-400 border-cyan-400/50 font-bold shadow-[0_0_12px_rgba(0,229,255,0.2)]' : 'bg-white/5 text-slate-300 border-white/10 hover:border-white/20 hover:text-white'"
-            @click="activeCategory = ''"
-          >
-            All
-          </button>
-          <button
-            v-for="category in blogCategoryOptions"
-            :key="category"
-            type="button"
-            class="px-4 py-2 rounded-xl text-xs font-mono transition-all border active:scale-95 shadow-inner-glow"
-            :class="activeCategory === category ? 'bg-cyan-400/20 text-cyan-400 border-cyan-400/50 font-bold shadow-[0_0_12px_rgba(0,229,255,0.2)]' : 'bg-white/5 text-slate-300 border-white/10 hover:border-white/20 hover:text-white'"
-            @click="activeCategory = category"
-          >
-            {{ category }}
-          </button>
+          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            <button
+              type="button"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200"
+              :class="activeCategory === '' ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
+              @click="activeCategory = ''"
+            >
+              All Topics
+            </button>
+            <button
+              v-for="category in blogCategoryOptions"
+              :key="category"
+              type="button"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200"
+              :class="activeCategory === category ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
+              @click="activeCategory = category"
+            >
+              {{ category }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -58,7 +70,7 @@
       <!-- Blog Grid -->
       <div
         v-else-if="blogStore.posts.length"
-        class="bento-grid"
+        class="grid grid-cols-1 md:grid-cols-12 gap-4"
       >
         <div
           v-for="(post, index) in blogStore.posts"
@@ -72,26 +84,31 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono space-y-3">
-        <div class="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mx-auto">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-          </svg>
+      <div v-else class="editorial-card">
+        <div class="editorial-card__inner p-12 text-center text-ink-tertiary space-y-3">
+          <div class="w-10 h-10 rounded-full bg-bone border border-stroke flex items-center justify-center text-ink-tertiary mx-auto">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+          <p class="text-base text-ink font-serif font-normal">No articles found</p>
+          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your search query or selecting another topic filter.</p>
         </div>
-        <p class="text-base text-slate-200 font-sans font-medium">No articles found</p>
-        <p class="text-xs text-slate-400">Try adjusting your keyword or choosing another category filter.</p>
       </div>
 
       <!-- Infinite Scroll Sentinel -->
       <div ref="sentinelRef" class="flex justify-center py-8">
-        <div v-if="hasMorePosts || loadingMore" class="glass-panel px-6 py-3 flex items-center gap-3 text-sm text-slate-300 font-mono border border-cyber-border/30 shadow-inner-glow">
-          <LoadingSpinner v-if="loadingMore" size="sm" />
-          <span class="tabular-nums">{{ loadingMore ? 'Loading more articles...' : 'Scroll to load more' }}</span>
+        <div v-if="hasMorePosts || loadingMore" class="editorial-card">
+          <div class="editorial-card__inner px-6 py-2.5 flex items-center gap-3 text-xs text-ink-secondary font-mono">
+            <LoadingSpinner v-if="loadingMore" size="sm" />
+            <span class="tabular-nums">{{ loadingMore ? 'Loading more articles...' : 'Scroll to load more' }}</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'

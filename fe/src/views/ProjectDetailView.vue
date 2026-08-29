@@ -1,148 +1,167 @@
 <template>
-  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
-
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+  <div class="min-h-[100dvh] bg-canvas">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
       <LoadingSpinner v-if="loading" />
 
-      <div v-else-if="project" class="space-y-8">
+      <div v-else-if="project" class="space-y-10">
         <!-- Breadcrumb Link -->
-        <RouterLink to="/projects" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm font-mono group active:scale-95">
-          <span class="group-hover:-translate-x-1 transition-transform">←</span>
-          <span>Back to Projects</span>
+        <RouterLink to="/projects" class="inline-flex items-center gap-2 text-ink-tertiary hover:text-ink transition-colors text-xs font-mono group active:scale-95">
+          <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
+          <span>Back to Projects Archive</span>
         </RouterLink>
 
-        <!-- Header -->
-        <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
-          <div class="flex flex-wrap items-center gap-2 mb-3">
-            <span class="text-xs font-mono px-3 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 uppercase font-semibold">
-              Case Study
-            </span>
-            <span v-if="project.featured" class="text-xs font-mono px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-semibold shadow-[0_0_12px_rgba(245,158,11,0.2)]">
-              ★ Featured Project
-            </span>
+        <!-- Header: Double Bezel -->
+        <div class="editorial-card">
+          <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="eyebrow-tag">
+                <span class="status-dot"></span>
+                Case Study
+              </span>
+              <span v-if="project.featured" class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-amber text-pastel-amber-text uppercase font-medium">
+                Featured Case
+              </span>
+            </div>
+
+            <div class="space-y-4">
+              <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.08] text-ink">
+                {{ project.title }}
+              </h1>
+
+              <p class="text-base text-ink-secondary leading-relaxed max-w-3xl font-sans font-light">
+                {{ project.description }}
+              </p>
+            </div>
           </div>
-
-          <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight leading-tight">
-            {{ project.title }}
-          </h1>
-
-          <p class="mt-4 text-slate-300 text-base sm:text-lg leading-relaxed max-w-3xl border-l-2 border-cyan-400/60 pl-4 font-normal">
-            {{ project.description }}
-          </p>
         </div>
 
-        <!-- Project Main Body & Sidebar Specs -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <!-- Project Media & Sidebar Specs Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
           <!-- Left Media / Showcase -->
-          <div class="lg:col-span-8 space-y-6">
-            <div class="glass-panel overflow-hidden border border-cyber-border/40 rounded-2xl bg-slate-950 shadow-inner-glow">
+          <div class="lg:col-span-8 editorial-card">
+            <div class="editorial-card__inner overflow-hidden bg-bone border border-stroke p-0">
               <img
                 v-if="project.imageUrl"
                 :src="project.imageUrl"
                 :alt="project.title"
-                class="w-full h-auto max-h-[520px] object-cover"
+                class="w-full h-auto max-h-[520px] object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700"
               />
               <div
                 v-else
-                class="h-80 flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 text-cyan-400/30"
+                class="h-80 flex items-center justify-center text-ink-tertiary bg-bone"
               >
-                <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>
                 </svg>
               </div>
             </div>
           </div>
 
           <!-- Right Sidebar Specs -->
-          <aside class="lg:col-span-4 glass-panel p-6 border border-cyber-border/30 shadow-glass-card space-y-6 lg:sticky lg:top-24">
-            <h2 class="text-lg font-bold font-display text-white pb-3 border-b border-white/10">Technical Specifications</h2>
+          <aside class="lg:col-span-4 editorial-card lg:sticky lg:top-24">
+            <div class="editorial-card__inner p-6 space-y-6">
+              <h2 class="text-base font-serif font-light text-ink pb-3 border-b border-stroke">Technical Specifications</h2>
 
-            <!-- Duration & Status -->
-            <div class="grid grid-cols-2 gap-3">
-              <div class="p-3 rounded-xl bg-white/5 border border-white/10 shadow-inner-glow">
-                <span class="text-[10px] font-mono uppercase text-slate-400 block">Duration</span>
-                <span class="text-sm font-bold text-slate-200 mt-1 block font-mono tabular-nums">{{ project.duration || 'Ongoing' }}</span>
-              </div>
-              <div class="p-3 rounded-xl bg-white/5 border border-white/10 shadow-inner-glow">
-                <span class="text-[10px] font-mono uppercase text-slate-400 block">Status</span>
-                <span class="text-sm font-semibold text-cyan-400 mt-1 block font-mono">{{ project.liveUrl ? 'Active Live' : 'Completed' }}</span>
-              </div>
-            </div>
-
-            <!-- Tech Stack -->
-            <div class="space-y-2.5">
-              <span class="text-xs font-mono text-slate-400 uppercase block">Tech Stack</span>
-              <div class="flex flex-wrap gap-2">
-                <span
-                  v-for="tech in project.technologies"
-                  :key="tech"
-                  class="px-2.5 py-1 rounded-md bg-cyan-400/10 border border-cyan-400/25 text-cyan-400 text-xs font-mono shadow-inner-glow"
-                >
-                  {{ tech }}
-                </span>
-              </div>
-            </div>
-
-            <!-- External Links Buttons -->
-            <div class="space-y-3 pt-2">
-              <span class="text-xs font-mono text-slate-400 uppercase block">Links & Repository</span>
-
-              <div v-if="hasProjectLinks" class="flex flex-col gap-2.5">
-                <a
-                  v-if="project.liveUrl"
-                  :href="project.liveUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-300 text-slate-950 font-bold text-xs font-mono text-center shadow-[0_4px_20px_-2px_rgba(0,229,255,0.4)] hover:shadow-[0_8px_28px_-2px_rgba(0,229,255,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
-                >
-                  <span>Launch Live Demo ↗</span>
-                </a>
-
-                <a
-                  v-if="project.githubUrl"
-                  :href="project.githubUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/10 text-slate-200 font-semibold text-xs font-mono text-center hover:bg-white/10 hover:border-cyan-400/40 hover:text-cyan-400 hover:-translate-y-0.5 active:scale-[0.98] transition-all shadow-inner-glow flex items-center justify-center gap-2"
-                >
-                  <span>GitHub Repository</span>
-                </a>
+              <!-- Duration & Status -->
+              <div class="grid grid-cols-2 gap-2">
+                <div class="p-3 rounded-lg bg-bone border border-stroke">
+                  <span class="text-[10px] font-mono uppercase text-ink-tertiary block">Duration</span>
+                  <span class="text-xs font-mono text-ink mt-0.5 block tabular-nums">{{ project.duration || 'Ongoing' }}</span>
+                </div>
+                <div class="p-3 rounded-lg bg-bone border border-stroke">
+                  <span class="text-[10px] font-mono uppercase text-ink-tertiary block">Status</span>
+                  <span class="text-xs font-mono text-pastel-green-text mt-0.5 block font-medium">{{ project.liveUrl ? 'Active Live' : 'Completed' }}</span>
+                </div>
               </div>
 
-              <p v-else class="text-xs text-slate-500 font-mono">No public links available.</p>
+              <!-- Tech Stack -->
+              <div class="space-y-2">
+                <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Stack Matrix</span>
+                <div class="flex flex-wrap gap-1.5">
+                  <span
+                    v-for="tech in project.technologies"
+                    :key="tech"
+                    class="px-2 py-0.5 rounded-sm bg-bone border border-stroke text-ink-secondary text-[11px] font-mono"
+                  >
+                    {{ tech }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- External Links Buttons -->
+              <div class="space-y-2 pt-2 border-t border-stroke">
+                <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Deployment &amp; Code</span>
+
+                <div v-if="hasProjectLinks" class="flex flex-col gap-2">
+                  <a
+                    v-if="project.liveUrl"
+                    :href="project.liveUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="group w-full py-2.5 px-4 rounded-md bg-ink text-surface font-sans font-medium text-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-transform duration-200"
+                  >
+                    <span>Launch Live Demo</span>
+                    <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
+                      <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                      </svg>
+                    </span>
+                  </a>
+
+                  <a
+                    v-if="project.githubUrl"
+                    :href="project.githubUrl"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-full py-2.5 px-4 rounded-md bg-bone border border-stroke text-ink-secondary font-sans font-medium text-xs text-center hover:border-ink/20 hover:text-ink active:scale-[0.98] transition-all"
+                  >
+                    GitHub Repository
+                  </a>
+                </div>
+
+                <p v-else class="text-xs text-ink-tertiary font-mono">No public links available.</p>
+              </div>
             </div>
           </aside>
         </div>
 
         <!-- Related Blog Post -->
-        <section v-if="relatedPost" class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-glass-card space-y-6">
-          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
-            <div>
-              <span class="text-xs font-mono text-cyan-400 uppercase font-semibold">RELATED TECHNICAL ARTICLE</span>
-              <h2 class="text-2xl font-bold font-display text-white mt-1">{{ relatedPost.title }}</h2>
-              <p class="text-xs text-slate-400 mt-1 font-mono tabular-nums">Published on {{ formatDate(relatedPost.createdAt) }}</p>
+        <section v-if="relatedPost" class="editorial-card">
+          <div class="editorial-card__inner p-6 sm:p-10 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stroke">
+              <div>
+                <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Related Article</span>
+                <h2 class="text-xl font-serif font-light text-ink mt-1">{{ relatedPost.title }}</h2>
+                <p class="text-xs text-ink-tertiary mt-1 font-mono tabular-nums">Published on {{ formatDate(relatedPost.createdAt) }}</p>
+              </div>
+
+              <RouterLink
+                :to="`/blog/${relatedPost.slug || relatedPost._id}`"
+                class="group px-4 py-2 rounded-md bg-ink text-surface text-xs font-sans font-medium hover:bg-ink/90 active:scale-[0.98] transition-all shrink-0 inline-flex items-center gap-1.5"
+              >
+                <span>Read Full Article</span>
+                <span>→</span>
+              </RouterLink>
             </div>
 
-            <RouterLink :to="`/blog/${relatedPost.slug || relatedPost._id}`" class="px-5 py-2.5 rounded-xl bg-cyan-400/10 border border-cyan-400/30 text-cyan-400 text-xs font-mono font-semibold hover:bg-cyan-400 hover:text-slate-950 active:scale-[0.98] transition-all shrink-0">
-              Read Full Article →
-            </RouterLink>
+            <!-- eslint-disable-next-line vue/no-v-html -->
+            <div class="blog-content font-light leading-relaxed text-ink-secondary text-sm" v-html="sanitizedRelatedContent" />
           </div>
-
-          <!-- eslint-disable-next-line vue/no-v-html -->
-          <div class="blog-content" v-html="sanitizedRelatedContent" />
         </section>
       </div>
 
-      <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono space-y-4">
-        <p class="text-lg text-slate-200 font-sans font-medium">Project not found.</p>
-        <RouterLink to="/projects" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-cyan-400/20 border border-cyan-400/40 text-cyan-400 text-sm font-semibold hover:bg-cyan-400 hover:text-slate-950 active:scale-[0.98] transition-all">
-          ← Back to Projects List
-        </RouterLink>
+      <div v-else class="editorial-card">
+        <div class="editorial-card__inner p-12 text-center text-ink-tertiary space-y-4">
+          <p class="text-base text-ink font-serif font-normal">Project not found.</p>
+          <RouterLink to="/projects" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-ink text-surface text-xs font-medium active:scale-[0.98] transition-all">
+            ← Back to Projects Archive
+          </RouterLink>
+        </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'

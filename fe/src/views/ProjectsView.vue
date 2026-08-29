@@ -1,56 +1,68 @@
 <template>
-  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
-
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+  <div class="min-h-[100dvh] bg-canvas">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-12">
       <!-- Page Header -->
-      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
-        <div class="brutal-badge mb-3">
-          <span>PROJECT PORTFOLIO</span>
+      <div class="editorial-card">
+        <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
+          <div class="flex items-center justify-between gap-3">
+            <span class="eyebrow-tag">
+              <span class="status-dot"></span>
+              Portfolio Archive
+            </span>
+            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
+              {{ projectsStore.projects.length }} Total Cases
+            </span>
+          </div>
+
+          <div class="space-y-3 max-w-2xl">
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.05] text-ink">
+              Engineering case studies
+              <span class="block italic text-ink-secondary mt-1">&amp; production platforms</span>
+            </h1>
+            <p class="text-base text-ink-secondary leading-relaxed font-sans font-light">
+              Real-world software architectures, distributed web systems, and open-source tooling built with Vue 3, TypeScript, and Node.js.
+            </p>
+          </div>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
-          Software & <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">Engineering Case Studies</span>
-        </h1>
-        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed border-l-2 border-cyan-400/60 pl-4 font-normal">
-          Showcase of software solutions, web applications, backend APIs, and open-source tools architected and developed by Hồ Ngọc Thiện (ThienHN).
-        </p>
       </div>
 
       <!-- Search Bar & Category Filter Tabs -->
-      <div class="glass-panel p-4 sm:p-6 border border-cyber-border/30 shadow-glass-card space-y-4">
-        <!-- Search Input -->
-        <div class="relative">
-          <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-cyan-400/70 w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-          </svg>
-          <input
-            v-model="searchQuery"
-            type="text"
-            placeholder="Search projects, technologies, categories (Vue, React, Node.js...)"
-            class="w-full pl-12 pr-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
-          />
-        </div>
+      <div class="editorial-card">
+        <div class="editorial-card__inner p-5 sm:p-6 space-y-4">
+          <!-- Search Input -->
+          <div class="relative">
+            <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-ink-tertiary w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+            <input
+              v-model="searchQuery"
+              type="text"
+              placeholder="Search projects, technologies, architectures (Vue 3, TypeScript, Node.js...)"
+              class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all"
+            />
+          </div>
 
-        <!-- Filter Pills -->
-        <div class="flex flex-wrap items-center gap-2 pt-1">
-          <button
-            type="button"
-            class="px-4 py-2 rounded-xl text-xs font-mono transition-all border active:scale-95 shadow-inner-glow"
-            :class="activeCategory === '' ? 'bg-cyan-400/20 text-cyan-400 border-cyan-400/50 font-bold shadow-[0_0_12px_rgba(0,229,255,0.2)]' : 'bg-white/5 text-slate-300 border-white/10 hover:border-white/20 hover:text-white'"
-            @click="activeCategory = ''"
-          >
-            All
-          </button>
-          <button
-            v-for="category in projectCategoryOptions"
-            :key="category"
-            type="button"
-            class="px-4 py-2 rounded-xl text-xs font-mono transition-all border active:scale-95 shadow-inner-glow"
-            :class="activeCategory === category ? 'bg-cyan-400/20 text-cyan-400 border-cyan-400/50 font-bold shadow-[0_0_12px_rgba(0,229,255,0.2)]' : 'bg-white/5 text-slate-300 border-white/10 hover:border-white/20 hover:text-white'"
-            @click="activeCategory = category"
-          >
-            {{ category }}
-          </button>
+          <!-- Filter Pills -->
+          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+            <button
+              type="button"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200"
+              :class="activeCategory === '' ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
+              @click="activeCategory = ''"
+            >
+              All Cases
+            </button>
+            <button
+              v-for="category in projectCategoryOptions"
+              :key="category"
+              type="button"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200"
+              :class="activeCategory === category ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
+              @click="activeCategory = category"
+            >
+              {{ category }}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -60,7 +72,7 @@
       <!-- Projects Grid Showcase -->
       <div
         v-else-if="projectsStore.projects.length"
-        class="bento-grid"
+        class="grid grid-cols-1 md:grid-cols-12 gap-4"
       >
         <div
           v-for="(project, index) in projectsStore.projects"
@@ -74,26 +86,31 @@
       </div>
 
       <!-- Empty State -->
-      <div v-else class="glass-panel p-12 text-center text-slate-400 font-mono space-y-3">
-        <div class="w-12 h-12 rounded-2xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 mx-auto">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+      <div v-else class="editorial-card">
+        <div class="editorial-card__inner p-12 text-center text-ink-tertiary space-y-3">
+          <div class="w-10 h-10 rounded-full bg-bone border border-stroke flex items-center justify-center text-ink-tertiary mx-auto">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+          <p class="text-base text-ink font-serif font-normal">No projects found</p>
+          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your search query or selecting a different filter category.</p>
         </div>
-        <p class="text-base text-slate-200 font-sans font-medium">No projects found</p>
-        <p class="text-xs text-slate-400">Try adjusting your keyword or choosing another category filter.</p>
       </div>
 
       <!-- Infinite Scroll Sentinel -->
       <div ref="sentinelRef" class="flex justify-center py-8">
-        <div v-if="hasMoreProjects || loadingMore" class="glass-panel px-6 py-3 flex items-center gap-3 text-sm text-slate-300 font-mono border border-cyber-border/30 shadow-inner-glow">
-          <LoadingSpinner v-if="loadingMore" size="sm" />
-          <span class="tabular-nums">{{ loadingMore ? 'Loading more projects...' : 'Scroll to load more' }}</span>
+        <div v-if="hasMoreProjects || loadingMore" class="editorial-card">
+          <div class="editorial-card__inner px-6 py-2.5 flex items-center gap-3 text-xs text-ink-secondary font-mono">
+            <LoadingSpinner v-if="loadingMore" size="sm" />
+            <span class="tabular-nums">{{ loadingMore ? 'Loading more projects...' : 'Scroll to load more' }}</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'

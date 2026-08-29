@@ -1,213 +1,213 @@
 <template>
   <Teleport to="body">
     <Transition
-      enter-active-class="transition duration-200 ease-out"
+      enter-active-class="transition duration-200 ease-[cubic-bezier(0.16,1,0.3,1)]"
       enter-from-class="opacity-0"
       enter-to-class="opacity-100"
-      leave-active-class="transition duration-150 ease-in"
+      leave-active-class="transition duration-150 ease-[cubic-bezier(0.16,1,0.3,1)]"
       leave-from-class="opacity-100"
       leave-to-class="opacity-0"
     >
       <div
         v-if="isOpen"
-        class="fixed inset-0 z-[9990] flex items-start justify-center pt-14 sm:pt-20 px-4 sm:px-6 bg-slate-950/80 backdrop-blur-md"
+        class="fixed inset-0 z-[9990] flex items-start justify-center pt-14 sm:pt-20 px-4 sm:px-6 bg-ink/30 backdrop-blur-md"
         @click.self="handleClose"
         @keydown.esc.prevent="handleClose"
         role="dialog"
         aria-modal="true"
         aria-label="Command Palette"
       >
-        <!-- Modal Card -->
+        <!-- Modal Card: Double Bezel structure -->
         <div
-          class="relative w-full max-w-2xl bg-slate-900/95 border border-cyber-border/40 rounded-2xl shadow-[0_0_50px_rgba(0,229,255,0.2)] overflow-hidden flex flex-col max-h-[78vh] animate-in fade-in zoom-in-95 duration-200 shadow-inner-glow"
+          class="relative w-full max-w-2xl editorial-card shadow-island overflow-hidden flex flex-col max-h-[78vh] animate-in fade-in zoom-in-95 duration-200"
         >
-          <!-- Top Search Header -->
-          <div class="flex items-center gap-3 px-4 py-3.5 border-b border-white/10 bg-slate-950/70">
-            <span class="text-cyan-400">
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </span>
-
-            <input
-              ref="searchInputRef"
-              v-model="searchQuery"
-              type="text"
-              class="w-full bg-transparent text-slate-100 placeholder-slate-400 font-mono text-sm focus:outline-none"
-              placeholder="Type to search pages, projects, articles, or actions..."
-              autocomplete="off"
-              spellcheck="false"
-              @keydown.down.prevent="navigateDown"
-              @keydown.up.prevent="navigateUp"
-              @keydown.enter.prevent="executeSelected"
-              @keydown.esc="handleClose"
-            />
-
-            <!-- Clear / Close Button -->
-            <button
-              v-if="searchQuery"
-              type="button"
-              class="p-1 rounded text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
-              @click="searchQuery = ''"
-              aria-label="Clear search"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            <span class="hidden sm:inline-block px-2 py-0.5 rounded border border-white/15 bg-white/5 font-mono text-[10px] text-slate-400">
-              ESC
-            </span>
-          </div>
-
-          <!-- Results Scroll Area -->
-          <div
-            ref="resultsContainerRef"
-            class="overflow-y-auto p-2 sm:p-3 space-y-4 max-h-[60vh] custom-scrollbar focus:outline-none"
-            tabindex="-1"
-          >
-            <!-- Empty State -->
-            <div
-              v-if="flatItems.length === 0"
-              class="py-12 px-4 text-center flex flex-col items-center justify-center space-y-3"
-            >
-              <div class="w-12 h-12 rounded-xl bg-cyber-cyan/10 border border-cyber-cyan/30 flex items-center justify-center text-cyber-cyan">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <div class="editorial-card__inner flex flex-col flex-1 p-0 overflow-hidden">
+            <!-- Top Search Header -->
+            <div class="flex items-center gap-3 px-4 py-3.5 border-b border-stroke bg-bone">
+              <span class="text-ink-secondary">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
                 </svg>
-              </div>
-              <p class="text-slate-300 font-medium text-sm">No results found for "<span class="text-cyber-cyan">{{ searchQuery }}</span>"</p>
-              <p class="text-slate-400 text-xs font-mono">Try searching with a different keyword, technology, or page name.</p>
+              </span>
+
+              <input
+                ref="searchInputRef"
+                v-model="searchQuery"
+                type="text"
+                class="w-full bg-transparent text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none"
+                placeholder="Search pages, projects, articles, or actions..."
+                autocomplete="off"
+                spellcheck="false"
+                @keydown.down.prevent="navigateDown"
+                @keydown.up.prevent="navigateUp"
+                @keydown.enter.prevent="executeSelected"
+                @keydown.esc="handleClose"
+              />
+
+              <!-- Clear / Close Button -->
+              <button
+                v-if="searchQuery"
+                type="button"
+                class="p-1 rounded text-ink-tertiary hover:text-ink hover:bg-bone transition-colors"
+                @click="searchQuery = ''"
+                aria-label="Clear search"
+              >
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 6 6 18M6 6l12 12"/>
+                </svg>
+              </button>
+
+              <kbd class="hidden sm:inline-block px-1.5 py-0.5 rounded border border-stroke bg-surface font-mono text-[10px] text-ink-tertiary">
+                ESC
+              </kbd>
             </div>
 
-            <!-- Grouped Sections -->
-            <div v-for="group in groupedItems" :key="group.category" class="space-y-1.5">
-              <!-- Group Header -->
-              <div class="flex items-center justify-between px-3 py-1 font-mono text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                <span class="flex items-center gap-1.5">
-                  <span class="text-cyber-cyan">#</span>
-                  {{ group.title }}
-                </span>
-                <span v-if="group.category === 'recent'" class="text-[10px] text-slate-400 hover:text-rose-400 cursor-pointer font-sans" @click.stop="clearRecentSearches">
-                  Clear History
-                </span>
-                <span v-else class="text-[10px] text-slate-400 font-sans">
-                  {{ group.items.length }} {{ group.items.length === 1 ? 'item' : 'items' }}
-                </span>
+            <!-- Results Scroll Area -->
+            <div
+              ref="resultsContainerRef"
+              class="overflow-y-auto p-2 sm:p-3 space-y-4 max-h-[60vh] custom-scrollbar focus:outline-none bg-surface"
+              tabindex="-1"
+            >
+              <!-- Empty State -->
+              <div
+                v-if="flatItems.length === 0"
+                class="py-12 px-4 text-center flex flex-col items-center justify-center space-y-3"
+              >
+                <div class="w-10 h-10 rounded-full bg-bone border border-stroke flex items-center justify-center text-ink-tertiary">
+                  <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+                  </svg>
+                </div>
+                <p class="text-ink font-medium text-sm">No results found for "<span class="italic font-serif">{{ searchQuery }}</span>"</p>
+                <p class="text-ink-tertiary text-xs font-mono">Try searching with a different keyword, technology, or page name.</p>
               </div>
 
-              <!-- Group Items -->
-              <div
-                v-for="item in group.items"
-                :key="item.id"
-                :data-item-id="item.id"
-                class="group relative flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl border transition-all duration-150 cursor-pointer"
-                :class="[
-                  flatItems[selectedIndex]?.id === item.id
-                    ? 'bg-cyan-400/10 border-cyan-400/50 text-white shadow-[0_0_15px_rgba(0,229,255,0.15)] pl-3.5'
-                    : 'border-white/5 hover:border-white/20 hover:bg-white/5 text-slate-300'
-                ]"
-                @click="selectItem(item)"
-                @mouseenter="hoverItem(item)"
-              >
-                <!-- Item Left: Icon & Text -->
-                <div class="flex items-center gap-3 min-w-0">
-                  <!-- Category Icon -->
-                  <div
-                    class="w-8 h-8 rounded-xl flex items-center justify-center shrink-0 transition-colors shadow-inner-glow"
-                    :class="[
-                      flatItems[selectedIndex]?.id === item.id
-                        ? 'bg-cyan-400/20 text-cyan-400 border border-cyan-400/30'
-                        : 'bg-white/5 text-slate-400 group-hover:text-white border border-white/10'
-                    ]"
-                  >
-                    <!-- Icon Switcher -->
-                    <svg v-if="item.category === 'page'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <svg v-else-if="item.category === 'project'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                    </svg>
-                    <svg v-else-if="item.category === 'article'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 6.75H8.25a2.25 2.25 0 00-2.25 2.25v11.25A2.25 2.25 0 008.25 22.5H19.5a2.25 2.25 0 002.25-2.25V9a2.25 2.25 0 00-2.25-2.25Z" />
-                    </svg>
-                    <svg v-else-if="item.category === 'action'" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
-                    <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                  </div>
+              <!-- Grouped Sections -->
+              <div v-for="group in groupedItems" :key="group.category" class="space-y-1">
+                <!-- Group Header -->
+                <div class="flex items-center justify-between px-3 py-1 font-mono text-[10px] font-medium text-ink-tertiary uppercase tracking-widest">
+                  <span>{{ group.title }}</span>
+                  <span v-if="group.category === 'recent'" class="text-[10px] text-ink-tertiary hover:text-pastel-red-text cursor-pointer font-mono" @click.stop="clearRecentSearches">
+                    Clear History
+                  </span>
+                  <span v-else class="text-[10px] text-ink-tertiary font-mono">
+                    {{ group.items.length }} {{ group.items.length === 1 ? 'item' : 'items' }}
+                  </span>
+                </div>
 
-                  <!-- Labels -->
-                  <div class="flex flex-col min-w-0">
-                    <div class="flex items-center gap-2">
-                      <span class="font-bold text-sm truncate font-sans text-slate-100">
-                        {{ item.title }}
-                      </span>
-                      <span
-                        v-if="item.badge"
-                        class="px-1.5 py-0.5 rounded text-[10px] font-mono font-medium border"
-                        :class="[
-                          flatItems[selectedIndex]?.id === item.id
-                            ? 'bg-cyber-cyan/20 border-cyber-cyan/40 text-cyber-cyan'
-                            : 'bg-white/5 border-white/10 text-slate-400'
-                        ]"
-                      >
-                        {{ item.badge }}
-                      </span>
+                <!-- Group Items -->
+                <div
+                  v-for="item in group.items"
+                  :key="item.id"
+                  :data-item-id="item.id"
+                  class="group relative flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg border transition-all duration-150 cursor-pointer"
+                  :class="[
+                    flatItems[selectedIndex]?.id === item.id
+                      ? 'bg-bone border-stroke text-ink pl-3.5'
+                      : 'border-transparent hover:border-stroke hover:bg-bone/60 text-ink-secondary'
+                  ]"
+                  @click="selectItem(item)"
+                  @mouseenter="hoverItem(item)"
+                >
+                  <!-- Item Left: Icon & Text -->
+                  <div class="flex items-center gap-3 min-w-0">
+                    <!-- Category Icon -->
+                    <div
+                      class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 border transition-colors"
+                      :class="[
+                        flatItems[selectedIndex]?.id === item.id
+                          ? 'bg-surface text-ink border-stroke shadow-[0_1px_2px_rgba(0,0,0,0.04)]'
+                          : 'bg-bone text-ink-tertiary border-stroke'
+                      ]"
+                    >
+                      <!-- Icon Switcher -->
+                      <svg v-if="item.category === 'page'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/>
+                      </svg>
+                      <svg v-else-if="item.category === 'project'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>
+                      </svg>
+                      <svg v-else-if="item.category === 'article'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                      </svg>
+                      <svg v-else-if="item.category === 'action'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                      </svg>
+                      <svg v-else class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                      </svg>
                     </div>
 
-                    <span v-if="item.subtitle" class="text-xs text-slate-400 truncate mt-0.5">
-                      {{ item.subtitle }}
+                    <!-- Labels -->
+                    <div class="flex flex-col min-w-0">
+                      <div class="flex items-center gap-2">
+                        <span class="font-medium text-sm truncate font-sans text-ink">
+                          {{ item.title }}
+                        </span>
+                        <span
+                          v-if="item.badge"
+                          class="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-wider"
+                          :class="[
+                            item.badge === 'Featured'
+                              ? 'bg-pastel-amber text-pastel-amber-text'
+                              : 'bg-bone text-ink-tertiary border border-stroke'
+                          ]"
+                        >
+                          {{ item.badge }}
+                        </span>
+                      </div>
+
+                      <span v-if="item.subtitle" class="text-xs text-ink-secondary truncate mt-0.5 font-light">
+                        {{ item.subtitle }}
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- Item Right: Shortcut or Enter indicator -->
+                  <div class="flex items-center gap-2 shrink-0">
+                    <span
+                      v-if="flatItems[selectedIndex]?.id === item.id"
+                      class="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] text-ink px-2 py-0.5 rounded bg-surface border border-stroke shadow-[0_1px_2px_rgba(0,0,0,0.04)]"
+                    >
+                      <span>Select</span>
+                      <span>↵</span>
+                    </span>
+                    <span v-else-if="item.shortcut" class="font-mono text-[10px] text-ink-tertiary px-1.5 py-0.5 rounded bg-bone border border-stroke">
+                      {{ item.shortcut }}
                     </span>
                   </div>
                 </div>
-
-                <!-- Item Right: Shortcut or Enter indicator -->
-                <div class="flex items-center gap-2 shrink-0">
-                  <span
-                    v-if="flatItems[selectedIndex]?.id === item.id"
-                    class="hidden sm:inline-flex items-center gap-1 font-mono text-[10px] text-cyber-cyan px-2 py-0.5 rounded bg-cyber-cyan/10 border border-cyber-cyan/30"
-                  >
-                    <span>Execute</span>
-                    <span>↵</span>
-                  </span>
-                  <span v-else-if="item.shortcut" class="font-mono text-[10px] text-slate-400 px-1.5 py-0.5 rounded bg-white/5 border border-white/10">
-                    {{ item.shortcut }}
-                  </span>
-                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Bottom Footer Info -->
-          <div class="px-4 py-2.5 bg-slate-950/80 border-t border-white/10 flex items-center justify-between font-mono text-[11px] text-slate-400">
-            <div class="flex items-center gap-4">
-              <span class="flex items-center gap-1">
-                <kbd class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-[10px] text-slate-300">↑↓</kbd>
-                <span>Navigate</span>
-              </span>
-              <span class="flex items-center gap-1">
-                <kbd class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-[10px] text-slate-300">↵</kbd>
-                <span>Select</span>
-              </span>
-              <span class="flex items-center gap-1">
-                <kbd class="px-1.5 py-0.5 rounded bg-white/10 border border-white/15 text-[10px] text-slate-300">ESC</kbd>
-                <span>Close</span>
+            <!-- Bottom Footer Info -->
+            <div class="px-4 py-2.5 bg-bone border-t border-stroke flex items-center justify-between font-mono text-[10px] text-ink-tertiary">
+              <div class="flex items-center gap-4">
+                <span class="flex items-center gap-1">
+                  <kbd class="px-1.5 py-0.5 rounded bg-surface border border-stroke text-[9px] text-ink-secondary">↑↓</kbd>
+                  <span>Navigate</span>
+                </span>
+                <span class="flex items-center gap-1">
+                  <kbd class="px-1.5 py-0.5 rounded bg-surface border border-stroke text-[9px] text-ink-secondary">↵</kbd>
+                  <span>Select</span>
+                </span>
+                <span class="flex items-center gap-1">
+                  <kbd class="px-1.5 py-0.5 rounded bg-surface border border-stroke text-[9px] text-ink-secondary">ESC</kbd>
+                  <span>Close</span>
+                </span>
+              </div>
+
+              <span class="font-mono text-ink-secondary">
+                {{ flatItems.length }} result{{ flatItems.length === 1 ? '' : 's' }}
               </span>
             </div>
-
-            <span class="text-cyber-cyan font-bold">
-              {{ flatItems.length }} result{{ flatItems.length === 1 ? '' : 's' }}
-            </span>
           </div>
         </div>
       </div>
     </Transition>
   </Teleport>
 </template>
+
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
@@ -669,16 +669,16 @@ function handleClose() {
 
 <style scoped>
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(15, 23, 42, 0.6);
+  background: var(--bone);
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(0, 242, 255, 0.2);
+  background: var(--stroke);
   border-radius: 9999px;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 242, 255, 0.4);
+  background: var(--ink-tertiary);
 }
 </style>

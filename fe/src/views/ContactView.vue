@@ -1,103 +1,119 @@
 <template>
-  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
-
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+  <div class="min-h-[100dvh] bg-canvas">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-12">
       <!-- Header -->
-      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow text-center">
-        <div class="brutal-badge mb-3">
-          <span>GET IN TOUCH</span>
+      <div class="editorial-card">
+        <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
+          <div class="flex items-center justify-between gap-3">
+            <span class="eyebrow-tag">
+              <span class="status-dot"></span>
+              Inquiries &amp; Collaboration
+            </span>
+            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
+              Direct Contact
+            </span>
+          </div>
+
+          <div class="space-y-3 max-w-2xl">
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.05] text-ink">
+              Let's connect
+              <span class="block italic text-ink-secondary mt-1">&amp; engineer together.</span>
+            </h1>
+            <p class="text-base text-ink-secondary leading-relaxed font-sans font-light">
+              Have an engineering opportunity, software architecture consultation, or product build in mind? Send a direct message below.
+            </p>
+          </div>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
-          Contact <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">Hồ Ngọc Thiện</span>
-        </h1>
-        <p class="mt-3 text-slate-300 text-base max-w-xl mx-auto leading-relaxed">
-          Have a new project, software architecture inquiry, or engineering opportunity? Send a message directly via the contact form below.
-        </p>
       </div>
 
       <!-- Contact Form & Info Grid -->
-      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/30 shadow-glass-card">
-        <form class="space-y-5" @submit.prevent="handleSubmit">
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <!-- Name Input -->
+      <div class="editorial-card">
+        <div class="editorial-card__inner p-6 sm:p-10 space-y-8">
+          <form class="space-y-5" @submit.prevent="handleSubmit">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+              <!-- Name Input -->
+              <div class="space-y-1.5">
+                <label for="name" class="block text-[11px] font-mono text-ink-secondary uppercase tracking-wider">Full Name *</label>
+                <input
+                  id="name"
+                  v-model="form.name"
+                  type="text"
+                  placeholder="Your full name"
+                  required
+                  class="w-full px-4 py-2.5 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all"
+                />
+              </div>
+
+              <!-- Email Input -->
+              <div class="space-y-1.5">
+                <label for="email" class="block text-[11px] font-mono text-ink-secondary uppercase tracking-wider">Email Address *</label>
+                <input
+                  id="email"
+                  v-model="form.email"
+                  type="email"
+                  placeholder="email@example.com"
+                  required
+                  class="w-full px-4 py-2.5 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all"
+                />
+              </div>
+            </div>
+
+            <!-- Subject Input -->
             <div class="space-y-1.5">
-              <label for="name" class="block text-xs font-mono text-slate-300 uppercase">Full Name *</label>
+              <label for="subject" class="block text-[11px] font-mono text-ink-secondary uppercase tracking-wider">Subject *</label>
               <input
-                id="name"
-                v-model="form.name"
+                id="subject"
+                v-model="form.subject"
                 type="text"
-                placeholder="Enter your full name"
+                placeholder="Project inquiry / Opportunity"
                 required
-                class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
+                class="w-full px-4 py-2.5 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all"
               />
             </div>
 
-            <!-- Email Input -->
+            <!-- Message Textarea -->
             <div class="space-y-1.5">
-              <label for="email" class="block text-xs font-mono text-slate-300 uppercase">Email Address *</label>
-              <input
-                id="email"
-                v-model="form.email"
-                type="email"
-                placeholder="email@domain.com"
+              <label for="message" class="block text-[11px] font-mono text-ink-secondary uppercase tracking-wider">Message *</label>
+              <textarea
+                id="message"
+                v-model="form.message"
+                rows="6"
+                maxlength="2000"
+                placeholder="Details of your inquiry or technical project..."
                 required
-                class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
+                class="w-full px-4 py-3 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all resize-y"
               />
             </div>
-          </div>
 
-          <!-- Subject Input -->
-          <div class="space-y-1.5">
-            <label for="subject" class="block text-xs font-mono text-slate-300 uppercase">Message Subject *</label>
-            <input
-              id="subject"
-              v-model="form.subject"
-              type="text"
-              placeholder="Project / Hiring Opportunity"
-              required
-              class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
-            />
-          </div>
+            <!-- Cloudflare Turnstile Container -->
+            <div id="turnstile-container" class="min-h-[65px] flex items-center justify-center pt-2"></div>
 
-          <!-- Message Textarea -->
-          <div class="space-y-1.5">
-            <label for="message" class="block text-xs font-mono text-slate-300 uppercase">Message Content *</label>
-            <textarea
-              id="message"
-              v-model="form.message"
-              rows="6"
-              maxlength="2000"
-              placeholder="Detailed description of your project or inquiry..."
-              required
-              class="w-full px-4 py-3 rounded-xl bg-slate-900/90 border border-white/10 text-white placeholder-slate-500 font-mono text-sm focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400/50 shadow-inner-glow transition-all"
-            />
-          </div>
+            <!-- Error Alert -->
+            <div v-if="contactStore.error" class="p-4 rounded-md bg-pastel-red border border-pastel-red-text/20 text-pastel-red-text text-xs font-mono">
+              {{ contactStore.error }}
+            </div>
 
-          <!-- Cloudflare Turnstile Container -->
-          <div id="turnstile-container" class="min-h-[65px] flex items-center justify-center pt-2"></div>
+            <!-- Success Alert -->
+            <div v-if="contactStore.success" class="p-4 rounded-md bg-pastel-green border border-pastel-green-text/20 text-pastel-green-text text-xs font-mono flex items-center gap-2">
+              <span class="text-sm">✓</span>
+              <span>Your message has been sent successfully. I will get back to you shortly.</span>
+            </div>
 
-          <!-- Error Alert -->
-          <div v-if="contactStore.error" class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm font-mono shadow-inner-glow">
-            {{ contactStore.error }}
-          </div>
-
-          <!-- Success Alert -->
-          <div v-if="contactStore.success" class="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-mono flex items-center gap-2 shadow-inner-glow">
-            <span class="text-base">✓</span>
-            <span>Your message has been sent successfully! I will respond as soon as possible.</span>
-          </div>
-
-          <!-- Submit Button -->
-          <button
-            type="submit"
-            class="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-400 via-cyan-300 to-indigo-400 text-slate-950 font-bold text-sm font-mono uppercase tracking-wider shadow-[0_4px_20px_-2px_rgba(0,229,255,0.4)] hover:shadow-[0_8px_32px_-2px_rgba(0,229,255,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all disabled:opacity-50"
-            :disabled="contactStore.loading"
-          >
-            <span v-if="contactStore.loading">SENDING MESSAGE...</span>
-            <span v-else>Send Message</span>
-          </button>
-        </form>
+            <!-- Submit Button (Button in button) -->
+            <button
+              type="submit"
+              class="group w-full py-3 px-6 rounded-md bg-ink text-surface font-sans font-medium text-sm flex items-center justify-center gap-3 active:scale-[0.98] transition-transform duration-200 disabled:opacity-50"
+              :disabled="contactStore.loading"
+            >
+              <span>{{ contactStore.loading ? 'Sending message...' : 'Send Message' }}</span>
+              <span class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
+                <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                </svg>
+              </span>
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

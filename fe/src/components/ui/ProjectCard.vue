@@ -1,114 +1,114 @@
 <template>
   <article
-    class="glass-panel p-5 border border-cyber-border/30 hover:border-cyan-400/50 hover:shadow-cyan-glow-hover transition-all duration-300 flex flex-col justify-between group cursor-pointer h-full active:scale-[0.99]"
-    :class="[
-      `project-card--${layout}`,
-      { 'border-cyan-400/40 bg-gradient-to-b from-cyan-950/20 via-slate-900/80 to-slate-950/90 shadow-cyan-glow': project.featured }
-    ]"
+    class="editorial-card flex flex-col group cursor-pointer h-full active:scale-[0.99] transition-transform duration-200"
+    :class="project.featured ? 'ring-0' : ''"
     role="link"
     tabindex="0"
     @click="handleCardClick"
     @keydown.enter.prevent="openDetail"
     @keydown.space.prevent="openDetail"
   >
-    <!-- Card Media & Thumbnail -->
-    <div class="overflow-hidden rounded-xl relative mb-4 bg-slate-900 border border-white/10 shadow-inner-glow" :class="mediaClass">
-      <template v-if="showTwoImages">
-        <div class="flex flex-col w-full h-full">
-          <img :src="galleryImages[0]" :alt="project.title" class="w-full object-cover h-1/2 group-hover:scale-105 transition duration-500" />
-          <img :src="galleryImages[1]" :alt="project.title" class="w-full object-cover h-1/2 group-hover:scale-105 transition duration-500" />
-        </div>
-      </template>
-      <template v-else>
-        <img
-          v-if="galleryImages.length"
-          :src="galleryImages[0]"
-          :alt="project.title"
-          class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-        />
-        <div
-          v-else
-          class="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-950 text-cyan-400/30"
-        >
-          <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-          </svg>
-        </div>
-      </template>
-
-      <!-- Overlay Badges -->
-      <div v-if="project.featured" class="absolute top-3 left-3 z-10 flex items-center gap-2">
-        <span class="text-[10px] font-mono tracking-wider px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 font-semibold backdrop-blur-md shadow-[0_0_12px_rgba(245,158,11,0.25)]">
-          ★ FEATURED
-        </span>
-      </div>
-    </div>
-
-    <!-- Card Body -->
-    <div class="flex-1 flex flex-col justify-between space-y-4">
-      <div class="space-y-2">
-        <!-- Categories -->
-        <div v-if="categoryPreview.length" class="flex flex-wrap items-center gap-1.5">
-          <span
-            v-for="category in categoryPreview"
-            :key="category"
-            class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-300"
+    <div class="editorial-card__inner flex flex-col flex-1 p-0">
+      <!-- Card Media -->
+      <div class="overflow-hidden relative bg-bone border-b border-stroke" :class="mediaClass">
+        <template v-if="showTwoImages">
+          <div class="flex flex-col w-full h-full">
+            <img :src="galleryImages[0]" :alt="project.title" class="w-full object-cover h-1/2 grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" />
+            <img :src="galleryImages[1]" :alt="project.title" class="w-full object-cover h-1/2 grayscale-[20%] group-hover:grayscale-0 transition-all duration-700" />
+          </div>
+        </template>
+        <template v-else>
+          <img
+            v-if="galleryImages.length"
+            :src="galleryImages[0]"
+            :alt="project.title"
+            class="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-700"
+          />
+          <div
+            v-else
+            class="w-full h-full flex items-center justify-center"
           >
-            {{ category }}
-          </span>
-          <span v-if="categoryOverflowCount > 0" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400">
-            +{{ categoryOverflowCount }}
+            <!-- Code icon — thin SVG, monochrome -->
+            <svg class="w-10 h-10 text-ink-tertiary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>
+            </svg>
+          </div>
+        </template>
+
+        <!-- Featured badge -->
+        <div v-if="project.featured" class="absolute top-3 left-3 z-10">
+          <span class="text-[10px] font-mono tracking-wider px-2.5 py-0.5 rounded-full bg-pastel-amber text-pastel-amber-text uppercase font-medium">
+            Featured
           </span>
         </div>
-
-        <!-- Title & Description -->
-        <h3 class="text-lg font-bold font-display text-white group-hover:text-cyan-400 transition-colors leading-snug tracking-tight">
-          {{ project.title }}
-        </h3>
-
-        <p class="text-sm text-slate-300 line-clamp-2 leading-relaxed">
-          {{ project.description }}
-        </p>
       </div>
 
-      <!-- Tech Stack Badges -->
-      <div class="flex flex-wrap gap-1.5 pt-2">
-        <span
-          v-for="tech in project.technologies.slice(0, 4)"
-          :key="tech"
-          class="text-[11px] font-mono px-2.5 py-0.5 rounded-md bg-cyan-400/10 text-cyan-400 border border-cyan-400/20 shadow-inner-glow"
-        >
-          {{ tech }}
-        </span>
-        <span
-          v-if="project.technologies.length > 4"
-          class="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/5 text-slate-400 border border-white/10"
-        >
-          +{{ project.technologies.length - 4 }}
-        </span>
-      </div>
-    </div>
+      <!-- Card Body -->
+      <div class="flex-1 flex flex-col justify-between p-5 gap-4">
+        <div class="space-y-2.5">
+          <!-- Categories -->
+          <div v-if="categoryPreview.length" class="flex flex-wrap items-center gap-1.5">
+            <span
+              v-for="category in categoryPreview"
+              :key="category"
+              class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-blue text-pastel-blue-text uppercase tracking-wide"
+            >
+              {{ category }}
+            </span>
+            <span v-if="categoryOverflowCount > 0" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-bone border border-stroke text-ink-tertiary">
+              +{{ categoryOverflowCount }}
+            </span>
+          </div>
 
-    <!-- Card Footer -->
-    <div class="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between gap-3">
-      <div class="flex items-center gap-1.5 text-xs font-mono text-slate-400">
-        <span class="w-2 h-2 rounded-full" :class="project.liveUrl ? 'bg-emerald-400 animate-pulse' : 'bg-slate-500'"></span>
-        <span class="tabular-nums">{{ project.liveUrl ? 'LIVE DEMO' : 'ARCHIVED' }}</span>
+          <!-- Title & Description -->
+          <h3 class="text-base font-sans font-semibold text-ink group-hover:text-ink/70 transition-colors duration-300 leading-snug tracking-tight">
+            {{ project.title }}
+          </h3>
+
+          <p class="text-sm text-ink-secondary line-clamp-2 leading-relaxed font-light">
+            {{ project.description }}
+          </p>
+        </div>
+
+        <!-- Tech Stack -->
+        <div class="flex flex-wrap gap-1.5">
+          <span
+            v-for="tech in project.technologies.slice(0, 4)"
+            :key="tech"
+            class="text-[10px] font-mono px-2.5 py-0.5 rounded-sm bg-bone border border-stroke text-ink-secondary"
+          >
+            {{ tech }}
+          </span>
+          <span
+            v-if="project.technologies.length > 4"
+            class="text-[10px] font-mono px-2 py-0.5 rounded-sm bg-bone border border-stroke text-ink-tertiary"
+          >
+            +{{ project.technologies.length - 4 }}
+          </span>
+        </div>
       </div>
 
-      <div class="flex items-center gap-2">
-        <component
-          v-for="action in actionItems"
-          :key="action.key"
-          :is="action.to ? RouterLink : 'a'"
-          v-bind="action.to ? { to: action.to } : { href: action.href, target: '_blank', rel: 'noopener noreferrer' }"
-          class="p-2 rounded-xl bg-white/5 border border-white/10 text-slate-300 hover:text-cyan-400 hover:border-cyan-400/40 hover:bg-cyan-400/10 transition-all active:scale-95 shadow-inner-glow"
-          data-card-action="true"
-          :aria-label="action.label"
-          :title="action.label"
-        >
-          <IconGlyph :name="action.icon" :size="16" />
-        </component>
+      <!-- Card Footer -->
+      <div class="px-5 py-3.5 border-t border-stroke flex items-center justify-between gap-3">
+        <div class="flex items-center gap-1.5 text-[10px] font-mono text-ink-secondary">
+          <span class="w-1.5 h-1.5 rounded-full" :class="project.liveUrl ? 'bg-pastel-green-text animate-pulse-soft' : 'bg-ink-tertiary'"></span>
+          <span class="uppercase tracking-wide">{{ project.liveUrl ? 'Live' : 'Archived' }}</span>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <component
+            v-for="action in actionItems"
+            :key="action.key"
+            :is="action.to ? RouterLink : 'a'"
+            v-bind="action.to ? { to: action.to } : { href: action.href, target: '_blank', rel: 'noopener noreferrer' }"
+            class="w-7 h-7 rounded-md bg-bone border border-stroke text-ink-secondary hover:text-ink hover:border-ink/20 hover:bg-bone/80 flex items-center justify-center transition-all duration-200 active:scale-95"
+            data-card-action="true"
+            :aria-label="action.label"
+            :title="action.label"
+          >
+            <IconGlyph :name="action.icon" :size="13" />
+          </component>
+        </div>
       </div>
     </div>
   </article>
@@ -135,14 +135,7 @@ const router = useRouter()
 const CATEGORY_PREVIEW_LIMIT = 2
 
 type ActionIcon = 'detail' | 'article' | 'repository' | 'external'
-
-type CardAction = {
-  key: string
-  label: string
-  icon: ActionIcon
-  to?: string
-  href?: string
-}
+type CardAction = { key: string; label: string; icon: ActionIcon; to?: string; href?: string }
 
 const categoryPreview = computed(() => (props.project.categories || []).slice(0, CATEGORY_PREVIEW_LIMIT))
 const categoryOverflowCount = computed(() => Math.max((props.project.categories || []).length - CATEGORY_PREVIEW_LIMIT, 0))
@@ -172,43 +165,10 @@ const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.l
 
 const actionItems = computed<CardAction[]>(() => {
   const actions: CardAction[] = []
-
-  if (props.project._id) {
-    actions.push({
-      key: 'detail',
-      label: 'Project Case Study',
-      icon: 'detail',
-      to: `/projects/${props.project.slug || props.project._id}`,
-    })
-  }
-
-  if (props.project.relatedBlogId) {
-    actions.push({
-      key: 'blog',
-      label: 'Related Technical Article',
-      icon: 'article',
-      to: `/blog/${props.project.relatedBlogId}`,
-    })
-  }
-
-  if (props.project.githubUrl) {
-    actions.push({
-      key: 'github',
-      label: 'GitHub Repository',
-      icon: 'repository',
-      href: props.project.githubUrl,
-    })
-  }
-
-  if (props.project.liveUrl) {
-    actions.push({
-      key: 'live',
-      label: 'Live Production Demo',
-      icon: 'external',
-      href: props.project.liveUrl,
-    })
-  }
-
+  if (props.project._id) actions.push({ key: 'detail', label: 'Project Case Study', icon: 'detail', to: `/projects/${props.project.slug || props.project._id}` })
+  if (props.project.relatedBlogId) actions.push({ key: 'blog', label: 'Related Article', icon: 'article', to: `/blog/${props.project.relatedBlogId}` })
+  if (props.project.githubUrl) actions.push({ key: 'github', label: 'GitHub Repository', icon: 'repository', href: props.project.githubUrl })
+  if (props.project.liveUrl) actions.push({ key: 'live', label: 'Live Demo', icon: 'external', href: props.project.liveUrl })
   return actions
 })
 
@@ -223,3 +183,4 @@ function handleCardClick(event: MouseEvent): void {
   openDetail()
 }
 </script>
+

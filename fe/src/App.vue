@@ -3,10 +3,11 @@
     <!-- Accessible Skip to Content Link -->
     <a
       href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[99999] focus:px-4 focus:py-2.5 focus:rounded-xl focus:bg-cyan-400 focus:text-slate-950 focus:font-mono focus:font-bold focus:shadow-[0_0_25px_rgba(0,229,255,0.6)] focus:outline-none"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[500] focus:px-4 focus:py-2.5 focus:rounded-md focus:bg-ink focus:text-surface focus:font-mono focus:font-medium focus:shadow-island focus:outline-none"
     >
       Skip to main content
     </a>
+
 
     <Analytics />
     <Navbar v-if="!isAdminRoute" />

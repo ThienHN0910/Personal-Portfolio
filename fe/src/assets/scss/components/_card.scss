@@ -3,15 +3,17 @@
 @use '../mixins' as *;
 
 .card {
-  background: linear-gradient(
-    165deg,
-    color-mix(in srgb, var(--theme-surface-from, #111827) 86%, transparent),
-    color-mix(in srgb, var(--theme-surface-to, #0b1220) 82%, transparent)
-  );
-  border: 1px solid color-mix(in srgb, var(--theme-text-muted, #94a3b8) 22%, transparent);
-  border-radius: $radius-xl;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: 12px;
   overflow: hidden;
-  @include card-hover;
+  box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+
+  &:hover {
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.12);
+  }
 
   &__image {
     width: 100%;
@@ -21,7 +23,7 @@
   }
 
   &:hover &__image {
-    transform: scale(1.03);
+    transform: scale(1.02);
   }
 
   &__body {
@@ -30,15 +32,15 @@
 
   &__title {
     font-size: $font-lg;
-    font-weight: 700;
-    color: $white;
+    font-weight: 600;
+    color: var(--ink);
     margin-bottom: $spacing-sm;
     @include truncate(2);
   }
 
   &__description {
     font-size: $font-sm;
-    color: var(--theme-text-muted, #94a3b8);
+    color: var(--ink-secondary);
     line-height: 1.7;
     margin-bottom: $spacing-md;
     @include truncate(3);
@@ -69,25 +71,25 @@
   }
 
   &__tag {
-    background: color-mix(in srgb, var(--theme-primary, #3b82f6) 12%, transparent);
-    color: var(--theme-primary, #3b82f6);
-    border: 1px solid color-mix(in srgb, var(--theme-primary, #3b82f6) 24%, transparent);
+    background: var(--bone);
+    color: var(--ink-secondary);
+    border: 1px solid var(--stroke);
     padding: 2px $spacing-sm;
-    border-radius: $radius-full;
+    border-radius: 4px;
     font-size: $font-xs;
-    font-weight: 500;
+    font-family: var(--font-mono);
 
     &--secondary {
-      background: color-mix(in srgb, var(--theme-secondary, #06b6d4) 14%, transparent);
-      color: color-mix(in srgb, var(--theme-secondary, #06b6d4) 88%, white);
-      border-color: color-mix(in srgb, var(--theme-secondary, #06b6d4) 28%, transparent);
+      background: var(--pastel-blue);
+      color: var(--pastel-blue-text);
+      border-color: transparent;
     }
   }
 
   &__footer {
     @include flex-between;
     padding: $spacing-md $spacing-lg;
-    border-top: 1px solid rgba($white, 0.06);
+    border-top: 1px solid var(--stroke);
   }
 
   &__link {
@@ -96,17 +98,18 @@
     gap: $spacing-xs;
     font-size: $font-sm;
     font-weight: 500;
-    color: var(--theme-primary, #3b82f6);
+    color: var(--ink);
     text-decoration: none;
     @include transition(color);
 
     &:hover {
-      color: color-mix(in srgb, var(--theme-primary, #3b82f6) 75%, white);
+      color: var(--ink-secondary);
     }
   }
 
   &--featured {
-    border-color: color-mix(in srgb, var(--theme-accent, #f59e0b) 35%, transparent);
-    background: color-mix(in srgb, var(--theme-accent, #f59e0b) 8%, transparent);
+    border-color: var(--pastel-amber-text);
+    background: var(--surface);
   }
 }
+

@@ -4,128 +4,39 @@
 
 .hero {
   position: relative;
-  overflow: hidden;
   width: 100%;
-  
-  // 1. Hiệu ứng lưới Hologram chìm phía nền
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: 
-      linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
-    background-position: center;
-    mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 80%);
-    pointer-events: none;
-    z-index: 0;
-  }
 
-  // 2. Container bọc ngoài (Đã bỏ grid cũ, nhường chỗ cho Tailwind xử lý cột)
   &__container {
     width: 100%;
     position: relative;
     z-index: 1;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  // 3. Tiêu đề với hiệu ứng Glow text và quét quang học
   &__title {
     line-height: 1.1;
-    
-    .highlight {
-      font-weight: 800;
-      text-shadow: 0 0 20px rgba(0, 242, 255, 0.3), 0 0 40px rgba(0, 242, 255, 0.1);
-      position: relative;
-      display: inline-block;
+    letter-spacing: -0.03em;
+    font-family: var(--font-serif);
+    font-weight: 300;
 
-      // Đường quét mỏng cắt ngang chữ khi load
-      &::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(to bottom, transparent, rgba(0, 242, 255, 0.4), transparent);
-        height: 2px;
-        width: 100%;
-        left: 0;
-        animation: textScan 3s linear infinite;
-      }
+    .highlight {
+      font-style: italic;
+      color: var(--ink-secondary);
     }
   }
 
-  // 4. Khung ảnh Tactical nâng cấp đặc biệt
   &__image-wrapper {
     position: relative;
-    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-
-    &:hover {
-      transform: translateY(-4px) scale(1.02);
-      
-      .hero__image-glow {
-        opacity: 0.8;
-        transform: scale(1.1);
-      }
-
-      &::after {
-        opacity: 1;
-      }
-    }
-
-    // Hiệu ứng viền Neon chạy ngầm phía sau
-    &::after {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      background: linear-gradient(135deg, #00f2ff, #7000FF, transparent);
-      z-index: -1;
-      opacity: 0.3;
-      transition: opacity 0.4s ease;
-      clip-path: polygon(0 16px, 16px 0, calc(100% - 16px) 0, 100% 16px, 100% calc(100% - 16px), calc(100% - 16px) 100%, 16px 100%, 0 calc(100% - 16px));
-    }
   }
 
-  // 5. Reset ảnh chống tràn tuyệt đối, ăn khớp hoàn toàn với Tailwind aspect-[4/5]
   &__image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    margin-right: 0 !important; // Triệt tiêu lỗi tràn margin âm cũ 
-    filter: grayscale(20%) contrast(110%);
+    filter: grayscale(15%);
     transition: filter 0.5s ease;
 
     &:hover {
-      filter: grayscale(0%) contrast(100%);
+      filter: grayscale(0%);
     }
   }
-
-  // 6. Luồng sáng Aura phía sau ảnh (Glow Engine)
-  &__image-glow {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120%;
-    height: 120%;
-    background: radial-gradient(circle, rgba(0, 242, 255, 0.12) 0%, rgba(112, 0, 255, 0.04) 50%, transparent 70%);
-    pointer-events: none;
-    z-index: -2;
-    mix-blend-mode: screen;
-    opacity: 0.5;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    animation: auraPulse 4s ease-in-out infinite;
-  }
-}
-
-// --- Keyframes Animations bổ trợ thẩm mỹ ---
-@keyframes textScan {
-  0% { top: 0%; opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
-}
-
-@keyframes auraPulse {
-  0%, 100% { opacity: 0.4; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.05); }
 }

@@ -1,88 +1,93 @@
 <template>
-  <footer class="mt-20 border-t border-cyber-border/30 bg-gradient-to-b from-slate-950/70 to-slate-950 py-12 px-4 sm:px-6 relative overflow-hidden">
-    <!-- Top Ambient Accent Light -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-cyan-400/40 to-transparent"></div>
+  <footer class="mt-24 border-t border-stroke bg-bone py-12 px-4 sm:px-6 relative overflow-hidden">
+    <!-- Subtle top gradient line -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-px bg-gradient-to-r from-transparent via-ink/10 to-transparent"></div>
 
-    <div class="max-w-6xl mx-auto">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 pb-10 border-b border-white/10">
+    <div class="max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 pb-10 border-b border-stroke">
+
         <!-- Brand Info Column -->
-        <div class="md:col-span-5 flex flex-col gap-4">
-          <RouterLink to="/" class="flex items-center gap-3 group active:scale-[0.98] transition-transform">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500/20 via-indigo-500/20 to-purple-500/20 border border-cyber-border/40 flex items-center justify-center shadow-inner-glow group-hover:border-cyan-400/60 group-hover:shadow-[0_0_15px_rgba(0,229,255,0.25)] transition-all duration-300">
-              <span class="font-mono text-cyan-400 font-bold text-sm tracking-tighter">&lt;T/&gt;</span>
+        <div class="md:col-span-5 flex flex-col gap-5">
+          <RouterLink to="/" class="flex items-center gap-2.5 group active:scale-[0.98] transition-transform duration-200">
+            <!-- Double-bezel logo mark -->
+            <div class="w-8 h-8 rounded-full bg-surface border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] group-hover:border-ink/20 transition-colors duration-300">
+              <span class="font-mono text-ink text-xs font-semibold tracking-tighter">T/</span>
             </div>
-            <span class="font-display font-bold text-lg text-slate-100 group-hover:text-cyan-400 transition-colors">{{ brandName }}</span>
+            <span class="font-sans font-semibold text-sm tracking-tight text-ink group-hover:text-ink/70 transition-colors duration-300">{{ brandName }}</span>
           </RouterLink>
 
-          <p class="text-sm text-slate-400 leading-relaxed max-w-md">
-            {{ brandDescription || 'Full Stack Software Engineer specializing in modern, high-performance web applications and scalable software architecture.' }}
+          <p class="text-sm text-ink-secondary leading-relaxed max-w-sm font-light">
+            {{ brandDescription || 'Full Stack Software Engineer focused on high-performance web applications and scalable software architecture.' }}
           </p>
 
-          <div class="flex items-center gap-2.5 pt-2">
+          <!-- Social icons — double-bezel small circles -->
+          <div class="flex items-center gap-2">
             <a
               v-for="link in socialIconLinks"
               :key="link.label"
               :href="link.href"
               target="_blank"
               rel="noopener noreferrer"
-              class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:text-cyan-400 hover:border-cyan-400/50 hover:bg-cyan-400/10 hover:-translate-y-0.5 active:scale-95 transition-all shadow-inner-glow"
+              class="w-8 h-8 rounded-full bg-surface border border-stroke shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)] flex items-center justify-center text-ink-secondary hover:text-ink hover:border-ink/20 hover:-translate-y-px active:scale-95 transition-all duration-200"
               :aria-label="link.label"
             >
-              <IconGlyph :name="link.icon" :size="17" />
+              <IconGlyph :name="link.icon" :size="15" />
             </a>
           </div>
         </div>
 
         <!-- Quick Navigation -->
-        <div class="md:col-span-3 flex flex-col gap-3">
-          <h4 class="font-mono text-xs text-cyan-400 uppercase tracking-wider font-semibold">NAVIGATION</h4>
+        <div class="md:col-span-3 flex flex-col gap-4">
+          <h4 class="font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">Navigation</h4>
           <ul class="flex flex-col gap-2.5">
             <li v-for="link in navLinks" :key="link.to">
-              <RouterLink :to="link.to" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-2 group">
-                <span class="text-xs text-cyan-400/40 group-hover:translate-x-0.5 transition-transform">›</span>
-                <span>{{ link.label }}</span>
+              <RouterLink :to="link.to" class="text-sm text-ink-secondary hover:text-ink transition-colors duration-200 font-light">
+                {{ link.label }}
               </RouterLink>
             </li>
           </ul>
         </div>
 
-        <!-- Connection & Socials -->
-        <div class="md:col-span-4 flex flex-col gap-3">
-          <h4 class="font-mono text-xs text-cyan-400 uppercase tracking-wider font-semibold">CONNECT</h4>
+        <!-- Connect -->
+        <div class="md:col-span-4 flex flex-col gap-4">
+          <h4 class="font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">Connect</h4>
           <ul class="flex flex-col gap-2.5">
             <li v-for="link in connectLinks" :key="link.label">
-              <a :href="link.href" target="_blank" rel="noopener noreferrer" class="text-sm text-slate-300 hover:text-cyan-400 transition-colors flex items-center gap-2 group">
-                <span class="text-xs text-cyan-400/40 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform">↗</span>
+              <a :href="link.href" target="_blank" rel="noopener noreferrer" class="text-sm text-ink-secondary hover:text-ink transition-colors duration-200 font-light flex items-center gap-1.5 group">
                 <span>{{ link.label }}</span>
+                <svg class="w-3 h-3 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all duration-200" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                </svg>
               </a>
             </li>
-            <li v-if="contactItems && contactItems.length" class="pt-2 border-t border-white/5 mt-1 space-y-1">
-              <div v-for="item in contactItems" :key="item.label" class="text-xs text-slate-400">
-                <span class="font-mono text-slate-400">{{ item.label }}:</span>
-                <a v-if="item.href" :href="item.href" target="_blank" rel="noopener noreferrer" class="ml-1 text-slate-300 hover:text-cyan-400 font-mono">{{ item.value }}</a>
-                <span v-else class="ml-1 text-slate-300 font-mono">{{ item.value }}</span>
+            <li v-if="contactItems && contactItems.length" class="pt-2 border-t border-stroke mt-1 space-y-1.5">
+              <div v-for="item in contactItems" :key="item.label" class="text-[11px] text-ink-secondary font-mono">
+                <span class="text-ink-tertiary">{{ item.label }}:</span>
+                <a v-if="item.href" :href="item.href" target="_blank" rel="noopener noreferrer" class="ml-1 text-ink-secondary hover:text-ink transition-colors">{{ item.value }}</a>
+                <span v-else class="ml-1">{{ item.value }}</span>
               </div>
             </li>
           </ul>
         </div>
+
       </div>
 
-      <!-- Bottom Credits & Back to Top -->
-      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-mono">
-        <div class="flex items-center gap-3">
+      <!-- Bottom bar -->
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3 font-mono text-[11px] text-ink-tertiary">
           <span>© {{ currentYear }} {{ brandName }}</span>
-          <span>•</span>
-          <RouterLink to="/privacy" class="hover:text-cyan-400 transition-colors font-sans">Privacy Policy</RouterLink>
+          <span class="text-stroke">·</span>
+          <RouterLink to="/privacy" class="hover:text-ink-secondary transition-colors font-sans text-[11px]">Privacy Policy</RouterLink>
         </div>
 
         <button
           type="button"
-          class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 hover:text-cyan-400 hover:border-cyan-400/40 hover:-translate-y-0.5 active:scale-95 transition-all shadow-inner-glow"
+          class="group flex items-center gap-1.5 text-[11px] font-mono text-ink-tertiary hover:text-ink transition-colors duration-200 active:scale-95"
           @click="scrollToTop"
         >
           <span>Back to top</span>
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+          <svg class="w-3 h-3 group-hover:-translate-y-0.5 transition-transform duration-200" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 9.5V2.5M2.5 6l3.5-3.5L9.5 6"/>
           </svg>
         </button>
       </div>
@@ -107,7 +112,7 @@ const aboutStore = useAboutStore()
 const about = computed(() => aboutStore.aboutData)
 
 const currentYear = computed(() => new Date().getFullYear())
-const brandName = computed(() => getBrandName(about.value) || 'Hồ Ngọc Thiện (ThienHN)')
+const brandName = computed(() => getBrandName(about.value) || 'Hồ Ngọc Thiện')
 const brandDescription = computed(() => getBrandDescription(about.value))
 const connectLinks = computed(() => getFooterConnectLinks(about.value))
 const contactItems = computed(() => getFooterContactItems(about.value))

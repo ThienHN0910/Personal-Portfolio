@@ -1,62 +1,77 @@
 <template>
-  <div class="min-h-screen pt-6 pb-16 relative overflow-hidden">
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%)]" />
-
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 relative z-10 space-y-8">
+  <div class="min-h-[100dvh] bg-canvas">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-10">
       <!-- Breadcrumb Link -->
-      <RouterLink to="/about" class="inline-flex items-center gap-2 text-slate-400 hover:text-cyan-400 transition-colors text-sm font-mono group active:scale-95">
-        <span class="group-hover:-translate-x-1 transition-transform">←</span>
-        <span>Back to About</span>
+      <RouterLink to="/about" class="inline-flex items-center gap-2 text-ink-tertiary hover:text-ink transition-colors text-xs font-mono group active:scale-95">
+        <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
+        <span>Back to Biography</span>
       </RouterLink>
 
       <!-- Page Header -->
-      <div class="glass-panel p-6 sm:p-10 border border-cyber-border/40 shadow-cyan-glow">
-        <div class="brutal-badge mb-3">
-          <span>CURRICULUM VITAE</span>
+      <div class="editorial-card">
+        <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
+          <div class="flex items-center justify-between gap-3">
+            <span class="eyebrow-tag">
+              <span class="status-dot"></span>
+              Official Document
+            </span>
+            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
+              Resume &amp; CV
+            </span>
+          </div>
+
+          <div class="space-y-3 max-w-2xl">
+            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.05] text-ink">
+              Curriculum Vitae
+              <span class="block italic text-ink-secondary mt-1">&amp; career record</span>
+            </h1>
+            <p class="text-base text-ink-secondary leading-relaxed font-sans font-light">
+              Interactive document preview of credentials, career timeline, and engineering achievements by Hồ Ngọc Thiện.
+            </p>
+          </div>
         </div>
-        <h1 class="text-3xl sm:text-5xl font-extrabold font-display text-white tracking-tight">
-          Interactive <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-indigo-300 to-purple-400">Curriculum Vitae (CV)</span>
-        </h1>
-        <p class="mt-3 text-slate-300 text-base max-w-2xl leading-relaxed border-l-2 border-cyan-400/60 pl-4 font-normal">
-          Preview the official CV of Hồ Ngọc Thiện (ThienHN) directly in your browser or download the PDF version.
-        </p>
       </div>
 
       <LoadingSpinner v-if="loading" />
 
-      <div v-else-if="!resumeUrl" class="glass-panel p-12 text-center text-slate-400 font-mono space-y-3">
-        <p class="text-base text-slate-200 font-sans font-medium">Curriculum Vitae (CV) is not currently uploaded.</p>
-        <p class="text-xs text-slate-400">Please check back soon or contact me directly.</p>
+      <div v-else-if="!resumeUrl" class="editorial-card">
+        <div class="editorial-card__inner p-12 text-center text-ink-tertiary space-y-3">
+          <p class="text-base text-ink font-serif font-normal">Curriculum Vitae is currently unavailable.</p>
+          <p class="text-xs text-ink-tertiary font-mono">Please check back soon or send a direct inquiry via the contact page.</p>
+        </div>
       </div>
 
       <div v-else class="space-y-6">
         <!-- PDF Actions Header Bar -->
-        <div class="glass-panel p-4 sm:p-5 border border-cyber-border/30 shadow-glass-card flex flex-wrap items-center justify-between gap-4">
-          <div class="flex items-center gap-2 text-xs font-mono text-slate-300">
-            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span class="tabular-nums">Total Pages: {{ totalPages }} pages</span>
-          </div>
+        <div class="editorial-card">
+          <div class="editorial-card__inner p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs font-mono text-ink-secondary">
+              <span class="w-1.5 h-1.5 rounded-full bg-pastel-green-text"></span>
+              <span class="tabular-nums">Document Pages: {{ totalPages }}</span>
+            </div>
 
-          <div class="flex items-center gap-3">
-            <a
-              :href="resumeUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="px-4 py-2.5 rounded-xl bg-white/5 border border-white/15 text-slate-200 text-xs font-mono font-semibold hover:border-cyan-400/40 hover:text-cyan-400 hover:bg-cyan-400/10 hover:-translate-y-0.5 active:scale-[0.98] transition-all shadow-inner-glow"
-            >
-              Open in New Tab ↗
-            </a>
-            <a
-              :href="resumeUrl"
-              download
-              class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-400 to-cyan-300 text-slate-950 text-xs font-mono font-bold shadow-[0_4px_20px_-2px_rgba(0,229,255,0.4)] hover:shadow-[0_8px_28px_-2px_rgba(0,229,255,0.6)] hover:-translate-y-0.5 active:scale-[0.98] transition-all"
-            >
-              Download CV (PDF) ↓
-            </a>
+            <div class="flex items-center gap-2.5">
+              <a
+                :href="resumeUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="px-3.5 py-2 rounded-md bg-bone border border-stroke text-ink-secondary text-xs font-mono hover:border-ink/20 hover:text-ink active:scale-[0.98] transition-all"
+              >
+                Open in Tab ↗
+              </a>
+              <a
+                :href="resumeUrl"
+                download
+                class="group px-4 py-2 rounded-md bg-ink text-surface text-xs font-sans font-medium active:scale-[0.98] transition-all inline-flex items-center gap-1.5"
+              >
+                <span>Download PDF</span>
+                <span>↓</span>
+              </a>
+            </div>
           </div>
         </div>
 
-        <div v-if="renderError" class="glass-panel p-6 border border-rose-500/40 bg-rose-950/20 text-rose-300 text-sm font-mono shadow-inner-glow">
+        <div v-if="renderError" class="p-4 rounded-md bg-pastel-red border border-pastel-red-text/20 text-pastel-red-text text-xs font-mono">
           {{ renderError }}
         </div>
 
@@ -65,6 +80,7 @@
     </div>
   </div>
 </template>
+
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'

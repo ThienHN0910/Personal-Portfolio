@@ -1,157 +1,178 @@
 <template>
-  <div class="min-h-screen pt-4 pb-16 relative overflow-hidden">
-    <!-- Ambient Radial Background Gradients -->
-    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,242,255,0.08),transparent_40%),radial-gradient(circle_at_85%_25%,rgba(99,102,241,0.08),transparent_30%)] z-0" />
+  <div class="min-h-[100dvh] bg-canvas">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-24">
 
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 space-y-12">
       <!-- Hero Section -->
       <HeroSection :data="homeStore.homeData || {}" />
 
-      <!-- Quick Exploration Bento Cards -->
-      <div class="space-y-4">
-        <div class="flex items-center justify-between gap-3 px-1">
-          <div>
-            <div class="font-mono text-xs text-cyan-400 uppercase tracking-wider font-semibold">NAVIGATION & FOCUS</div>
-            <h2 class="text-xl sm:text-2xl font-bold font-display text-white mt-0.5 tracking-tight">Core Competencies & Work</h2>
+      <!-- ── Quick Exploration Bento ──────────────────────────────────────── -->
+      <section ref="bentoEl">
+        <!-- Section header -->
+        <div class="flex items-end justify-between mb-8">
+          <div class="space-y-1">
+            <span class="eyebrow-tag">Quick Navigation</span>
+            <h2
+              class="font-serif text-3xl sm:text-4xl font-light tracking-[-0.025em] leading-tight text-ink mt-2 reveal"
+              :class="bentoVisible ? 'is-visible' : ''"
+              style="transition-delay: 0ms"
+            >
+              Core work &amp; connections
+            </h2>
           </div>
-          <span class="hidden sm:inline-block font-mono text-xs text-slate-400 font-medium">QUICK EXPLORATION</span>
+          <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">Select a path</span>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-5">
-          <!-- Card 1: Projects (Span 7) -->
-          <RouterLink
-            to="/projects"
-            class="md:col-span-7 glass-panel p-6 sm:p-7 border border-cyber-border/30 hover:border-cyan-400/50 hover:shadow-cyan-glow transition-all duration-300 group flex flex-col justify-between active:scale-[0.99]"
+        <!-- Asymmetric bento grid -->
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+
+          <!-- Card 1: Projects (span 7) -->
+          <div
+            class="md:col-span-7 reveal"
+            :class="bentoVisible ? 'is-visible' : ''"
+            style="transition-delay: 80ms"
           >
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <div class="w-11 h-11 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 group-hover:bg-cyan-400/20 transition-all shadow-inner-glow">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                  </svg>
+            <RouterLink to="/projects" class="group block h-full editorial-card">
+              <div class="editorial-card__inner p-7 flex flex-col justify-between min-h-[200px]">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pastel-blue text-pastel-blue-text text-[10px] font-mono font-medium uppercase tracking-wider">
+                      Architectures &amp; Apps
+                    </span>
+                    <!-- Arrow icon in circular shell — button-in-button -->
+                    <span class="w-7 h-7 rounded-full bg-bone border border-stroke flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:bg-ink group-hover:border-ink group-hover:text-surface transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                      <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                      </svg>
+                    </span>
+                  </div>
+                  <h3 class="font-serif text-2xl font-light tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300 leading-snug">
+                    Engineering Projects
+                  </h3>
+                  <p class="text-sm text-ink-secondary leading-relaxed font-light">
+                    Production-grade web platforms, technical case studies, and live software deployments.
+                  </p>
                 </div>
-                <span class="text-[10px] font-mono text-cyan-400 px-2.5 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/25 uppercase font-medium">
-                  ARCHITECTURES & APPS
-                </span>
+                <div class="pt-4 border-t border-stroke flex items-center justify-between">
+                  <span class="font-mono text-[10px] text-ink-tertiary">Vue 3 · TypeScript · Node.js · Cloud</span>
+                  <span class="text-sm text-ink-secondary font-sans font-medium group-hover:text-ink transition-colors duration-200">View Projects →</span>
+                </div>
               </div>
-              <h3 class="text-xl font-bold font-display text-white group-hover:text-cyan-400 transition-colors">Engineering Projects</h3>
-              <p class="mt-2 text-sm text-slate-300 leading-relaxed max-w-lg">
-                Explore real-world software solutions, high-scale web platforms, and interactive technical case studies with live production deployments.
-              </p>
-            </div>
+            </RouterLink>
+          </div>
 
-            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-              <span class="text-slate-400">Vue 3 • TypeScript • Node.js • Cloud</span>
-              <span class="text-cyan-400 font-semibold group-hover:translate-x-1.5 transition-transform flex items-center gap-1.5">
-                <span>View Projects</span>
-                <span>→</span>
-              </span>
-            </div>
-          </RouterLink>
-
-          <!-- Card 2: Biography & Skills (Span 5) -->
-          <RouterLink
-            to="/about"
-            class="md:col-span-5 glass-panel p-6 sm:p-7 border border-cyber-border/30 hover:border-indigo-400/50 hover:shadow-glass-card-hover transition-all duration-300 group flex flex-col justify-between active:scale-[0.99]"
+          <!-- Card 2: About (span 5) -->
+          <div
+            class="md:col-span-5 reveal"
+            :class="bentoVisible ? 'is-visible' : ''"
+            style="transition-delay: 160ms"
           >
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <div class="w-11 h-11 rounded-xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-400 group-hover:scale-105 group-hover:bg-indigo-500/20 transition-all shadow-inner-glow">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
+            <RouterLink to="/about" class="group block h-full editorial-card">
+              <div class="editorial-card__inner p-7 flex flex-col justify-between min-h-[200px]">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pastel-amber text-pastel-amber-text text-[10px] font-mono font-medium uppercase tracking-wider">
+                      Experience &amp; Bio
+                    </span>
+                    <span class="w-7 h-7 rounded-full bg-bone border border-stroke flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:bg-ink group-hover:border-ink group-hover:text-surface transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                      <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                      </svg>
+                    </span>
+                  </div>
+                  <h3 class="font-serif text-2xl font-light tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300 leading-snug">
+                    Biography &amp; Skills
+                  </h3>
+                  <p class="text-sm text-ink-secondary leading-relaxed font-light">
+                    Career timeline, technical skill matrix, work history, and verified credentials.
+                  </p>
                 </div>
-                <span class="text-[10px] font-mono text-indigo-400 px-2.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/25 uppercase font-medium">
-                  EXPERIENCE & BIO
-                </span>
+                <div class="pt-4 border-t border-stroke flex items-center justify-between">
+                  <span class="font-mono text-[10px] text-ink-tertiary">Career Timeline</span>
+                  <span class="text-sm text-ink-secondary font-sans font-medium group-hover:text-ink transition-colors duration-200">Read Story →</span>
+                </div>
               </div>
-              <h3 class="text-xl font-bold font-display text-white group-hover:text-indigo-400 transition-colors">Biography & Skills</h3>
-              <p class="mt-2 text-sm text-slate-300 leading-relaxed">
-                Career journey, hands-on experience, technical skill matrix, work history, and verified credentials.
-              </p>
-            </div>
+            </RouterLink>
+          </div>
 
-            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-              <span class="text-slate-400">Career Timeline</span>
-              <span class="text-indigo-400 font-semibold group-hover:translate-x-1.5 transition-transform flex items-center gap-1.5">
-                <span>Read Story</span>
-                <span>→</span>
-              </span>
-            </div>
-          </RouterLink>
-
-          <!-- Card 3: Articles & Insights (Span 6) -->
-          <RouterLink
-            to="/blog"
-            class="md:col-span-6 glass-panel p-6 sm:p-7 border border-cyber-border/30 hover:border-purple-400/50 hover:shadow-glass-card-hover transition-all duration-300 group flex flex-col justify-between active:scale-[0.99]"
+          <!-- Card 3: Articles (span 6) -->
+          <div
+            class="md:col-span-6 reveal"
+            :class="bentoVisible ? 'is-visible' : ''"
+            style="transition-delay: 240ms"
           >
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <div class="w-11 h-11 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 group-hover:scale-105 group-hover:bg-purple-500/20 transition-all shadow-inner-glow">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-                  </svg>
+            <RouterLink to="/blog" class="group block h-full editorial-card">
+              <div class="editorial-card__inner p-7 flex flex-col justify-between min-h-[180px]">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pastel-green text-pastel-green-text text-[10px] font-mono font-medium uppercase tracking-wider">
+                      Publications
+                    </span>
+                    <span class="w-7 h-7 rounded-full bg-bone border border-stroke flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:bg-ink group-hover:border-ink group-hover:text-surface transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                      <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                      </svg>
+                    </span>
+                  </div>
+                  <h3 class="font-serif text-2xl font-light tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300 leading-snug">
+                    Technical Articles
+                  </h3>
+                  <p class="text-sm text-ink-secondary leading-relaxed font-light">
+                    Frontend optimization, system design patterns, modern JS, and developer productivity.
+                  </p>
                 </div>
-                <span class="text-[10px] font-mono text-purple-400 px-2.5 py-1 rounded-full bg-purple-500/10 border border-purple-500/25 uppercase font-medium">
-                  PUBLICATIONS
-                </span>
+                <div class="pt-4 border-t border-stroke flex items-center justify-between">
+                  <span class="font-mono text-[10px] text-ink-tertiary">Engineering Notes</span>
+                  <span class="text-sm text-ink-secondary font-sans font-medium group-hover:text-ink transition-colors duration-200">Read Articles →</span>
+                </div>
               </div>
-              <h3 class="text-xl font-bold font-display text-white group-hover:text-purple-400 transition-colors">Technical Articles</h3>
-              <p class="mt-2 text-sm text-slate-300 leading-relaxed">
-                In-depth articles covering frontend optimization, system design, modern JavaScript patterns, and developer productivity.
-              </p>
-            </div>
+            </RouterLink>
+          </div>
 
-            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-              <span class="text-slate-400">Engineering Notes</span>
-              <span class="text-purple-400 font-semibold group-hover:translate-x-1.5 transition-transform flex items-center gap-1.5">
-                <span>Read Articles</span>
-                <span>→</span>
-              </span>
-            </div>
-          </RouterLink>
-
-          <!-- Card 4: Contact & Inquiries (Span 6) -->
-          <RouterLink
-            to="/contact"
-            class="md:col-span-6 glass-panel p-6 sm:p-7 border border-cyber-border/30 hover:border-cyan-400/50 hover:shadow-cyan-glow transition-all duration-300 group flex flex-col justify-between active:scale-[0.99]"
+          <!-- Card 4: Contact (span 6) -->
+          <div
+            class="md:col-span-6 reveal"
+            :class="bentoVisible ? 'is-visible' : ''"
+            style="transition-delay: 320ms"
           >
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <div class="w-11 h-11 rounded-xl bg-cyan-400/10 border border-cyan-400/30 flex items-center justify-center text-cyan-400 group-hover:scale-105 group-hover:bg-cyan-400/20 transition-all shadow-inner-glow">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
+            <RouterLink to="/contact" class="group block h-full editorial-card">
+              <div class="editorial-card__inner p-7 flex flex-col justify-between min-h-[180px]">
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pastel-red text-pastel-red-text text-[10px] font-mono font-medium uppercase tracking-wider">
+                      Open for Inquiries
+                    </span>
+                    <span class="w-7 h-7 rounded-full bg-bone border border-stroke flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px group-hover:bg-ink group-hover:border-ink group-hover:text-surface transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                      <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                      </svg>
+                    </span>
+                  </div>
+                  <h3 class="font-serif text-2xl font-light tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300 leading-snug">
+                    Get In Touch
+                  </h3>
+                  <p class="text-sm text-ink-secondary leading-relaxed font-light">
+                    Project collaborations, architecture consulting, or engineering opportunities.
+                  </p>
                 </div>
-                <span class="text-[10px] font-mono text-cyan-400 px-2.5 py-1 rounded-full bg-cyan-400/10 border border-cyan-400/25 uppercase font-medium">
-                  OPEN FOR INQUIRIES
-                </span>
+                <div class="pt-4 border-t border-stroke flex items-center justify-between">
+                  <span class="font-mono text-[10px] text-ink-tertiary">Fast Response</span>
+                  <span class="text-sm text-ink-secondary font-sans font-medium group-hover:text-ink transition-colors duration-200">Send Message →</span>
+                </div>
               </div>
-              <h3 class="text-xl font-bold font-display text-white group-hover:text-cyan-400 transition-colors">Get In Touch</h3>
-              <p class="mt-2 text-sm text-slate-300 leading-relaxed">
-                Reach out directly for project collaborations, software architecture consulting, or engineering opportunities.
-              </p>
-            </div>
+            </RouterLink>
+          </div>
 
-            <div class="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-              <span class="text-slate-400">Fast Response</span>
-              <span class="text-cyan-400 font-semibold group-hover:translate-x-1.5 transition-transform flex items-center gap-1.5">
-                <span>Send Message</span>
-                <span>→</span>
-              </span>
-            </div>
-          </RouterLink>
         </div>
-      </div>
+      </section>
 
       <!-- Featured Projects Showcase -->
       <FeaturedProjects />
+
     </div>
   </div>
 </template>
-
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
@@ -166,7 +187,17 @@ const aboutStore = useAboutStore()
 const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
 
+const bentoEl = ref<HTMLElement | null>(null)
+const bentoVisible = ref(false)
+
 onMounted(async () => {
+  // Intersection observer for bento section reveal
+  const observer = new IntersectionObserver(
+    ([entry]) => { if (entry.isIntersecting) { bentoVisible.value = true; observer.disconnect() } },
+    { threshold: 0.05 }
+  )
+  if (bentoEl.value) observer.observe(bentoEl.value)
+
   await Promise.all([
     homeStore.fetchHomeData(),
     aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
