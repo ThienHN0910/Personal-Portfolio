@@ -146,21 +146,13 @@ const mediaClass = computed(() => {
   return 'h-48 md:h-52'
 })
 
-const rawProject = props.project as any
 const galleryImages = computed(() => {
   const imgs: string[] = []
-  if (rawProject.imageUrl) imgs.push(rawProject.imageUrl)
-  if (Array.isArray(rawProject.images) && rawProject.images.length) {
-    for (const i of rawProject.images) {
-      if (imgs.length >= 2) break
-      if (typeof i === 'string') imgs.push(i)
-    }
-  }
-  if (rawProject.secondaryImage && imgs.length < 2) imgs.push(rawProject.secondaryImage)
+  if (props.project.imageUrl) imgs.push(props.project.imageUrl)
   return imgs
 })
 
-const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.layout === 'tall' || props.layout === 'featured'))
+const showTwoImages = computed(() => false)
 
 const actionItems = computed<CardAction[]>(() => {
   const actions: CardAction[] = []

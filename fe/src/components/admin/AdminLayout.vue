@@ -68,15 +68,15 @@ const sidebarOpen = ref(false)
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: 'dashboard' as const },
   { to: '/admin/analytics', label: 'Analytics & Logs', icon: 'dashboard' as const },
-  { to: '/admin/projects', label: 'Projects', icon: 'projects' as const },
-  { to: '/admin/blog', label: 'Blog', icon: 'blog' as const },
+  { to: '/admin/projects', label: 'Case Studies', icon: 'projects' as const },
+  { to: '/admin/blog', label: 'Articles', icon: 'blog' as const },
   { to: '/admin/categories', label: 'Categories', icon: 'featured' as const },
   { to: '/admin/messages', label: 'Messages', icon: 'messages' as const },
-  { to: '/admin/about', label: 'Content', icon: 'about' as const },
+  { to: '/admin/about', label: 'About & Chronology', icon: 'about' as const },
   { to: '/admin/appearance', label: 'Appearance', icon: 'appearance' as const },
 ]
 
-const themeName = computed(() => themeStore.theme.name || 'Default')
+const themeName = computed(() => themeStore.theme.name || 'Obsidian Dark')
 
 watch(() => route.fullPath, () => {
   sidebarOpen.value = false
@@ -93,18 +93,19 @@ function handleLogout(): void {
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background: linear-gradient(165deg, rgba(2, 6, 23, 0.92), rgba(15, 23, 42, 0.88));
+  background: var(--canvas, #090a0c);
+  color: var(--ink, #f5f5f7);
 }
 
 .admin-sidebar {
   width: 280px;
-  border-right: 1px solid rgba(148, 163, 184, 0.2);
-  background: linear-gradient(180deg, rgba(15, 23, 42, 0.98), rgba(11, 18, 32, 0.95));
-  backdrop-filter: blur(10px);
-  padding: 1rem;
+  border-right: 1px solid var(--stroke, rgba(255, 255, 255, 0.08));
+  background: var(--bone, #12141a);
+  backdrop-filter: blur(12px);
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .admin-sidebar__brand {
@@ -112,60 +113,73 @@ function handleLogout(): void {
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--stroke, rgba(255, 255, 255, 0.08));
 }
 
 .admin-sidebar__logo {
-  color: #f8fafc;
+  color: var(--ink, #f5f5f7);
   text-decoration: none;
-  font-weight: 800;
-  letter-spacing: 0.03em;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
 }
 
 .admin-sidebar__close {
   display: none;
   border: 0;
   background: transparent;
-  color: #94a3b8;
+  color: var(--ink-secondary, #8e919a);
   cursor: pointer;
 }
 
 .admin-sidebar__nav {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
+  gap: 0.35rem;
 }
 
 .admin-sidebar__link {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
-  border-radius: 0.8rem;
+  gap: 0.75rem;
+  border-radius: 0.5rem;
   border: 1px solid transparent;
-  color: #cbd5e1;
+  color: var(--ink-secondary, #8e919a);
   text-decoration: none;
-  padding: 0.6rem 0.75rem;
-  font-size: 0.92rem;
-  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
-}
+  padding: 0.65rem 0.85rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
-.admin-sidebar__link:hover,
-.admin-sidebar__link.router-link-active {
-  color: #f8fafc;
-  border-color: color-mix(in srgb, var(--theme-primary) 45%, transparent);
-  background: color-mix(in srgb, var(--theme-primary) 16%, transparent);
+  &:hover {
+    color: var(--ink, #f5f5f7);
+    background: var(--surface, #181a22);
+    border-color: var(--stroke, rgba(255, 255, 255, 0.08));
+  }
+
+  &.router-link-active {
+    color: var(--ink, #f5f5f7);
+    background: var(--surface, #181a22);
+    border-color: rgba(96, 165, 250, 0.3);
+    font-weight: 500;
+  }
 }
 
 .admin-sidebar__theme {
   margin: 0;
-  margin-bottom: 0;
-  color: #94a3b8;
-  font-size: 0.78rem;
+  color: var(--ink-tertiary, #565963);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
 }
 
 .admin-sidebar__footer {
   margin-top: auto;
   display: grid;
-  gap: 0.6rem;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--stroke, rgba(255, 255, 255, 0.08));
 }
 
 .admin-sidebar__logout {

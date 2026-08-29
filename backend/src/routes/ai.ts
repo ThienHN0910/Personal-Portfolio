@@ -80,7 +80,7 @@ router.post('/improve-content', async (req, res) => {
       return res.status(500).json({ success: false, error: 'Gemini API Key is not configured' })
     }
 
-    const modelName = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite'
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
     const model = genAI.getGenerativeModel({ model: modelName })
 
     let templateInstruction = UNIFIED_MASTER_SYNTHESIS_PROMPT
@@ -125,7 +125,7 @@ router.post('/generate-metadata', async (req, res) => {
       return res.status(500).json({ success: false, error: 'Gemini API Key is not configured' })
     }
 
-    const modelName = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite'
+    const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
     const model = genAI.getGenerativeModel({ model: modelName })
 
     const prompt = `You are an expert technical editor and SEO specialist.
