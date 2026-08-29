@@ -1,11 +1,12 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12">
+    <!-- Outer full-bleed wrapper -->
+    <div class="w-full max-w-[1720px] mx-auto px-3 sm:px-6 py-8 sm:py-12">
       <LoadingSpinner v-if="loading" />
 
-      <div v-else-if="project" class="space-y-10">
+      <div v-else-if="project" class="space-y-8">
         <!-- Top Nav & Breadcrumb Bar -->
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex items-center justify-between gap-4 px-2">
           <RouterLink
             to="/projects"
             class="inline-flex items-center gap-2 text-ink-tertiary hover:text-ink transition-colors text-xs font-mono group active:scale-95"
@@ -45,58 +46,61 @@
                 {{ project.description }}
               </p>
             </div>
-
-            <!-- Header Quick Spec Strip -->
-            <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-stroke text-xs font-mono">
-              <div class="flex flex-wrap items-center gap-2">
-                <span class="text-ink-tertiary">Core Technologies:</span>
-                <span
-                  v-for="tech in (project.technologies || []).slice(0, 5)"
-                  :key="tech"
-                  class="px-2.5 py-0.5 rounded-full bg-bone border border-stroke text-ink text-[11px]"
-                >
-                  {{ tech }}
-                </span>
-                <span v-if="(project.technologies || []).length > 5" class="text-ink-tertiary">
-                  +{{ project.technologies.length - 5 }} more
-                </span>
-              </div>
-
-              <div class="flex items-center gap-3">
-                <a
-                  v-if="project.liveUrl"
-                  :href="project.liveUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="group inline-flex items-center gap-2 px-4 py-2 rounded-md bg-ink text-surface font-sans font-medium text-xs active:scale-[0.98] transition-all"
-                >
-                  <span>Launch Live App</span>
-                  <span class="w-4 h-4 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
-                    <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
-                    </svg>
-                  </span>
-                </a>
-
-                <a
-                  v-if="project.githubUrl"
-                  :href="project.githubUrl"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="px-3 py-2 rounded-md bg-bone border border-stroke text-ink-secondary hover:text-ink font-sans font-medium text-xs transition-colors"
-                >
-                  Repository
-                </a>
-              </div>
-            </div>
           </div>
         </header>
 
-        <!-- ── Main Showcase Grid: Asymmetric Split ────────────────────── -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- ── 3-Column Sticky Rail Layout ────────────────────────────── -->
+        <!--
+          xl+:  [220px sticky left rail] [flex-1 center] [200px sticky right rail]
+          < xl: stacks single-column: left rail → center → right rail
+        -->
+        <div class="xl:grid xl:grid-cols-[220px_1fr_200px] xl:items-start xl:gap-0">
 
-          <!-- Left / Main Column: Media & Case Content (Col 8) -->
-          <div class="lg:col-span-8 space-y-8">
+          <!-- ── LEFT RAIL: System Spec Rail (sticky) ──────────────────── -->
+          <aside
+            class="xl:sticky xl:top-24 xl:self-start
+                   xl:pr-4 xl:pl-1
+                   space-y-4
+                   mb-6 xl:mb-0"
+          >
+            <div class="editorial-card">
+              <div class="editorial-card__inner p-5 space-y-5">
+                <div class="flex items-center justify-between pb-3 border-b border-stroke">
+                  <h2 class="text-[10px] font-mono uppercase tracking-widest text-ink-tertiary">System Spec Rail</h2>
+                  <span class="w-1.5 h-1.5 rounded-full" :class="project.liveUrl ? 'bg-pastel-green-text animate-pulse-soft' : 'bg-ink-tertiary'"></span>
+                </div>
+
+                <!-- Status & Lifecycle -->
+                <div class="grid grid-cols-1 gap-2 text-xs font-mono">
+                  <div class="p-3 rounded-lg bg-bone border border-stroke">
+                    <span class="text-[10px] text-ink-tertiary uppercase block">Status</span>
+                    <span class="text-ink mt-1 block font-medium">{{ project.liveUrl ? 'Active in Prod' : 'Completed' }}</span>
+                  </div>
+                  <div class="p-3 rounded-lg bg-bone border border-stroke">
+                    <span class="text-[10px] text-ink-tertiary uppercase block">Timeline</span>
+                    <span class="text-ink mt-1 block tabular-nums">{{ project.duration || '2025' }}</span>
+                  </div>
+                </div>
+
+                <!-- Category Tags -->
+                <div v-if="project.categories && project.categories.length" class="space-y-2">
+                  <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Domain Classification</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span
+                      v-for="cat in project.categories"
+                      :key="cat"
+                      class="px-2.5 py-1 rounded-full bg-pastel-blue text-pastel-blue-text text-[10px] font-mono tracking-wide"
+                    >
+                      {{ cat }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          <!-- ── CENTER: Main Editorial Content ────────────────────────── -->
+          <div class="xl:px-8 space-y-8 min-w-0">
             <!-- Main Hero Image Frame -->
             <div class="editorial-card">
               <div class="editorial-card__inner overflow-hidden bg-bone border border-stroke p-0">
@@ -160,45 +164,23 @@
             @close="closeLightbox"
           />
 
-          <!-- Right Column: Sticky Spec Rail & Metrics (Col 4) -->
-          <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
-            <!-- Specs Card -->
+          <!-- ── RIGHT RAIL: Tech Stack + CTA (sticky) ──────────────────── -->
+          <aside
+            class="xl:sticky xl:top-24 xl:self-start
+                   xl:pl-4 xl:pr-1
+                   space-y-4
+                   mt-6 xl:mt-0"
+          >
             <div class="editorial-card">
-              <div class="editorial-card__inner p-6 space-y-6">
+              <div class="editorial-card__inner p-5 space-y-5">
                 <div class="flex items-center justify-between pb-3 border-b border-stroke">
-                  <h2 class="text-sm font-mono uppercase tracking-widest text-ink-tertiary">System Spec Rail</h2>
-                  <span class="w-1.5 h-1.5 rounded-full" :class="project.liveUrl ? 'bg-pastel-green-text animate-pulse-soft' : 'bg-ink-tertiary'"></span>
-                </div>
-
-                <!-- Status & Lifecycle -->
-                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-                  <div class="p-3 rounded-lg bg-bone border border-stroke">
-                    <span class="text-[10px] text-ink-tertiary uppercase block">Status</span>
-                    <span class="text-ink mt-1 block font-medium">{{ project.liveUrl ? 'Active in Prod' : 'Completed' }}</span>
-                  </div>
-                  <div class="p-3 rounded-lg bg-bone border border-stroke">
-                    <span class="text-[10px] text-ink-tertiary uppercase block">Timeline</span>
-                    <span class="text-ink mt-1 block tabular-nums">{{ project.duration || '2025' }}</span>
-                  </div>
-                </div>
-
-                <!-- Category Tags -->
-                <div v-if="project.categories && project.categories.length" class="space-y-2">
-                  <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Domain Classification</span>
-                  <div class="flex flex-wrap gap-1.5">
-                    <span
-                      v-for="cat in project.categories"
-                      :key="cat"
-                      class="px-2.5 py-1 rounded-full bg-pastel-blue text-pastel-blue-text text-[10px] font-mono tracking-wide"
-                    >
-                      {{ cat }}
-                    </span>
-                  </div>
+                  <h2 class="text-[10px] font-mono uppercase tracking-widest text-ink-tertiary">Tech Stack</h2>
+                  <span class="w-1.5 h-1.5 rounded-full bg-pastel-amber-text"></span>
                 </div>
 
                 <!-- Technology Matrix -->
                 <div class="space-y-2">
-                  <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Technologies &amp; Libraries</span>
+                  <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Core Technologies</span>
                   <div class="flex flex-wrap gap-1.5">
                     <span
                       v-for="tech in project.technologies"
@@ -219,7 +201,7 @@
                     rel="noopener noreferrer"
                     class="group w-full py-2.5 px-4 rounded-md bg-ink text-surface font-sans font-medium text-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
                   >
-                    <span>Launch Live Demo</span>
+                    <span>Launch Live App</span>
                     <span class="w-4 h-4 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
                       <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
@@ -234,7 +216,7 @@
                     rel="noopener noreferrer"
                     class="w-full py-2.5 px-4 rounded-md bg-bone border border-stroke text-ink-secondary font-sans font-medium text-xs text-center hover:border-ink/20 hover:text-ink active:scale-[0.98] transition-all block"
                   >
-                    View Source Code
+                    Repository
                   </a>
                 </div>
               </div>
@@ -327,4 +309,3 @@ watch(
   { immediate: true },
 )
 </script>
-

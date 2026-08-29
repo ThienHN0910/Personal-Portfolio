@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
+    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
       <!-- ── Page Header: Avant-Garde Editorial Architecture ─────────── -->
       <header class="editorial-card">
         <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
@@ -78,12 +78,17 @@
           v-for="(post, index) in blogStore.posts"
           :key="post._id"
           :class="[
-            index % 5 === 0 ? 'col-span-12 lg:col-span-8' : (index % 5 === 1 ? 'col-span-12 lg:col-span-4' : (index % 5 === 2 ? 'col-span-12 lg:col-span-4' : 'col-span-12 lg:col-span-8'))
+            index % 5 === 0 ? 'col-span-12 xl:col-span-7' :
+            index % 5 === 1 ? 'col-span-12 xl:col-span-5' :
+            index % 5 === 2 ? 'col-span-12 md:col-span-5 xl:col-span-4' :
+            index % 5 === 3 ? 'col-span-12 md:col-span-7 xl:col-span-8' :
+                               'col-span-12'
           ]"
         >
           <BlogCard :post="post" :layout="getMasonryLayout(index)" />
         </div>
       </div>
+
 
       <!-- Empty State -->
       <div v-else class="editorial-card">

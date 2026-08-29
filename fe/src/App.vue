@@ -23,6 +23,8 @@
     <!-- Global Command Palette & Notifications -->
     <CommandPalette />
     <ToastNotification />
+    <!-- Scroll to Top FAB (public pages only) -->
+    <ScrollToTopButton v-if="!isAdminRoute" />
   </div>
 </template>
 
@@ -35,6 +37,7 @@ import Navbar from '@/components/layout/Navbar.vue'
 import Footer from '@/components/layout/Footer.vue'
 import CommandPalette from '@/components/ui/CommandPalette.vue'
 import ToastNotification from '@/components/ui/ToastNotification.vue'
+import ScrollToTopButton from '@/components/ui/ScrollToTopButton.vue'
 import { useCommandPalette } from '@/composables/useCommandPalette'
 import { useSmoothScroll } from '@/composables/useSmoothScroll'
 

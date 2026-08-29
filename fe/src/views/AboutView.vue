@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-16 sm:space-y-24">
+    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-10 sm:py-14 space-y-16 sm:space-y-24">
       <!-- ── Page Header: Avant-Garde Profile Architecture ───────────── -->
       <header class="editorial-card">
         <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
@@ -29,10 +29,10 @@
       <LoadingSpinner v-if="loading" />
 
       <template v-else>
-        <!-- ── Profile Card & Bio Overview: Asymmetric Split ─────────── -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          <!-- Left Avatar Sidebar (Col 4) -->
-          <div class="lg:col-span-4 editorial-card lg:sticky lg:top-24">
+        <!-- ── Profile Card & Bio Overview: Edge-Anchored Sticky Left ──── -->
+        <div class="xl:grid xl:grid-cols-[220px_1fr] xl:items-start xl:gap-0">
+          <!-- Left Avatar Sticky Rail -->
+          <div class="xl:sticky xl:top-24 xl:self-start xl:pr-6 xl:pl-1 mb-8 xl:mb-0 editorial-card lg:editorial-card">
             <div class="editorial-card__inner p-7 flex flex-col items-center text-center space-y-5">
               <div class="relative w-36 h-36 rounded-2xl overflow-hidden bg-bone border border-stroke shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
                 <img
@@ -83,8 +83,8 @@
             </div>
           </div>
 
-          <!-- Right Bio Narrative & Quick Specs (Col 8) -->
-          <div class="lg:col-span-8 space-y-6">
+          <!-- Right Bio Narrative & Quick Specs -->
+          <div class="xl:min-w-0 xl:pl-8 space-y-6">
             <div class="editorial-card">
               <div class="editorial-card__inner p-8 sm:p-10 flex flex-col justify-between space-y-6">
                 <div class="flex items-center justify-between pb-3 border-b border-stroke">
