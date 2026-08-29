@@ -89,11 +89,19 @@
 
         <!-- ── Article Body Core ───────────────────────────────────────── -->
         <article class="editorial-card">
-          <div class="editorial-card__inner p-8 sm:p-14">
+          <div ref="articleBodyRef" class="editorial-card__inner p-8 sm:p-14">
             <!-- eslint-disable-next-line vue/no-v-html -->
             <div class="prose-editorial max-w-none" v-html="sanitizedContent" />
           </div>
         </article>
+
+        <ImageLightboxModal
+          :is-open="lightbox.isOpen"
+          :src="lightbox.src"
+          :alt="lightbox.alt"
+          :caption="lightbox.caption"
+          @close="closeLightbox"
+        />
 
         <!-- ── Article Footer & Author Bio Card ────────────────────────── -->
         <footer class="editorial-card">
@@ -139,9 +147,11 @@
 <script setup lang="ts">
 import { computed, ref, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import ImageLightboxModal from '@/components/ui/ImageLightboxModal.vue'
+import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { useRichContentEnhancer } from '@/composables/useRichContentEnhancer'
 import { useBlogStore } from '@/stores/blog'
 import type { BlogPost } from '@/types'
-import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
 import { getBlogDetailSeoMeta } from '@/utils/seoPriority'
@@ -152,10 +162,17 @@ const blogStore = useBlogStore()
 const post = ref<BlogPost | null>(null)
 const loading = ref(true)
 const readingProgress = ref(0)
+const articleBodyRef = ref<HTMLElement | null>(null)
+
+const { lightbox, closeLightbox, scheduleEnhance } = useRichContentEnhancer(articleBodyRef)
 
 const sanitizedContent = computed(() => {
   const html = post.value?.content || ''
   return sanitizeRichContent(html)
+})
+
+watch(sanitizedContent, () => {
+  scheduleEnhance()
 })
 
 const estimatedReadTime = computed(() => {

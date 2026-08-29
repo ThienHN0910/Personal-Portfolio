@@ -73,9 +73,9 @@
       <Teleport to="body">
         <Transition name="admin-fade-scale">
           <div v-if="showModal" class="admin-modal-backdrop">
-            <div class="admin-modal max-w-lg">
-              <p class="admin-kicker mb-2">Project Editor</p>
-              <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'Add' }} Project</h2>
+            <div class="admin-modal max-w-2xl">
+              <p class="admin-kicker mb-2">Case Study &amp; Architecture Editor</p>
+              <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'Add' }} Case Study</h2>
 
               <form @submit.prevent="handleSubmit">
                 <div class="form-group">
@@ -83,19 +83,39 @@
                   <input v-model="form.title" type="text" required placeholder="Project title" />
                 </div>
                 <div class="form-group">
-                  <label>Description</label>
-                  <textarea v-model="form.description" rows="3" required placeholder="Project description" />
+                  <label>Architectural Analysis &amp; Content</label>
+                  <FullRichEditor
+                    v-model="form.description"
+                    :editor-key="editorRenderKey"
+                    :sticky-top="0"
+                    upload-folder="portfolio/projects/content"
+                    placeholder="Write detailed system design breakdown, paste raw CONTEXT.md, or use AI assistant..."
+                  />
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div class="form-group">
-                    <label>Duration</label>
-                    <input v-model="form.duration" type="text" placeholder="3 months" />
+                    <label>Duration / Timeline</label>
+                    <input v-model="form.duration" type="text" placeholder="3 months (2025)" />
                   </div>
                   <div class="form-group">
                     <label>Priority (higher first)</label>
                     <input v-model.number="form.priority" type="number" min="0" step="1" />
                   </div>
                 </div>
+
+                <div class="flex items-center justify-between pt-2">
+                  <button
+                    type="button"
+                    class="btn btn--sm text-xs py-1 px-3 border border-indigo-400/40 rounded bg-slate-900/90 text-indigo-300 hover:text-white hover:bg-indigo-600/30 flex items-center gap-1.5 transition-all"
+                    :disabled="isGeneratingMetadata || (!form.title && !form.description)"
+                    @click="handleGenerateMetadata"
+                  >
+                    <span v-if="isGeneratingMetadata" class="animate-spin">⏳</span>
+                    <span v-else>✨</span>
+                    {{ isGeneratingMetadata ? 'Analyzing...' : 'AI Auto-Detect Category & Stack' }}
+                  </button>
+                </div>
+
                 <div class="form-group">
                   <CategoryCheckboxGroup
                     v-model="selectedCategories"
@@ -108,7 +128,7 @@
                 <div class="form-group">
                   <label>Technologies (select from Skills)</label>
                   <p v-if="!technologyOptions.length" class="text-xs text-amber-300 mb-2">
-                    Chua co skills trong Admin About. Hay cap nhat Skills truoc.
+                    Chưa có skills trong Admin About. Hãy cập nhật Skills trước.
                   </p>
                   <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     <label
@@ -122,27 +142,27 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Related Blog</label>
+                  <label>Related Blog / Companion Article</label>
                   <select v-model="form.relatedBlogId" class="admin-select">
                     <option value="">No related blog</option>
                     <option v-for="post in blogOptions" :key="post._id" :value="post._id">{{ post.title }}</option>
                   </select>
                 </div>
                 <div class="form-group">
-                  <label>GitHub URL</label>
+                  <label>GitHub Repository URL</label>
                   <input v-model="form.githubUrl" type="url" placeholder="https://github.com/..." />
                 </div>
                 <div class="form-group">
-                  <label>Live URL</label>
+                  <label>Live Deployment URL</label>
                   <input v-model="form.liveUrl" type="url" placeholder="https://..." />
                 </div>
                 <div class="form-group">
-                  <label>Image URL</label>
+                  <label>Main Cover Image</label>
                   <ImageDropUpload v-model="form.imageUrl" folder="portfolio/projects" />
                 </div>
                 <div class="flex items-center gap-3 mb-6">
                   <input id="featured" v-model="form.featured" type="checkbox" class="w-4 h-4 accent-blue-500" />
-                  <label for="featured" class="text-gray-400 text-sm cursor-pointer">Featured project</label>
+                  <label for="featured" class="text-gray-400 text-sm cursor-pointer">Featured Case Study</label>
                 </div>
 
                 <div class="admin-modal__actions">
@@ -170,20 +190,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, defineAsyncComponent } from 'vue'
 
 import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
 import CategoryCheckboxGroup from '@/components/admin/CategoryCheckboxGroup.vue'
 import ConfirmDialog from '@/components/ui/ConfirmDialog.vue'
+import EditorLoadingSkeleton from '@/components/ui/EditorLoadingSkeleton.vue'
 import IconGlyph from '@/components/ui/IconGlyph.vue'
 import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
+import api from '@/utils/api'
 import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
 import { useCategoriesStore } from '@/stores/categories'
 import { useProjectsStore } from '@/stores/projects'
 import type { Project } from '@/types'
+
+const FullRichEditor = defineAsyncComponent({
+  loader: () => import('@/components/admin/FullRichEditor.vue'),
+  loadingComponent: EditorLoadingSkeleton,
+})
 
 interface ProjectFormState {
   title: string
@@ -214,15 +241,19 @@ function createInitialFormState(): ProjectFormState {
 }
 
 const projectsStore = useProjectsStore()
-const aboutStore = useAboutStore()
 const blogStore = useBlogStore()
+const aboutStore = useAboutStore()
 const categoriesStore = useCategoriesStore()
+
 const loading = computed(() => projectsStore.loading)
 const showModal = ref(false)
 const editingProject = ref<Project | null>(null)
 const { isOpen: isDeleteDialogOpen, request: requestDelete, cancel: cancelDelete, consume: consumeDelete } = useConfirmDialog()
 const selectedTechnologies = ref<string[]>([])
 const selectedCategories = ref<string[]>([])
+const editorRenderKey = ref(0)
+const isGeneratingMetadata = ref(false)
+
 const isEditing = computed(() => Boolean(editingProject.value?._id))
 const blogOptions = computed(() => blogStore.posts)
 const projectCategoryOptions = computed(() => categoriesStore.categorySettings.projectCategories)
@@ -274,7 +305,45 @@ function openModal(project?: Project) {
   } else {
     resetForm()
   }
+  editorRenderKey.value += 1
   showModal.value = true
+}
+
+async function handleGenerateMetadata() {
+  if (!form.title && !form.description) {
+    alert('Please enter a project title or write architectural description first.')
+    return
+  }
+
+  isGeneratingMetadata.value = true
+  try {
+    const res = await api.post<{ success: boolean; data: { excerpt?: string; tags?: string[]; suggestedCategory?: string } }>('/ai/generate-metadata', {
+      title: form.title,
+      content: form.description,
+    })
+
+    if (res.data.success && res.data.data) {
+      const { tags, suggestedCategory } = res.data.data
+      if (suggestedCategory && !selectedCategories.value.length) {
+        const matched = projectCategoryOptions.value.find(c => c.toLowerCase() === suggestedCategory.toLowerCase())
+        if (matched) selectedCategories.value = [matched]
+        else if (projectCategoryOptions.value.length) selectedCategories.value = [projectCategoryOptions.value[0]]
+      }
+
+      if (Array.isArray(tags) && tags.length) {
+        const matchedTechs = technologyOptions.value.filter(tech => 
+          tags.some(t => tech.toLowerCase().includes(t.toLowerCase()) || t.toLowerCase().includes(tech.toLowerCase()))
+        )
+        if (matchedTechs.length) {
+          selectedTechnologies.value = Array.from(new Set([...selectedTechnologies.value, ...matchedTechs]))
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Error generating metadata for project:', error)
+  } finally {
+    isGeneratingMetadata.value = false
+  }
 }
 
 async function handleSubmit() {

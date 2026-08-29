@@ -137,12 +137,20 @@
 
             <!-- Deep Dive / Technical Overview Body -->
             <div v-if="sanitizedProjectContent" class="editorial-card">
-              <div class="editorial-card__inner p-8 sm:p-12">
+              <div ref="projectBodyRef" class="editorial-card__inner p-8 sm:p-12">
                 <!-- eslint-disable-next-line vue/no-v-html -->
                 <div class="prose-editorial" v-html="sanitizedProjectContent" />
               </div>
             </div>
           </div>
+
+          <ImageLightboxModal
+            :is-open="lightbox.isOpen"
+            :src="lightbox.src"
+            :alt="lightbox.alt"
+            :caption="lightbox.caption"
+            @close="closeLightbox"
+          />
 
           <!-- Right Column: Sticky Spec Rail & Metrics (Col 4) -->
           <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
@@ -271,7 +279,9 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
+import ImageLightboxModal from '@/components/ui/ImageLightboxModal.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { useRichContentEnhancer } from '@/composables/useRichContentEnhancer'
 import { useBlogStore } from '@/stores/blog'
 import { useProjectsStore } from '@/stores/projects'
 import type { BlogPost, Project } from '@/types'
@@ -287,10 +297,17 @@ const blogStore = useBlogStore()
 const project = ref<Project | null>(null)
 const relatedPost = ref<BlogPost | null>(null)
 const loading = ref(true)
+const projectBodyRef = ref<HTMLElement | null>(null)
+
+const { lightbox, closeLightbox, scheduleEnhance } = useRichContentEnhancer(projectBodyRef)
 
 const sanitizedProjectContent = computed(() => {
-  const raw = (project.value as any)?.content || (project.value as any)?.details || ''
+  const raw = (project.value as any)?.content || (project.value as any)?.details || project.value?.description || ''
   return sanitizeRichContent(raw)
+})
+
+watch(sanitizedProjectContent, () => {
+  scheduleEnhance()
 })
 
 const sanitizedRelatedContent = computed(() => {

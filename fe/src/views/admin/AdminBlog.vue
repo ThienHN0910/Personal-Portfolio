@@ -85,6 +85,19 @@
                     placeholder="Write your post content here..."
                   />
                 </div>
+                <div class="flex items-center justify-between pt-2">
+                  <button
+                    type="button"
+                    class="btn btn--sm text-xs py-1 px-3 border border-indigo-400/40 rounded bg-slate-900/90 text-indigo-300 hover:text-white hover:bg-indigo-600/30 flex items-center gap-1.5 transition-all"
+                    :disabled="isGeneratingMetadata || (!form.title && !form.content)"
+                    @click="handleGenerateMetadata"
+                  >
+                    <span v-if="isGeneratingMetadata" class="animate-spin">⏳</span>
+                    <span v-else>✨</span>
+                    {{ isGeneratingMetadata ? 'Analyzing...' : 'AI Auto-Detect Tags & Category' }}
+                  </button>
+                </div>
+
                 <div class="form-group">
                   <CategoryCheckboxGroup
                     v-model="selectedCategories"
@@ -138,6 +151,7 @@ import IconGlyph from '@/components/ui/IconGlyph.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import { useBlogStore } from '@/stores/blog'
 import { useCategoriesStore } from '@/stores/categories'
+import api from '@/utils/api'
 import type { BlogPost } from '@/types'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 
@@ -147,7 +161,7 @@ interface BlogFormState {
   published: boolean
 }
 
-const EXCERPT_MAX_LENGTH = 180
+const EXCERPT_MAX_LENGTH = 160
 
 function createInitialFormState(): BlogFormState {
   return {
@@ -173,6 +187,7 @@ const { isOpen: isDeleteDialogOpen, request: requestDelete, cancel: cancelDelete
 const tagsInput = ref('')
 const selectedCategories = ref<string[]>([])
 const editorRenderKey = ref(0)
+const isGeneratingMetadata = ref(false)
 const isEditing = computed(() => Boolean(editingPost.value?._id))
 const editorInstanceKey = computed(() => `${editingPost.value?._id || 'new'}-${editorRenderKey.value}`)
 const blogCategoryOptions = computed(() => categoriesStore.categorySettings.blogCategories)
@@ -232,6 +247,37 @@ function parseTags(value: string): string[] {
     .filter(Boolean)
 
   return Array.from(new Set(tags))
+}
+
+async function handleGenerateMetadata() {
+  if (!form.title && !form.content) {
+    alert('Please enter a title or write some content first.')
+    return
+  }
+
+  isGeneratingMetadata.value = true
+  try {
+    const res = await api.post<{ success: boolean; data: { excerpt?: string; tags?: string[]; suggestedCategory?: string } }>('/ai/generate-metadata', {
+      title: form.title,
+      content: form.content,
+    })
+
+    if (res.data.success && res.data.data) {
+      const { tags, suggestedCategory } = res.data.data
+      if (Array.isArray(tags) && tags.length && !tagsInput.value) {
+        tagsInput.value = tags.join(', ')
+      }
+      if (suggestedCategory && !selectedCategories.value.length) {
+        const matched = blogCategoryOptions.value.find(c => c.toLowerCase() === suggestedCategory.toLowerCase())
+        if (matched) selectedCategories.value = [matched]
+        else if (blogCategoryOptions.value.length) selectedCategories.value = [blogCategoryOptions.value[0]]
+      }
+    }
+  } catch (error) {
+    console.error('Error generating metadata:', error)
+  } finally {
+    isGeneratingMetadata.value = false
+  }
 }
 
 async function handleSubmit() {
