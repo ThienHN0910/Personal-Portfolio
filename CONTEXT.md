@@ -53,3 +53,13 @@ _Avoid_: Cookie session, Stateful server session
 **Multi-Channel Inbound Notification**:
 Immediate dual dispatch of contact form inquiries via transactional Nodemailer email and Telegram Bot Webhook.
 _Avoid_: Email-only alert, Polling inbox
+
+### AI & Design System Synthesis
+
+**Decoupled Case Study Architecture**:
+Completely autonomous Case Studies containing self-contained architectural dossiers without relying on external Article foreign keys (`relatedBlogId`).
+_Avoid_: Linked blog post, Project companion post
+
+**Design-System-Constrained AI Synthesis**:
+AI content generation strictly constrained to standard semantic HTML tags and predefined design system CSS classes (`.article-*`, `.project-*`, `.editorial-*`), allowing inline styles *exclusively* for creative CSS Grid layout orchestration.
+_Avoid_: Unconstrained HTML dump, Ad-hoc inline colors/fonts

@@ -21,7 +21,6 @@
               <th class="hidden xl:table-cell">Duration</th>
               <th class="hidden md:table-cell">Categories</th>
               <th class="hidden md:table-cell">Technologies</th>
-              <th class="hidden lg:table-cell">Related Blog</th>
               <th class="hidden sm:table-cell">Featured</th>
               <th class="text-right">Actions</th>
             </tr>
@@ -43,9 +42,6 @@
                 <div class="flex flex-wrap gap-1">
                   <span v-for="tech in project.technologies.slice(0, 3)" :key="tech" class="card__tag">{{ tech }}</span>
                 </div>
-              </td>
-              <td class="hidden lg:table-cell text-gray-300 text-sm">
-                {{ getRelatedBlogTitle(project.relatedBlogId) }}
               </td>
               <td class="hidden sm:table-cell">
                 <span :class="project.featured ? 'text-green-400' : 'text-gray-500'" class="text-sm">
@@ -142,13 +138,6 @@
                   </div>
                 </div>
                 <div class="form-group">
-                  <label>Related Blog / Companion Article</label>
-                  <select v-model="form.relatedBlogId" class="admin-select">
-                    <option value="">No related blog</option>
-                    <option v-for="post in blogOptions" :key="post._id" :value="post._id">{{ post.title }}</option>
-                  </select>
-                </div>
-                <div class="form-group">
                   <label>GitHub Repository URL</label>
                   <input v-model="form.githubUrl" type="url" placeholder="https://github.com/..." />
                 </div>
@@ -202,7 +191,6 @@ import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useConfirmDialog } from '@/composables/useConfirmDialog'
 import api from '@/utils/api'
 import { useAboutStore } from '@/stores/about'
-import { useBlogStore } from '@/stores/blog'
 import { useCategoriesStore } from '@/stores/categories'
 import { useProjectsStore } from '@/stores/projects'
 import type { Project } from '@/types'
@@ -221,7 +209,6 @@ interface ProjectFormState {
   githubUrl: string
   liveUrl: string
   imageUrl: string
-  relatedBlogId: string
   featured: boolean
 }
 
@@ -235,13 +222,11 @@ function createInitialFormState(): ProjectFormState {
     githubUrl: '',
     liveUrl: '',
     imageUrl: '',
-    relatedBlogId: '',
     featured: false,
   }
 }
 
 const projectsStore = useProjectsStore()
-const blogStore = useBlogStore()
 const aboutStore = useAboutStore()
 const categoriesStore = useCategoriesStore()
 
@@ -255,25 +240,13 @@ const editorRenderKey = ref(0)
 const isGeneratingMetadata = ref(false)
 
 const isEditing = computed(() => Boolean(editingProject.value?._id))
-const blogOptions = computed(() => blogStore.posts)
 const projectCategoryOptions = computed(() => categoriesStore.categorySettings.projectCategories)
-const blogTitleById = computed(() => {
-  return blogStore.posts.reduce<Record<string, string>>((acc, post) => {
-    if (post._id) acc[post._id] = post.title
-    return acc
-  }, {})
-})
 
 const technologyOptions = computed(() => {
   const skills = aboutStore.aboutData?.skills || []
   const editingTech = editingProject.value?.technologies || []
   return Array.from(new Set([...skills, ...editingTech]))
 })
-
-function getRelatedBlogTitle(relatedBlogId?: string): string {
-  if (!relatedBlogId) return '-'
-  return blogTitleById.value[relatedBlogId] || 'Unavailable'
-}
 
 const form = reactive<ProjectFormState>(createInitialFormState())
 
@@ -292,7 +265,6 @@ function fillFormFromProject(project: Project): void {
   form.githubUrl = project.githubUrl || ''
   form.liveUrl = project.liveUrl || ''
   form.imageUrl = project.imageUrl || ''
-  form.relatedBlogId = project.relatedBlogId || ''
   form.featured = project.featured
   selectedTechnologies.value = [...project.technologies]
   selectedCategories.value = [...(project.categories || [])]
@@ -355,7 +327,6 @@ async function handleSubmit() {
 
   const data = {
     ...form,
-    relatedBlogId: form.relatedBlogId || undefined,
     categories: selectedCategories.value,
     technologies,
   }
@@ -382,7 +353,6 @@ onMounted(async () => {
   await Promise.all([
     projectsStore.fetchProjects(),
     aboutStore.fetchAboutData(),
-    blogStore.fetchPosts(true),
     categoriesStore.fetchCategories(),
   ])
 })

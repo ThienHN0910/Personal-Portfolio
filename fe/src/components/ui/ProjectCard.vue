@@ -165,7 +165,6 @@ const showTwoImages = computed(() => galleryImages.value.length >= 2 && (props.l
 const actionItems = computed<CardAction[]>(() => {
   const actions: CardAction[] = []
   if (props.project._id) actions.push({ key: 'detail', label: 'Project Case Study', icon: 'detail', to: `/projects/${props.project.slug || props.project._id}` })
-  if (props.project.relatedBlogId) actions.push({ key: 'blog', label: 'Related Article', icon: 'article', to: `/blog/${props.project.relatedBlogId}` })
   if (props.project.githubUrl) actions.push({ key: 'github', label: 'GitHub Repository', icon: 'repository', href: props.project.githubUrl })
   if (props.project.liveUrl) actions.push({ key: 'live', label: 'Live Demo', icon: 'external', href: props.project.liveUrl })
   return actions

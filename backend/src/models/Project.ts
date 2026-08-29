@@ -11,7 +11,6 @@ export interface IProject extends Document {
   imageUrl?: string
   githubUrl?: string
   liveUrl?: string
-  relatedBlogId?: string
   featured: boolean
   slug?: string
 }
@@ -27,7 +26,6 @@ const ProjectSchema = new Schema<IProject>(
     imageUrl: { type: String },
     githubUrl: { type: String },
     liveUrl: { type: String },
-    relatedBlogId: { type: Schema.Types.ObjectId, ref: 'BlogPost' },
     featured: { type: Boolean, default: false },
     slug: { type: String, unique: true, sparse: true },
   },
