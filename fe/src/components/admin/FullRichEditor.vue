@@ -24,20 +24,25 @@
       />
     </div>
 
-    <!-- AI Prompt & Template Selection Modal -->
+    <!-- AI Prompt & Master Synthesis Modal -->
     <div
       v-if="showAiModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
     >
       <div class="glass-panel max-w-xl w-full p-6 border border-cyber-border/40 shadow-cyan-glow space-y-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between pb-2 border-b border-white/10">
-          <h3 class="text-base font-bold text-white flex items-center gap-2">
-            <span>✨</span>
-            <span>AI Content &amp; Case Study Generator</span>
-          </h3>
+          <div class="space-y-0.5">
+            <h3 class="text-base font-bold text-white flex items-center gap-2">
+              <span>✨</span>
+              <span>AI Design-System Content Assistant</span>
+            </h3>
+            <p class="text-[11px] text-slate-400 font-mono">
+              Auto-formats raw markdown / CONTEXT.md into avant-garde HTML with 60fps design system classes.
+            </p>
+          </div>
           <button
             type="button"
-            class="text-slate-400 hover:text-white text-lg font-mono"
+            class="text-slate-400 hover:text-white text-lg font-mono ml-3"
             @click="showAiModal = false"
           >
             ✕
@@ -45,28 +50,13 @@
         </div>
 
         <div class="space-y-3 text-xs font-mono">
-          <!-- Template Selection -->
+          <!-- Raw Context Input -->
           <div class="space-y-1">
-            <label class="block text-slate-300 uppercase">Select Transformation Mode:</label>
-            <select
-              v-model="selectedTemplate"
-              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-cyber-cyan"
-            >
-              <option value="context_to_casestudy">🚀 Context to Case Study (Transform CONTEXT.md / README into full Case Study)</option>
-              <option value="context_to_article">📝 Notes to Technical Article (Transform raw notes into Deep-Dive Article)</option>
-              <option value="project_blog">📊 Project Case Study (Objectives, Architecture, Challenges, Results)</option>
-              <option value="dev_log">🛠️ Technical Dev Log (Context, Root Cause, Solution, Code)</option>
-              <option value="default">✨ Standard Polish &amp; Semantic HTML</option>
-            </select>
-          </div>
-
-          <!-- Raw Context Input (for new generation or empty editor) -->
-          <div class="space-y-1">
-            <label class="block text-slate-300 uppercase">Source Content / Raw Context (Optional if editor already has text):</label>
+            <label class="block text-slate-300 uppercase">Source Content / Raw Notes (Optional if editor already has text):</label>
             <textarea
               v-model="rawSourceInput"
-              rows="5"
-              placeholder="Paste raw CONTEXT.md, AGENTS.md, GitHub README, or project notes here..."
+              rows="6"
+              placeholder="Paste raw CONTEXT.md, AGENTS.md, GitHub README, dev logs, or project notes here..."
               class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan font-mono text-xs"
             />
           </div>
@@ -77,8 +67,8 @@
             <textarea
               v-model="customPrompt"
               rows="2"
-              placeholder="e.g., Emphasize 60fps GPU acceleration and Vue 3 Composition API tradeoffs..."
-              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan"
+              placeholder="e.g., Emphasize 60fps GPU performance, write in Vietnamese, or highlight database sharding..."
+              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan text-xs"
             />
           </div>
         </div>
@@ -98,7 +88,7 @@
             :disabled="isImproving"
             @click="handleRunAi"
           >
-            {{ isImproving ? 'Generating...' : '✨ Generate &amp; Format in CKEditor' }}
+            {{ isImproving ? 'Synthesizing...' : '✨ Generate &amp; Format in CKEditor' }}
           </button>
         </div>
       </div>
@@ -282,7 +272,6 @@ function onUpdate(value: string): void {
 }
 
 const showAiModal = ref(false)
-const selectedTemplate = ref('context_to_casestudy')
 const rawSourceInput = ref('')
 const customPrompt = ref('')
 const isImproving = ref(false)
@@ -305,7 +294,6 @@ async function handleRunAi() {
   try {
     const response = await api.post<{ success: boolean; data: string }>('/ai/improve-content', {
       content: contentToProcess,
-      templateType: selectedTemplate.value,
       customPrompt: customPrompt.value,
     })
 

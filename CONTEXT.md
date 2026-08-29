@@ -64,9 +64,9 @@ _Avoid_: Email-only alert, Polling inbox
 Completely autonomous Case Studies containing self-contained architectural dossiers without relying on external Article foreign keys (`relatedBlogId`).
 _Avoid_: Linked blog post, Project companion post
 
-**Design-System-Constrained AI Synthesis**:
-AI content generation strictly constrained to standard semantic HTML tags and predefined design system CSS classes (`.article-*`, `.project-*`, `.editorial-*`), allowing inline styles *exclusively* for creative CSS Grid layout orchestration.
-_Avoid_: Unconstrained HTML dump, Ad-hoc inline colors/fonts
+**Unified Design-System AI Synthesis Pipeline**:
+A single master AI prompt pipeline that automatically transforms raw context, markdown notes, or drafts into publication-grade editorial HTML adhering strictly to the Semantic Class Catalog and 12-column CSS Grid layout rules without requiring manual template selection.
+_Avoid_: Multi-template dropdown selector, Unconstrained HTML dump, Ad-hoc inline styling
 
 ---
 

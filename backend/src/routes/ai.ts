@@ -32,116 +32,38 @@ CRITICAL DESIGN SYSTEM & STYLING RULES:
    - VISUAL_DENSITY: 3 (Spacious, airy negative space, maximum 65ch readable line lengths).
 `
 
-const AI_TEMPLATES: Record<string, string> = {
-  default: `Act as an expert technical editor and Web developer. Refine the following HTML content using the predefined design system classes and modern asymmetric layout. ${DESIGN_SYSTEM_RULES}`,
-  project_blog: `Act as a senior software architect and technical writer. Refine the following HTML content into an avant-garde Case Study featuring:
-1. Executive Summary (<p class="project-lead">)
-2. Architecture & Tech Stack Selection (<h2 class="project-h2"> with <div class="project-architecture-callout">)
-3. Key Engineering Challenges & Technical Solutions (<h2 class="project-h2"> with <pre class="project-codeblock">)
-4. Measurable Scale & Impact (<div class="project-metric-grid"> with <div class="project-metric-card">)
-${DESIGN_SYSTEM_RULES}`,
-  dev_log: `Act as a lead software engineer writing an in-depth Technical Dev Log with avant-garde layout.
-1. Context & Problem Statement (<p class="article-lead">)
-2. Root Cause Analysis (<h2 class="article-h2">)
-3. Implementation Details & Code Snippets (<pre class="article-codeblock"><code>)
-4. Lessons Learned & Best Practices (<blockquote class="article-pullquote">)
-${DESIGN_SYSTEM_RULES}`,
-  project_overview: `Act as a technical product manager. Refine the content into a high-impact Project Overview containing:
-- Project Brief & Deployment Status (<p class="project-lead">)
-- Technical Architecture & Stack Breakdown (<div class="project-architecture-callout">)
-- System Metrics (<div class="project-metric-grid">)
-${DESIGN_SYSTEM_RULES}`,
-  context_to_casestudy: `Act as a Principal Software Architect and Lead Technical Writer.
-Transform the provided raw project context, CONTEXT.md, AGENTS.md, or repository README into an avant-garde, executive-ready Case Study with broken-grid bento rhythm.
+const UNIFIED_MASTER_SYNTHESIS_PROMPT = `
+Act as a Principal Software Architect, Lead Technical Writer, and Creative Editorial Web Designer.
+Your objective is to transform the provided raw notes, CONTEXT.md, AGENTS.md, GitHub README, dev logs, or drafts into an avant-garde, executive-ready technical publication or case study adhering strictly to the portfolio's design system.
 
-Structure into:
-<h2 class="project-h2">1. Architectural Overview & System Objectives</h2>
-<p class="project-lead">Executive summary of the platform scope, business problem solved, and production goals.</p>
+${DESIGN_SYSTEM_RULES}
 
-<div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; margin: 2.5rem 0;">
-  <div style="grid-column: span 7;" class="project-architecture-callout">
-    <h3 class="project-h3">Core Architectural Thesis</h3>
-    <p class="project-p">Why standard monolithic or untyped approaches fail at scale, and the architectural principles applied.</p>
-  </div>
-  <div style="grid-column: span 5;" class="project-metric-grid">
-    <div class="project-metric-card">
-      <span class="metric-value">60 FPS</span>
-      <span class="metric-label">GPU Smooth Motion</span>
-    </div>
-    <div class="project-metric-card">
-      <span class="metric-value">&lt;50ms</span>
-      <span class="metric-label">P99 Server Latency</span>
-    </div>
-  </div>
-</div>
+STRUCTURE & CONTENT GUIDELINES:
+1. If the input represents a Project / Platform / System / Case Study:
+   - Output an engaging executive summary paragraph with class="project-lead".
+   - Include a 12-column asymmetric grid (<div style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; margin: 2.5rem 0;">) containing:
+     * A deep architectural thesis card (<div style="grid-column: span 7;" class="project-architecture-callout"><h3 class="project-h3">Architectural Thesis</h3><p class="project-p">...</p></div>)
+     * Performance and scale metric cards (<div style="grid-column: span 5;" class="project-metric-grid"><div class="project-metric-card"><span class="metric-value">60 FPS</span><span class="metric-label">GPU Acceleration</span></div><div class="project-metric-card"><span class="metric-value">&lt;50ms</span><span class="metric-label">P99 Latency</span></div></div>)
+   - Include technical stack tradeoffs table with class="project-spec-table".
+   - Include engineering seams and code highlights with <pre class="project-codeblock"><code class="language-typescript">// Implementation seam</code></pre>.
+   - Include key architectural takeaway in <blockquote class="article-pullquote">“Standout architectural insight...”</blockquote>.
 
-<h2 class="project-h2">2. Technical Stack & Architectural Tradeoffs (ADRs)</h2>
-<p class="project-p">Detailed breakdown of frameworks, databases, and third-party services chosen, highlighting architectural tradeoffs.</p>
+2. If the input represents an Article / Technical Essay / Tutorial:
+   - Output a prominent headline with class="article-hero-title" and an engaging lead paragraph with class="article-lead".
+   - Break down mechanics into structured sections with class="article-h2", body paragraphs with class="article-p", and conceptual highlights with class="article-callout".
+   - Include code snippets with <pre class="article-codeblock"><code class="language-typescript">// Technical implementation</code></pre>.
+   - Conclude with benchmarks, tradeoffs, and key takeaways in <blockquote class="article-pullquote">“Key rule of thumb...”</blockquote>.
 
-<table class="project-spec-table">
-  <thead>
-    <tr>
-      <th>Layer</th>
-      <th>Technology</th>
-      <th>Architectural Rationale</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Frontend</td>
-      <td>Vue 3 + TypeScript + Vite</td>
-      <td>Fine-grained reactivity, strict compiler typing, &lt;100ms HMR</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2 class="project-h2">3. Key Engineering Seams & Implementation</h2>
-<p class="project-p">Deep-dive into critical algorithms, security pipelines, or data flows.</p>
-<pre class="project-codeblock"><code class="language-typescript">// Critical architecture contract or state machine</code></pre>
-
-<blockquote class="article-pullquote">
-  “Standout architectural insight or system design takeaway from this project.”
-</blockquote>
-
-<h2 class="project-h2">4. Verification, Seams & Production Metrics</h2>
-<p class="project-p">Testing methodology, verification suites, and measurable outcomes.</p>
-
-${DESIGN_SYSTEM_RULES}`,
-  context_to_article: `Act as a Staff Engineer and Tech Author.
-Transform the provided notes, code snippets, or ideas into a publication-grade Technical Article with magazine-style editorial layout.
-
-Structure into:
-<h1 class="article-hero-title">Title of the Technical Deep-Dive</h1>
-<p class="article-lead">Engaging, high-level theoretical summary of the problem and engineering breakthrough.</p>
-
-<h2 class="article-h2">1. The Problem & Theoretical Background</h2>
-<p class="article-p">Detailed analysis of why existing solutions hit performance or architectural limits.</p>
-
-<div class="article-callout">
-  <h3 class="article-h3">Key Mental Model</h3>
-  <p class="article-p">A critical visual or conceptual model explaining the underlying mechanics.</p>
-</div>
-
-<h2 class="article-h2">2. Deep-Dive Mechanics & Architecture</h2>
-<p class="article-p">Step-by-step breakdown with concrete code examples.</p>
-<pre class="article-codeblock"><code class="language-typescript">// Example implementation or pattern</code></pre>
-
-<blockquote class="article-pullquote">
-  “Memorable rule of thumb or architectural insight.”
-</blockquote>
-
-<h2 class="article-h2">3. Benchmarks, Real-World Edge Cases & Conclusion</h2>
-<p class="article-p">Practical takeaways, memory considerations, and recommendations.</p>
-
-${DESIGN_SYSTEM_RULES}`,
-}
+3. General Refinement & HTML Semantic Polishing:
+   - Preserve all essential technical truths and code logic while upgrading the HTML markup into the design system classes and modern broken-grid layout.
+`
 
 router.post('/improve-content', async (req, res) => {
   const user = requireAdmin(req, res)
   if (!user) return
 
   try {
-    const { content, customPrompt, templateType } = req.body
+    const { content, customPrompt } = req.body
 
     if (!content) {
       return res.status(400).json({ success: false, error: 'Content is required' })
@@ -154,10 +76,10 @@ router.post('/improve-content', async (req, res) => {
     const modelName = process.env.GEMINI_MODEL || 'gemini-3.1-flash-lite'
     const model = genAI.getGenerativeModel({ model: modelName })
 
-    let templateInstruction = AI_TEMPLATES[templateType as string] || AI_TEMPLATES.default
+    let templateInstruction = UNIFIED_MASTER_SYNTHESIS_PROMPT
 
     if (customPrompt && typeof customPrompt === 'string' && customPrompt.trim()) {
-      templateInstruction += `\nAdditional user instruction: ${customPrompt.trim()}`
+      templateInstruction += `\n\nADDITIONAL USER INSTRUCTIONS (PRIORITIZE THESE):\n${customPrompt.trim()}`
     }
 
     const fullPrompt = `You are a professional software engineer, tech writer, and HTML content editor.
@@ -165,7 +87,7 @@ ${templateInstruction}
 
 CRITICAL REQUIREMENT: Return ONLY the raw HTML code without markdown code blocks (do NOT use \`\`\`html) and without any conversational intro/outro text.
 
-Content to refine:
+Content to transform/refine:
 ${content}`
 
     const result = await model.generateContent(fullPrompt)
