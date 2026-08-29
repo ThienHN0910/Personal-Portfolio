@@ -4,13 +4,13 @@
       <button
         type="button"
         class="btn btn--sm flex items-center gap-1.5 text-xs py-1.5 px-3 border border-cyber-cyan/40 rounded-lg bg-slate-900/80 hover:bg-cyber-cyan/20 text-cyber-cyan hover:shadow-cyan-glow transition-all"
-        :disabled="isImproving || !modelValue"
-        @click="showAiModal = true"
-        title="Use AI Assistant to refine, format, or restructure content"
+        :disabled="isImproving"
+        @click="openAiModal"
+        title="Use AI Assistant to generate or refine content from raw context"
       >
         <span v-if="isImproving" class="inline-block animate-spin">⏳</span>
         <span v-else>✨</span>
-        {{ isImproving ? 'Improving...' : 'AI Content Improvement' }}
+        {{ isImproving ? 'Improving...' : 'AI Content Assistant' }}
       </button>
     </div>
 
@@ -29,11 +29,11 @@
       v-if="showAiModal"
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
     >
-      <div class="glass-panel max-w-lg w-full p-6 border border-cyber-border/40 shadow-cyan-glow space-y-4">
+      <div class="glass-panel max-w-xl w-full p-6 border border-cyber-border/40 shadow-cyan-glow space-y-4 max-h-[90vh] overflow-y-auto">
         <div class="flex items-center justify-between pb-2 border-b border-white/10">
           <h3 class="text-base font-bold text-white flex items-center gap-2">
             <span>✨</span>
-            <span>AI Content Assistant</span>
+            <span>AI Content &amp; Case Study Generator</span>
           </h3>
           <button
             type="button"
@@ -47,25 +47,37 @@
         <div class="space-y-3 text-xs font-mono">
           <!-- Template Selection -->
           <div class="space-y-1">
-            <label class="block text-slate-300 uppercase">Select Formatting Template:</label>
+            <label class="block text-slate-300 uppercase">Select Transformation Mode:</label>
             <select
               v-model="selectedTemplate"
               class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white focus:outline-none focus:border-cyber-cyan"
             >
-              <option value="default">Standard Content Polish & Semantic HTML</option>
-              <option value="project_blog">Project Case Study (Objectives, Architecture, Challenges, Results)</option>
-              <option value="dev_log">Technical Dev Log (Context, Root Cause, Solution, Code)</option>
-              <option value="project_overview">Project Overview (Executive Summary, Stack, Features)</option>
+              <option value="context_to_casestudy">🚀 Context to Case Study (Transform CONTEXT.md / README into full Case Study)</option>
+              <option value="context_to_article">📝 Notes to Technical Article (Transform raw notes into Deep-Dive Article)</option>
+              <option value="project_blog">📊 Project Case Study (Objectives, Architecture, Challenges, Results)</option>
+              <option value="dev_log">🛠️ Technical Dev Log (Context, Root Cause, Solution, Code)</option>
+              <option value="default">✨ Standard Polish &amp; Semantic HTML</option>
             </select>
+          </div>
+
+          <!-- Raw Context Input (for new generation or empty editor) -->
+          <div class="space-y-1">
+            <label class="block text-slate-300 uppercase">Source Content / Raw Context (Optional if editor already has text):</label>
+            <textarea
+              v-model="rawSourceInput"
+              rows="5"
+              placeholder="Paste raw CONTEXT.md, AGENTS.md, GitHub README, or project notes here..."
+              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan font-mono text-xs"
+            />
           </div>
 
           <!-- Custom Prompt Input -->
           <div class="space-y-1">
-            <label class="block text-slate-300 uppercase">Custom Prompt / Extra Instructions (Optional):</label>
+            <label class="block text-slate-300 uppercase">Additional Custom Instructions (Optional):</label>
             <textarea
               v-model="customPrompt"
-              rows="3"
-              placeholder="e.g., Make the tone more concise, emphasize Vue 3 Composition API & Docker performance gains..."
+              rows="2"
+              placeholder="e.g., Emphasize 60fps GPU acceleration and Vue 3 Composition API tradeoffs..."
               class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan"
             />
           </div>
@@ -86,7 +98,7 @@
             :disabled="isImproving"
             @click="handleRunAi"
           >
-            {{ isImproving ? 'Processing...' : '✨ Run AI Assistant' }}
+            {{ isImproving ? 'Generating...' : '✨ Generate &amp; Format in CKEditor' }}
           </button>
         </div>
       </div>
@@ -144,7 +156,7 @@ import api from '@/utils/api'
 const props = withDefaults(
   defineProps<{
     modelValue: string
-    editorKey?: string
+    editorKey?: string | number
     uploadFolder?: string
     placeholder?: string
     stickyTop?: number
@@ -270,17 +282,29 @@ function onUpdate(value: string): void {
 }
 
 const showAiModal = ref(false)
-const selectedTemplate = ref('default')
+const selectedTemplate = ref('context_to_casestudy')
+const rawSourceInput = ref('')
 const customPrompt = ref('')
 const isImproving = ref(false)
 
+function openAiModal(): void {
+  if (props.modelValue && !rawSourceInput.value) {
+    rawSourceInput.value = props.modelValue
+  }
+  showAiModal.value = true
+}
+
 async function handleRunAi() {
-  if (!props.modelValue) return
+  const contentToProcess = rawSourceInput.value.trim() || props.modelValue || ''
+  if (!contentToProcess) {
+    alert('Please paste some text/context or write something in the editor first.')
+    return
+  }
 
   isImproving.value = true
   try {
     const response = await api.post<{ success: boolean; data: string }>('/ai/improve-content', {
-      content: props.modelValue,
+      content: contentToProcess,
       templateType: selectedTemplate.value,
       customPrompt: customPrompt.value,
     })

@@ -46,21 +46,24 @@
           <div class="flex flex-wrap items-center gap-1.5 pt-1">
             <button
               type="button"
-              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200 inline-flex items-center gap-1.5"
               :class="activeCategory === '' ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
               @click="activeCategory = ''"
             >
-              All Cases
+              <span>All Cases</span>
+              <span class="text-[10px] px-1.5 py-0.2 rounded-full tabular-nums" :class="activeCategory === '' ? 'bg-surface/20 text-surface' : 'bg-canvas text-ink-tertiary'">
+                {{ projectsStore.projects.length }}
+              </span>
             </button>
             <button
               v-for="category in projectCategoryOptions"
               :key="category"
               type="button"
-              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200 inline-flex items-center gap-1.5"
               :class="activeCategory === category ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
               @click="activeCategory = category"
             >
-              {{ category }}
+              <span>{{ category }}</span>
             </button>
           </div>
         </div>
