@@ -233,33 +233,6 @@
             </div>
           </aside>
         </div>
-
-        <!-- ── Related Article Section ─────────────────────────────────── -->
-        <section v-if="relatedPost" class="editorial-card">
-          <div class="editorial-card__inner p-8 sm:p-12 space-y-6">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stroke">
-              <div class="space-y-1">
-                <span class="eyebrow-tag">
-                  <span class="status-dot"></span>
-                  Companion Publication
-                </span>
-                <h2 class="text-2xl sm:text-3xl font-serif font-light text-ink mt-2">{{ relatedPost.title }}</h2>
-                <p class="text-xs text-ink-tertiary font-mono tabular-nums">Published on {{ formatDate(relatedPost.createdAt) }}</p>
-              </div>
-
-              <RouterLink
-                :to="`/blog/${relatedPost.slug || relatedPost._id}`"
-                class="group px-5 py-2.5 rounded-md bg-ink text-surface text-xs font-sans font-medium active:scale-[0.98] transition-all shrink-0 inline-flex items-center gap-2"
-              >
-                <span>Read Full Article</span>
-                <span class="group-hover:translate-x-0.5 transition-transform duration-200">→</span>
-              </RouterLink>
-            </div>
-
-            <!-- eslint-disable-next-line vue/no-v-html -->
-            <div class="prose-editorial text-sm" v-html="sanitizedRelatedContent" />
-          </div>
-        </section>
       </div>
 
       <!-- Not Found State -->
@@ -282,9 +255,8 @@ import { useRoute, useRouter } from 'vue-router'
 import ImageLightboxModal from '@/components/ui/ImageLightboxModal.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useRichContentEnhancer } from '@/composables/useRichContentEnhancer'
-import { useBlogStore } from '@/stores/blog'
 import { useProjectsStore } from '@/stores/projects'
-import type { BlogPost, Project } from '@/types'
+import type { Project } from '@/types'
 import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
 import { getProjectDetailSeoMeta } from '@/utils/seoPriority'
@@ -292,10 +264,8 @@ import { getProjectDetailSeoMeta } from '@/utils/seoPriority'
 const route = useRoute()
 const router = useRouter()
 const projectsStore = useProjectsStore()
-const blogStore = useBlogStore()
 
 const project = ref<Project | null>(null)
-const relatedPost = ref<BlogPost | null>(null)
 const loading = ref(true)
 const projectBodyRef = ref<HTMLElement | null>(null)
 
@@ -308,11 +278,6 @@ const sanitizedProjectContent = computed(() => {
 
 watch(sanitizedProjectContent, () => {
   scheduleEnhance()
-})
-
-const sanitizedRelatedContent = computed(() => {
-  const html = relatedPost.value?.content || ''
-  return sanitizeRichContent(html)
 })
 
 const rawProject = computed(() => project.value as any)
@@ -331,11 +296,6 @@ const galleryImages = computed<string[]>(() => {
   return imgs
 })
 
-function formatDate(date?: string): string {
-  if (!date) return ''
-  return new Date(date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-}
-
 async function loadProject(id: string): Promise<void> {
   loading.value = true
   const fetchedProject = await projectsStore.fetchProject(id)
@@ -346,20 +306,14 @@ async function loadProject(id: string): Promise<void> {
       return
     }
     project.value = fetchedProject
-    relatedPost.value = null
-
-    if (fetchedProject.relatedBlogId) {
-      relatedPost.value = await blogStore.fetchPost(fetchedProject.relatedBlogId)
-    }
 
     applySeo({
-      ...getProjectDetailSeoMeta(fetchedProject, relatedPost.value),
+      ...getProjectDetailSeoMeta(fetchedProject),
       url: `/projects/${fetchedProject.slug || id}`,
       noindex: false,
     })
   } else {
     project.value = null
-    relatedPost.value = null
     applySeo({
       title: 'Project Details',
       description: 'Project case study details.',
