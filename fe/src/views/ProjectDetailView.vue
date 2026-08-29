@@ -1,107 +1,210 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-10">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-12">
       <LoadingSpinner v-if="loading" />
 
       <div v-else-if="project" class="space-y-10">
-        <!-- Breadcrumb Link -->
-        <RouterLink to="/projects" class="inline-flex items-center gap-2 text-ink-tertiary hover:text-ink transition-colors text-xs font-mono group active:scale-95">
-          <span class="group-hover:-translate-x-0.5 transition-transform">←</span>
-          <span>Back to Projects Archive</span>
-        </RouterLink>
+        <!-- Top Nav & Breadcrumb Bar -->
+        <div class="flex items-center justify-between gap-4">
+          <RouterLink
+            to="/projects"
+            class="inline-flex items-center gap-2 text-ink-tertiary hover:text-ink transition-colors text-xs font-mono group active:scale-95"
+          >
+            <span class="group-hover:-translate-x-1 transition-transform">←</span>
+            <span>Back to Case Studies</span>
+          </RouterLink>
 
-        <!-- Header: Double Bezel -->
-        <div class="editorial-card">
-          <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="eyebrow-tag">
-                <span class="status-dot"></span>
-                Case Study
-              </span>
-              <span v-if="project.featured" class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-amber text-pastel-amber-text uppercase font-medium">
-                Featured Case
-              </span>
-            </div>
-
-            <div class="space-y-4">
-              <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.08] text-ink">
-                {{ project.title }}
-              </h1>
-
-              <p class="text-base text-ink-secondary leading-relaxed max-w-3xl font-sans font-light">
-                {{ project.description }}
-              </p>
-            </div>
+          <div class="flex items-center gap-2">
+            <span v-if="project.featured" class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-amber text-pastel-amber-text uppercase font-medium">
+              Featured Architecture
+            </span>
+            <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-bone border border-stroke text-ink-secondary tabular-nums">
+              Case #{{ project.slug || project._id?.slice(-4) }}
+            </span>
           </div>
         </div>
 
-        <!-- Project Media & Sidebar Specs Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-          <!-- Left Media / Showcase -->
-          <div class="lg:col-span-8 editorial-card">
-            <div class="editorial-card__inner overflow-hidden bg-bone border border-stroke p-0">
-              <img
-                v-if="project.imageUrl"
-                :src="project.imageUrl"
-                :alt="project.title"
-                class="w-full h-auto max-h-[520px] object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700"
-              />
+        <!-- ── Editorial Hero Header Card ──────────────────────────────── -->
+        <header class="editorial-card">
+          <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
+            <div class="flex items-center justify-between gap-3">
+              <span class="eyebrow-tag">
+                <span class="status-dot"></span>
+                Architecture &amp; System Case Study
+              </span>
+              <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
+                {{ project.duration || '2025 – 2026' }}
+              </span>
+            </div>
+
+            <div class="space-y-4 max-w-4xl">
+              <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-light tracking-[-0.035em] leading-[1.04] text-ink text-balance">
+                {{ project.title }}
+              </h1>
+              <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-3xl">
+                {{ project.description }}
+              </p>
+            </div>
+
+            <!-- Header Quick Spec Strip -->
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-stroke text-xs font-mono">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="text-ink-tertiary">Core Technologies:</span>
+                <span
+                  v-for="tech in (project.technologies || []).slice(0, 5)"
+                  :key="tech"
+                  class="px-2.5 py-0.5 rounded-full bg-bone border border-stroke text-ink text-[11px]"
+                >
+                  {{ tech }}
+                </span>
+                <span v-if="(project.technologies || []).length > 5" class="text-ink-tertiary">
+                  +{{ project.technologies.length - 5 }} more
+                </span>
+              </div>
+
+              <div class="flex items-center gap-3">
+                <a
+                  v-if="project.liveUrl"
+                  :href="project.liveUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="group inline-flex items-center gap-2 px-4 py-2 rounded-md bg-ink text-surface font-sans font-medium text-xs active:scale-[0.98] transition-all"
+                >
+                  <span>Launch Live App</span>
+                  <span class="w-4 h-4 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
+                    <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
+                    </svg>
+                  </span>
+                </a>
+
+                <a
+                  v-if="project.githubUrl"
+                  :href="project.githubUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="px-3 py-2 rounded-md bg-bone border border-stroke text-ink-secondary hover:text-ink font-sans font-medium text-xs transition-colors"
+                >
+                  Repository
+                </a>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- ── Main Showcase Grid: Asymmetric Split ────────────────────── -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+          <!-- Left / Main Column: Media & Case Content (Col 8) -->
+          <div class="lg:col-span-8 space-y-8">
+            <!-- Main Hero Image Frame -->
+            <div class="editorial-card">
+              <div class="editorial-card__inner overflow-hidden bg-bone border border-stroke p-0">
+                <img
+                  v-if="project.imageUrl"
+                  :src="project.imageUrl"
+                  :alt="project.title"
+                  class="w-full h-auto max-h-[560px] object-cover grayscale-[10%] hover:grayscale-0 transition-all duration-700"
+                />
+                <div
+                  v-else
+                  class="h-80 flex flex-col items-center justify-center gap-3 text-ink-tertiary bg-bone"
+                >
+                  <svg class="w-12 h-12 text-ink-tertiary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>
+                  </svg>
+                  <span class="font-mono text-xs">Production Architecture Showcase</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Additional Gallery Images if available -->
+            <div v-if="galleryImages.length > 1" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div
-                v-else
-                class="h-80 flex items-center justify-center text-ink-tertiary bg-bone"
+                v-for="(img, idx) in galleryImages.slice(1)"
+                :key="idx"
+                class="editorial-card"
               >
-                <svg class="w-12 h-12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>
-                </svg>
+                <div class="editorial-card__inner overflow-hidden bg-bone border border-stroke p-0 aspect-[16/10]">
+                  <img
+                    :src="img"
+                    :alt="`${project.title} gallery frame ${idx + 2}`"
+                    class="w-full h-full object-cover grayscale-[15%] hover:grayscale-0 transition-all duration-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Deep Dive / Technical Overview Body -->
+            <div v-if="sanitizedProjectContent" class="editorial-card">
+              <div class="editorial-card__inner p-8 sm:p-12">
+                <!-- eslint-disable-next-line vue/no-v-html -->
+                <div class="prose-editorial" v-html="sanitizedProjectContent" />
               </div>
             </div>
           </div>
 
-          <!-- Right Sidebar Specs -->
-          <aside class="lg:col-span-4 editorial-card lg:sticky lg:top-24">
-            <div class="editorial-card__inner p-6 space-y-6">
-              <h2 class="text-base font-serif font-light text-ink pb-3 border-b border-stroke">Technical Specifications</h2>
-
-              <!-- Duration & Status -->
-              <div class="grid grid-cols-2 gap-2">
-                <div class="p-3 rounded-lg bg-bone border border-stroke">
-                  <span class="text-[10px] font-mono uppercase text-ink-tertiary block">Duration</span>
-                  <span class="text-xs font-mono text-ink mt-0.5 block tabular-nums">{{ project.duration || 'Ongoing' }}</span>
+          <!-- Right Column: Sticky Spec Rail & Metrics (Col 4) -->
+          <aside class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+            <!-- Specs Card -->
+            <div class="editorial-card">
+              <div class="editorial-card__inner p-6 space-y-6">
+                <div class="flex items-center justify-between pb-3 border-b border-stroke">
+                  <h2 class="text-sm font-mono uppercase tracking-widest text-ink-tertiary">System Spec Rail</h2>
+                  <span class="w-1.5 h-1.5 rounded-full" :class="project.liveUrl ? 'bg-pastel-green-text animate-pulse-soft' : 'bg-ink-tertiary'"></span>
                 </div>
-                <div class="p-3 rounded-lg bg-bone border border-stroke">
-                  <span class="text-[10px] font-mono uppercase text-ink-tertiary block">Status</span>
-                  <span class="text-xs font-mono text-pastel-green-text mt-0.5 block font-medium">{{ project.liveUrl ? 'Active Live' : 'Completed' }}</span>
+
+                <!-- Status & Lifecycle -->
+                <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+                  <div class="p-3 rounded-lg bg-bone border border-stroke">
+                    <span class="text-[10px] text-ink-tertiary uppercase block">Status</span>
+                    <span class="text-ink mt-1 block font-medium">{{ project.liveUrl ? 'Active in Prod' : 'Completed' }}</span>
+                  </div>
+                  <div class="p-3 rounded-lg bg-bone border border-stroke">
+                    <span class="text-[10px] text-ink-tertiary uppercase block">Timeline</span>
+                    <span class="text-ink mt-1 block tabular-nums">{{ project.duration || '2025' }}</span>
+                  </div>
                 </div>
-              </div>
 
-              <!-- Tech Stack -->
-              <div class="space-y-2">
-                <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Stack Matrix</span>
-                <div class="flex flex-wrap gap-1.5">
-                  <span
-                    v-for="tech in project.technologies"
-                    :key="tech"
-                    class="px-2 py-0.5 rounded-sm bg-bone border border-stroke text-ink-secondary text-[11px] font-mono"
-                  >
-                    {{ tech }}
-                  </span>
+                <!-- Category Tags -->
+                <div v-if="project.categories && project.categories.length" class="space-y-2">
+                  <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Domain Classification</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span
+                      v-for="cat in project.categories"
+                      :key="cat"
+                      class="px-2.5 py-1 rounded-full bg-pastel-blue text-pastel-blue-text text-[10px] font-mono tracking-wide"
+                    >
+                      {{ cat }}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <!-- External Links Buttons -->
-              <div class="space-y-2 pt-2 border-t border-stroke">
-                <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Deployment &amp; Code</span>
+                <!-- Technology Matrix -->
+                <div class="space-y-2">
+                  <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider block">Technologies &amp; Libraries</span>
+                  <div class="flex flex-wrap gap-1.5">
+                    <span
+                      v-for="tech in project.technologies"
+                      :key="tech"
+                      class="px-2 py-0.5 rounded bg-bone border border-stroke text-ink-secondary text-[11px] font-mono"
+                    >
+                      {{ tech }}
+                    </span>
+                  </div>
+                </div>
 
-                <div v-if="hasProjectLinks" class="flex flex-col gap-2">
+                <!-- Actions / Links -->
+                <div class="space-y-2 pt-3 border-t border-stroke">
                   <a
                     v-if="project.liveUrl"
                     :href="project.liveUrl"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="group w-full py-2.5 px-4 rounded-md bg-ink text-surface font-sans font-medium text-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-transform duration-200"
+                    class="group w-full py-2.5 px-4 rounded-md bg-ink text-surface font-sans font-medium text-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-all"
                   >
                     <span>Launch Live Demo</span>
-                    <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
+                    <span class="w-4 h-4 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
                       <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
                       </svg>
@@ -113,55 +216,56 @@
                     :href="project.githubUrl"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-full py-2.5 px-4 rounded-md bg-bone border border-stroke text-ink-secondary font-sans font-medium text-xs text-center hover:border-ink/20 hover:text-ink active:scale-[0.98] transition-all"
+                    class="w-full py-2.5 px-4 rounded-md bg-bone border border-stroke text-ink-secondary font-sans font-medium text-xs text-center hover:border-ink/20 hover:text-ink active:scale-[0.98] transition-all block"
                   >
-                    GitHub Repository
+                    View Source Code
                   </a>
                 </div>
-
-                <p v-else class="text-xs text-ink-tertiary font-mono">No public links available.</p>
               </div>
             </div>
           </aside>
         </div>
 
-        <!-- Related Blog Post -->
+        <!-- ── Related Article Section ─────────────────────────────────── -->
         <section v-if="relatedPost" class="editorial-card">
-          <div class="editorial-card__inner p-6 sm:p-10 space-y-6">
+          <div class="editorial-card__inner p-8 sm:p-12 space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-stroke">
-              <div>
-                <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Related Article</span>
-                <h2 class="text-xl font-serif font-light text-ink mt-1">{{ relatedPost.title }}</h2>
-                <p class="text-xs text-ink-tertiary mt-1 font-mono tabular-nums">Published on {{ formatDate(relatedPost.createdAt) }}</p>
+              <div class="space-y-1">
+                <span class="eyebrow-tag">
+                  <span class="status-dot"></span>
+                  Companion Publication
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-serif font-light text-ink mt-2">{{ relatedPost.title }}</h2>
+                <p class="text-xs text-ink-tertiary font-mono tabular-nums">Published on {{ formatDate(relatedPost.createdAt) }}</p>
               </div>
 
               <RouterLink
                 :to="`/blog/${relatedPost.slug || relatedPost._id}`"
-                class="group px-4 py-2 rounded-md bg-ink text-surface text-xs font-sans font-medium hover:bg-ink/90 active:scale-[0.98] transition-all shrink-0 inline-flex items-center gap-1.5"
+                class="group px-5 py-2.5 rounded-md bg-ink text-surface text-xs font-sans font-medium active:scale-[0.98] transition-all shrink-0 inline-flex items-center gap-2"
               >
                 <span>Read Full Article</span>
-                <span>→</span>
+                <span class="group-hover:translate-x-0.5 transition-transform duration-200">→</span>
               </RouterLink>
             </div>
 
             <!-- eslint-disable-next-line vue/no-v-html -->
-            <div class="blog-content font-light leading-relaxed text-ink-secondary text-sm" v-html="sanitizedRelatedContent" />
+            <div class="prose-editorial text-sm" v-html="sanitizedRelatedContent" />
           </div>
         </section>
       </div>
 
+      <!-- Not Found State -->
       <div v-else class="editorial-card">
         <div class="editorial-card__inner p-12 text-center text-ink-tertiary space-y-4">
-          <p class="text-base text-ink font-serif font-normal">Project not found.</p>
+          <p class="text-base text-ink font-serif font-normal">Case study not found.</p>
           <RouterLink to="/projects" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-ink text-surface text-xs font-medium active:scale-[0.98] transition-all">
-            ← Back to Projects Archive
+            ← Return to Case Studies Archive
           </RouterLink>
         </div>
       </div>
     </div>
   </div>
 </template>
-
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
@@ -183,10 +287,31 @@ const blogStore = useBlogStore()
 const project = ref<Project | null>(null)
 const relatedPost = ref<BlogPost | null>(null)
 const loading = ref(true)
-const hasProjectLinks = computed(() => Boolean(project.value?.githubUrl || project.value?.liveUrl))
+
+const sanitizedProjectContent = computed(() => {
+  const raw = (project.value as any)?.content || (project.value as any)?.details || ''
+  return sanitizeRichContent(raw)
+})
+
 const sanitizedRelatedContent = computed(() => {
   const html = relatedPost.value?.content || ''
   return sanitizeRichContent(html)
+})
+
+const rawProject = computed(() => project.value as any)
+const galleryImages = computed<string[]>(() => {
+  if (!rawProject.value) return []
+  const imgs: string[] = []
+  if (rawProject.value.imageUrl) imgs.push(rawProject.value.imageUrl)
+  if (Array.isArray(rawProject.value.images) && rawProject.value.images.length) {
+    for (const img of rawProject.value.images) {
+      if (typeof img === 'string' && !imgs.includes(img)) imgs.push(img)
+    }
+  }
+  if (rawProject.value.secondaryImage && !imgs.includes(rawProject.value.secondaryImage)) {
+    imgs.push(rawProject.value.secondaryImage)
+  }
+  return imgs
 })
 
 function formatDate(date?: string): string {
@@ -240,32 +365,3 @@ watch(
 )
 </script>
 
-<style scoped lang="scss">
-.blog-content {
-  color: #cbd5e1;
-  line-height: 1.8;
-}
-
-.blog-content :deep(h1),
-.blog-content :deep(h2),
-.blog-content :deep(h3),
-.blog-content :deep(h4) {
-  color: #f8fafc;
-  margin-top: 1.25rem;
-  margin-bottom: 0.75rem;
-  line-height: 1.3;
-}
-
-.blog-content :deep(p) {
-  margin-bottom: 1rem;
-}
-
-.blog-content :deep(pre) {
-  background: #090d16;
-  border: 1px solid rgba(0, 242, 255, 0.2);
-  border-radius: 0.75rem;
-  padding: 1rem;
-  overflow-x: auto;
-  margin-bottom: 1rem;
-}
-</style>

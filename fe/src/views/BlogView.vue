@@ -1,32 +1,32 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-12">
-      <!-- Page Header -->
-      <div class="editorial-card">
-        <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
+      <!-- ── Page Header: Avant-Garde Editorial Architecture ─────────── -->
+      <header class="editorial-card">
+        <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
           <div class="flex items-center justify-between gap-3">
             <span class="eyebrow-tag">
               <span class="status-dot"></span>
-              Publications &amp; Notes
+              Engineering Publications &amp; Insights
             </span>
-            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
-              {{ blogStore.posts.length }} Articles
+            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest tabular-nums">
+              {{ blogStore.posts.length }} Articles Published
             </span>
           </div>
 
-          <div class="space-y-3 max-w-2xl">
-            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.05] text-ink">
-              Technical writings
-              <span class="block italic text-ink-secondary mt-1">&amp; architectural insights</span>
+          <div class="space-y-4 max-w-3xl">
+            <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-light tracking-[-0.035em] leading-[1.04] text-ink text-balance">
+              Technical writings &amp;
+              <span class="block italic text-ink-secondary mt-1">architectural notes</span>
             </h1>
-            <p class="text-base text-ink-secondary leading-relaxed font-sans font-light">
-              Deep dives covering Vue 3, TypeScript, web performance engineering, system design, and software architecture by Hồ Ngọc Thiện.
+            <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-2xl">
+              Deep dives on Vue 3 reactivity internals, TypeScript system design patterns, web performance, and developer productivity by Hồ Ngọc Thiện.
             </p>
           </div>
         </div>
-      </div>
+      </header>
 
-      <!-- Search & Category Filters -->
+      <!-- ── Search & Topic Filters ──────────────────────────────────── -->
       <div class="editorial-card">
         <div class="editorial-card__inner p-5 sm:p-6 space-y-4">
           <div class="relative">
@@ -37,7 +37,7 @@
               v-model="searchQuery"
               type="text"
               placeholder="Search articles, technical topics, keywords (Vue 3, TypeScript, Performance...)"
-              class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all"
+              class="w-full pl-11 pr-4 py-3 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/40 transition-all"
             />
           </div>
 
@@ -64,19 +64,18 @@
         </div>
       </div>
 
-      <!-- Loading State -->
+      <!-- ── Articles Grid: Asymmetric Broken Masonry ────────────────── -->
       <LoadingSpinner v-if="initialLoading" />
 
-      <!-- Blog Grid -->
       <div
         v-else-if="blogStore.posts.length"
-        class="grid grid-cols-1 md:grid-cols-12 gap-4"
+        class="grid grid-cols-1 md:grid-cols-12 gap-5"
       >
         <div
           v-for="(post, index) in blogStore.posts"
           :key="post._id"
           :class="[
-            index % 5 === 0 ? 'col-span-12 lg:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4'
+            index % 5 === 0 ? 'col-span-12 lg:col-span-8' : (index % 5 === 1 ? 'col-span-12 lg:col-span-4' : (index % 5 === 2 ? 'col-span-12 lg:col-span-4' : 'col-span-12 lg:col-span-8'))
           ]"
         >
           <BlogCard :post="post" :layout="getMasonryLayout(index)" />
@@ -91,23 +90,24 @@
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
           </div>
-          <p class="text-base text-ink font-serif font-normal">No articles found</p>
-          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your search query or selecting another topic filter.</p>
+          <p class="text-base text-ink font-serif font-normal">No articles matching your topic query</p>
+          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your search keywords or resetting the topic filter.</p>
         </div>
       </div>
 
       <!-- Infinite Scroll Sentinel -->
-      <div ref="sentinelRef" class="flex justify-center py-8">
+      <div ref="sentinelRef" class="flex justify-center py-6">
         <div v-if="hasMorePosts || loadingMore" class="editorial-card">
           <div class="editorial-card__inner px-6 py-2.5 flex items-center gap-3 text-xs text-ink-secondary font-mono">
             <LoadingSpinner v-if="loadingMore" size="sm" />
-            <span class="tabular-nums">{{ loadingMore ? 'Loading more articles...' : 'Scroll to load more' }}</span>
+            <span class="tabular-nums">{{ loadingMore ? 'Loading next publications...' : 'Scroll to load more' }}</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 
 <script setup lang="ts">

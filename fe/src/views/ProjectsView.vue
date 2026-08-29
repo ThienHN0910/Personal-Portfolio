@@ -1,32 +1,32 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 space-y-12">
-      <!-- Page Header -->
-      <div class="editorial-card">
-        <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
+      <!-- ── Page Header: Avant-Garde Editorial Architecture ─────────── -->
+      <header class="editorial-card">
+        <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
           <div class="flex items-center justify-between gap-3">
             <span class="eyebrow-tag">
               <span class="status-dot"></span>
-              Portfolio Archive
+              Selected Engineering Archive
             </span>
-            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest">
-              {{ projectsStore.projects.length }} Total Cases
+            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest tabular-nums">
+              {{ projectsStore.projects.length }} Case Studies Indexed
             </span>
           </div>
 
-          <div class="space-y-3 max-w-2xl">
-            <h1 class="font-serif text-4xl sm:text-5xl lg:text-6xl font-light tracking-[-0.03em] leading-[1.05] text-ink">
-              Engineering case studies
-              <span class="block italic text-ink-secondary mt-1">&amp; production platforms</span>
+          <div class="space-y-4 max-w-3xl">
+            <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-light tracking-[-0.035em] leading-[1.04] text-ink text-balance">
+              Case studies &amp;
+              <span class="block italic text-ink-secondary mt-1">production architectures</span>
             </h1>
-            <p class="text-base text-ink-secondary leading-relaxed font-sans font-light">
-              Real-world software architectures, distributed web systems, and open-source tooling built with Vue 3, TypeScript, and Node.js.
+            <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-2xl">
+              Production-grade web platforms, scalable backend services, and interactive user interfaces engineered with Vue 3, TypeScript, and Node.js.
             </p>
           </div>
         </div>
-      </div>
+      </header>
 
-      <!-- Search Bar & Category Filter Tabs -->
+      <!-- ── Filter & Search Control Center ──────────────────────────── -->
       <div class="editorial-card">
         <div class="editorial-card__inner p-5 sm:p-6 space-y-4">
           <!-- Search Input -->
@@ -37,8 +37,8 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search projects, technologies, architectures (Vue 3, TypeScript, Node.js...)"
-              class="w-full pl-11 pr-4 py-2.5 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/30 transition-all"
+              placeholder="Search projects, technologies, architectures (Vue 3, TypeScript, Node.js, AWS...)"
+              class="w-full pl-11 pr-4 py-3 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/40 transition-all"
             />
           </div>
 
@@ -66,19 +66,18 @@
         </div>
       </div>
 
-      <!-- Loading State -->
+      <!-- ── Projects Grid Showcase: Asymmetric Broken Masonry ───────── -->
       <LoadingSpinner v-if="initialLoading" />
 
-      <!-- Projects Grid Showcase -->
       <div
         v-else-if="projectsStore.projects.length"
-        class="grid grid-cols-1 md:grid-cols-12 gap-4"
+        class="grid grid-cols-1 md:grid-cols-12 gap-5"
       >
         <div
           v-for="(project, index) in projectsStore.projects"
           :key="project._id"
           :class="[
-            index % 7 === 0 ? 'col-span-12 lg:col-span-8' : (index % 7 === 3 ? 'col-span-12 lg:col-span-8' : 'col-span-12 md:col-span-6 lg:col-span-4')
+            index % 6 === 0 ? 'col-span-12 lg:col-span-8' : (index % 6 === 1 ? 'col-span-12 lg:col-span-4' : (index % 6 === 2 ? 'col-span-12 lg:col-span-4' : 'col-span-12 lg:col-span-8'))
           ]"
         >
           <ProjectCard :project="project" :layout="getMasonryLayout(index)" />
@@ -93,23 +92,24 @@
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
           </div>
-          <p class="text-base text-ink font-serif font-normal">No projects found</p>
-          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your search query or selecting a different filter category.</p>
+          <p class="text-base text-ink font-serif font-normal">No case studies matching your criteria</p>
+          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your query or resetting category filters.</p>
         </div>
       </div>
 
       <!-- Infinite Scroll Sentinel -->
-      <div ref="sentinelRef" class="flex justify-center py-8">
+      <div ref="sentinelRef" class="flex justify-center py-6">
         <div v-if="hasMoreProjects || loadingMore" class="editorial-card">
           <div class="editorial-card__inner px-6 py-2.5 flex items-center gap-3 text-xs text-ink-secondary font-mono">
             <LoadingSpinner v-if="loadingMore" size="sm" />
-            <span class="tabular-nums">{{ loadingMore ? 'Loading more projects...' : 'Scroll to load more' }}</span>
+            <span class="tabular-nums">{{ loadingMore ? 'Loading next case studies...' : 'Scroll to load more' }}</span>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 
 
 <script setup lang="ts">
