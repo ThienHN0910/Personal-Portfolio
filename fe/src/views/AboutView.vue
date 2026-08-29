@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-16 sm:space-y-24">
       <!-- ── Page Header: Avant-Garde Profile Architecture ───────────── -->
       <header class="editorial-card">
         <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
@@ -17,7 +17,7 @@
           <div class="space-y-4 max-w-3xl">
             <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-light tracking-[-0.035em] leading-[1.04] text-ink text-balance">
               {{ about?.name || 'Hồ Ngọc Thiện' }}
-              <span class="block italic text-ink-secondary mt-1">Background &amp; Philosophy</span>
+              <span class="block italic text-ink-secondary mt-1">Background &amp; System Craft</span>
             </h1>
             <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-2xl">
               Career trajectory, technical skill matrix, work chronology, and architectural philosophy for modern full-stack web platforms.
@@ -121,7 +121,7 @@
                   <div
                     v-for="skill in about.skills"
                     :key="skill"
-                    class="p-2.5 rounded-md bg-bone border border-stroke hover:border-ink/30 transition-all font-mono text-xs text-ink-secondary flex items-center gap-2 cursor-default"
+                    class="p-2.5 rounded-md bg-bone border border-stroke hover:border-ink/30 transition-all font-mono text-xs text-ink-secondary flex items-center gap-2 cursor-default active:scale-[0.98]"
                   >
                     <span class="w-1.5 h-1.5 rounded-full bg-pastel-green-text"></span>
                     <span class="font-medium text-ink truncate">{{ skill }}</span>
@@ -133,22 +133,28 @@
         </div>
 
         <!-- ── Experience Chronology ───────────────────────────────────── -->
-        <div v-if="about?.experience?.length" class="space-y-4">
-          <div class="flex items-center justify-between px-1">
-            <h2 class="text-2xl sm:text-3xl font-serif font-light text-ink">Work Chronology</h2>
-            <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Career Timeline</span>
+        <div v-if="about?.experience?.length" class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 px-1">
+            <div class="space-y-1">
+              <span class="eyebrow-tag">
+                <span class="status-dot"></span>
+                Professional History
+              </span>
+              <h2 class="text-2xl sm:text-4xl font-serif font-light text-ink">Work Chronology</h2>
+            </div>
+            <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Verified Track Record</span>
           </div>
 
           <div class="space-y-4">
             <div
               v-for="(exp, i) in sortedExperiences"
               :key="i"
-              class="editorial-card"
+              class="editorial-card group"
             >
               <div class="editorial-card__inner p-7 sm:p-9 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-stroke">
                   <div>
-                    <h3 class="text-lg font-serif font-medium text-ink">{{ exp.position }}</h3>
+                    <h3 class="text-lg font-serif font-medium text-ink group-hover:text-ink/90 transition-colors">{{ exp.position }}</h3>
                     <span class="text-xs font-mono text-ink-secondary uppercase tracking-wider">{{ exp.company }}</span>
                   </div>
                   <span class="text-[11px] font-mono text-ink-tertiary bg-bone px-3 py-1 rounded border border-stroke tabular-nums self-start sm:self-auto">
@@ -164,9 +170,15 @@
         </div>
 
         <!-- ── Education & Credentials ─────────────────────────────────── -->
-        <div v-if="about?.education?.length" class="space-y-4">
-          <div class="flex items-center justify-between px-1">
-            <h2 class="text-2xl sm:text-3xl font-serif font-light text-ink">Education &amp; Academic Training</h2>
+        <div v-if="about?.education?.length" class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 px-1">
+            <div class="space-y-1">
+              <span class="eyebrow-tag">
+                <span class="status-dot"></span>
+                Academic Foundation
+              </span>
+              <h2 class="text-2xl sm:text-4xl font-serif font-light text-ink">Education &amp; Academic Training</h2>
+            </div>
             <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Academia</span>
           </div>
 
@@ -193,9 +205,15 @@
         </div>
 
         <!-- ── Licenses & Certifications ───────────────────────────────── -->
-        <div v-if="licensesCertifications.length" class="space-y-4">
-          <div class="flex items-center justify-between px-1">
-            <h2 class="text-2xl sm:text-3xl font-serif font-light text-ink">Licenses &amp; Certifications</h2>
+        <div v-if="licensesCertifications.length" class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2 px-1">
+            <div class="space-y-1">
+              <span class="eyebrow-tag">
+                <span class="status-dot"></span>
+                Accreditations
+              </span>
+              <h2 class="text-2xl sm:text-4xl font-serif font-light text-ink">Licenses &amp; Certifications</h2>
+            </div>
             <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Verified Credentials</span>
           </div>
 
@@ -205,18 +223,20 @@
               :key="`${item.name}-${item.issuer}-${i}`"
               class="editorial-card"
             >
-              <div class="editorial-card__inner p-6 space-y-2.5">
-                <h3 class="text-base font-serif font-medium text-ink">{{ item.name }}</h3>
-                <p v-if="item.issuer" class="text-xs font-mono text-ink-secondary uppercase tracking-wider">{{ item.issuer }}</p>
-                <p v-if="item.issueDate || item.expirationDate" class="text-xs font-mono text-ink-tertiary tabular-nums">
-                  {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No Expiration' }}
-                </p>
+              <div class="editorial-card__inner p-6 space-y-2.5 flex flex-col justify-between min-h-[140px]">
+                <div class="space-y-1">
+                  <h3 class="text-base font-serif font-medium text-ink">{{ item.name }}</h3>
+                  <p v-if="item.issuer" class="text-xs font-mono text-ink-secondary uppercase tracking-wider">{{ item.issuer }}</p>
+                  <p v-if="item.issueDate || item.expirationDate" class="text-xs font-mono text-ink-tertiary tabular-nums">
+                    {{ item.issueDate || 'N/A' }} – {{ item.expirationDate || 'No Expiration' }}
+                  </p>
+                </div>
                 <a
                   v-if="item.credentialUrl"
                   :href="item.credentialUrl"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center gap-1.5 text-xs font-mono text-ink font-medium hover:underline pt-1 group"
+                  class="inline-flex items-center gap-1.5 text-xs font-mono text-ink font-medium hover:underline pt-2 group self-start"
                 >
                   <span>Verify Credential</span>
                   <span class="group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform">↗</span>
