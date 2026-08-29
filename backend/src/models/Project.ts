@@ -4,6 +4,7 @@ import { generateSlug } from '../lib/slugify'
 export interface IProject extends Document {
   title: string
   description: string
+  context?: string
   duration?: string
   priority: number
   categories: string[]
@@ -19,6 +20,7 @@ const ProjectSchema = new Schema<IProject>(
   {
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true },
+    context: { type: String },
     duration: { type: String, trim: true },
     priority: { type: Number, default: 0 },
     categories: { type: [{ type: String }], default: [] },
