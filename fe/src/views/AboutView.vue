@@ -207,7 +207,7 @@
                     <span class="status-dot"></span>
                     Professional Trajectory
                   </span>
-                  <h2 class="text-2xl sm:text-4xl font-serif font-light text-ink">Work Chronology</h2>
+                  <h2 class="text-2xl sm:text-4xl font-serif font-light text-ink">Experience</h2>
                 </div>
                 <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Verified Track Record</span>
               </div>
