@@ -4,6 +4,7 @@
       <div
         v-if="isOpen"
         class="fixed inset-0 z-[500] flex items-center justify-center p-4 sm:p-8 bg-slate-950/90 backdrop-blur-md"
+        data-lenis-prevent
         @click.self="emit('close')"
       >
         <div class="relative max-w-5xl w-full max-h-[92vh] flex flex-col items-center justify-center space-y-3">

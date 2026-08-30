@@ -1060,28 +1060,36 @@ a {
   inset: 0;
   z-index: $z-modal;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  padding: $spacing-md;
-  background: rgba(2, 6, 23, 0.74);
-  backdrop-filter: blur(8px);
+  padding: clamp(1rem, 3vw, 2.5rem);
+  background: rgba(2, 6, 23, 0.78);
+  backdrop-filter: blur(12px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
 }
 
 .admin-modal {
-  width: min(100%, 760px);
-  max-height: 90vh;
+  width: min(100%, 780px);
+  margin: auto;
+  max-height: calc(100vh - 3.5rem);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
   border-radius: $radius-2xl;
   border: 1px solid rgba(148, 163, 184, 0.26);
   background:
     radial-gradient(circle at 10% 0%, rgba(249, 115, 22, 0.16), transparent 28%),
     linear-gradient(180deg, #111827, #0b1220);
-  padding: clamp(1.1rem, 2vw, 1.75rem);
+  padding: clamp(1.25rem, 2.5vw, 2rem);
   box-shadow: 0 34px 70px -38px rgba(0, 0, 0, 0.9);
 }
 
 .admin-modal--confirm {
   width: min(100%, 460px);
+  max-height: 90vh;
 }
 
 .admin-modal__title {

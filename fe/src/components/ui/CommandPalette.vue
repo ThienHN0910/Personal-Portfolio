@@ -11,6 +11,7 @@
       <div
         v-if="isOpen"
         class="fixed inset-0 z-[9990] flex items-start justify-center pt-14 sm:pt-20 px-4 sm:px-6 bg-ink/30 backdrop-blur-md"
+        data-lenis-prevent
         @click.self="handleClose"
         @keydown.esc.prevent="handleClose"
         role="dialog"
@@ -20,6 +21,7 @@
         <!-- Modal Card: Double Bezel structure -->
         <div
           class="relative w-full max-w-2xl editorial-card shadow-island overflow-hidden flex flex-col max-h-[78vh] animate-in fade-in zoom-in-95 duration-200"
+          data-lenis-prevent
         >
           <div class="editorial-card__inner flex flex-col flex-1 p-0 overflow-hidden">
             <!-- Top Search Header -->

@@ -1,8 +1,8 @@
 <template>
   <Teleport to="body">
     <Transition name="admin-fade-scale">
-      <div v-if="open" class="admin-modal-backdrop" @click.self="emit('cancel')">
-        <div class="admin-modal admin-modal--confirm">
+      <div v-if="open" class="admin-modal-backdrop" data-lenis-prevent @click.self="emit('cancel')">
+        <div class="admin-modal admin-modal--confirm" data-lenis-prevent>
           <p class="admin-kicker mb-2">Confirm Action</p>
           <h3 class="admin-modal__title">{{ title }}</h3>
           <p class="admin-modal__desc">{{ message }}</p>
