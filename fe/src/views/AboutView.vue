@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-8 sm:py-14 space-y-12 sm:space-y-16">
+    <div class="w-full max-w-[1380px] mx-auto px-6 sm:px-10 lg:px-12 py-8 sm:py-14 space-y-12 sm:space-y-16">
 
       <!-- ── Page Header: Avant-Garde Profile Masthead ────────────────── -->
       <header class="editorial-card">

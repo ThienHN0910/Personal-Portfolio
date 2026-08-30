@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <!-- Outer full-bleed wrapper -->
-    <div class="w-full max-w-[1720px] mx-auto px-3 sm:px-6 py-8 sm:py-12">
+    <!-- Outer balanced canvas wrapper -->
+    <div class="w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-12 py-8 sm:py-12">
       <LoadingSpinner v-if="loading" />
 
       <div v-else-if="project" class="space-y-8">
