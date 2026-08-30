@@ -45,6 +45,18 @@ export interface AboutData {
   title: string
   bio: string
   contactInfo: ContactInfo
+  availabilityStatus?: string
+  telemetry?: {
+    location?: string
+    timezone?: string
+    focus?: string
+    status?: string
+  }
+  pillars?: {
+    tag?: string
+    title?: string
+    description?: string
+  }[]
   skills: string[]
   experience: Experience[]
   education: Education[]

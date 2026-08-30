@@ -10,6 +10,18 @@ export interface IAbout extends Document {
     location?: string
     website?: string
   }
+  availabilityStatus?: string
+  telemetry?: {
+    location?: string
+    timezone?: string
+    focus?: string
+    status?: string
+  }
+  pillars?: {
+    tag?: string
+    title?: string
+    description?: string
+  }[]
   skills: string[]
   experience: {
     company: string
@@ -53,6 +65,20 @@ const AboutSchema = new Schema<IAbout>(
       location: String,
       website: String,
     },
+    availabilityStatus: { type: String, default: 'Available for Architecture' },
+    telemetry: {
+      location: { type: String, default: 'Ho Chi Minh City, VN' },
+      timezone: { type: String, default: 'GMT+7 (Indochina)' },
+      focus: { type: String, default: 'Distributed Systems & Web Apps' },
+      status: { type: String, default: 'Production Active' },
+    },
+    pillars: [
+      {
+        tag: { type: String, default: '' },
+        title: { type: String, default: '' },
+        description: { type: String, default: '' },
+      },
+    ],
     skills: [{ type: String }],
     experience: [
       {

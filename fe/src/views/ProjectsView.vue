@@ -30,7 +30,7 @@
             </p>
           </div>
 
-          <!-- Quick Metrics Bar -->
+          <!-- Quick Metrics Bar (Dynamic Telemetry) -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-stroke text-xs font-mono">
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Catalog Total</span>
@@ -38,7 +38,7 @@
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Primary Stack</span>
-              <span class="text-ink text-sm font-medium block">Vue 3 · TS · Node</span>
+              <span class="text-ink text-sm font-medium block truncate">{{ primaryStack }}</span>
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Category Filter</span>
@@ -46,7 +46,9 @@
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Status Check</span>
-              <span class="text-pastel-green-text text-sm font-medium block">100% Live Tested</span>
+              <span class="text-pastel-green-text text-sm font-medium block truncate">
+                {{ liveDeployedCount > 0 ? `${liveDeployedCount} Live Deployed` : '100% Verified' }}
+              </span>
             </div>
           </div>
         </div>
@@ -189,6 +191,24 @@ const pageSize = 9
 const sentinelRef = ref<HTMLDivElement | null>(null)
 let pageObserver: IntersectionObserver | null = null
 let searchDebounce: ReturnType<typeof setTimeout> | null = null
+
+const primaryStack = computed(() => {
+  const counts: Record<string, number> = {}
+  projectsStore.projects.forEach((p) => {
+    p.technologies?.forEach((t) => {
+      counts[t] = (counts[t] || 0) + 1
+    })
+  })
+  const top = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([tech]) => tech)
+  return top.length ? top.join(' · ') : 'Vue 3 · TS · Node'
+})
+
+const liveDeployedCount = computed(() => {
+  return projectsStore.projects.filter((p) => Boolean(p.liveUrl)).length
+})
 
 function disconnectObserver(): void {
   pageObserver?.disconnect()

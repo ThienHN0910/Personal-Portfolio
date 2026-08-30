@@ -63,9 +63,68 @@
             <input v-model="aboutForm.title" type="text" placeholder="Full Stack Developer" />
           </div>
           <div class="form-group">
-            <label>Bio</label>
+            <label>Bio / Architectural Summary</label>
             <textarea v-model="aboutForm.bio" rows="5" placeholder="Tell your story..." />
           </div>
+
+          <h3 class="text-white font-semibold mb-4 mt-6">Availability &amp; Profile Telemetry</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 rounded-xl bg-slate-900/50 border border-white/10">
+            <div class="form-group mb-0">
+              <label>Availability Badge Status</label>
+              <input v-model="aboutForm.availabilityStatus" type="text" placeholder="Available for Architecture & Engineering" />
+            </div>
+            <div class="form-group mb-0">
+              <label>Telemetry Location</label>
+              <input v-model="aboutForm.telemetry.location" type="text" placeholder="Ho Chi Minh City, VN" />
+            </div>
+            <div class="form-group mb-0">
+              <label>Telemetry Timezone</label>
+              <input v-model="aboutForm.telemetry.timezone" type="text" placeholder="GMT+7 (Indochina)" />
+            </div>
+            <div class="form-group mb-0">
+              <label>Telemetry Focus</label>
+              <input v-model="aboutForm.telemetry.focus" type="text" placeholder="Distributed Systems & UI Architecture" />
+            </div>
+            <div class="form-group mb-0 md:col-span-2">
+              <label>Telemetry Production Status</label>
+              <input v-model="aboutForm.telemetry.status" type="text" placeholder="Production Active" />
+            </div>
+          </div>
+
+          <h3 class="text-white font-semibold mb-4 mt-6">Architectural Pillars &amp; Core Tenets</h3>
+          <div class="space-y-4 mb-6">
+            <div
+              v-for="(pillar, index) in aboutForm.pillars"
+              :key="pillar._editorId"
+              class="border border-white/10 rounded-xl p-4 bg-slate-900/40 space-y-3"
+            >
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="form-group mb-0">
+                  <label>Pillar Tag</label>
+                  <input v-model="pillar.tag" type="text" placeholder="PILLAR 01 · ⚡ TYPE SAFETY" />
+                </div>
+                <div class="form-group mb-0">
+                  <label>Pillar Title</label>
+                  <input v-model="pillar.title" type="text" placeholder="Contract-First Systems" />
+                </div>
+              </div>
+              <div class="form-group mb-0">
+                <label>Description</label>
+                <textarea v-model="pillar.description" rows="2" placeholder="Explain the core technical philosophy..." />
+              </div>
+              <div class="flex justify-end">
+                <button
+                  type="button"
+                  class="btn btn--danger btn--sm"
+                  :disabled="aboutForm.pillars.length === 1"
+                  @click="removePillar(index)"
+                >
+                  Remove Pillar
+                </button>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn--secondary mb-6" @click="addPillar">+ Add Architectural Pillar</button>
 
           <h3 class="text-white font-semibold mb-4 mt-2">Contact Info</h3>
           <div class="form-group">
@@ -321,9 +380,19 @@ type ExperienceForm = Experience & { _editorId: string }
 type EducationForm = Education & { _editorId: string }
 type LicenseCertificationForm = LicenseCertification & { _editorId: string }
 type SocialLinkForm = SocialLink & { _editorId: string }
+type PillarForm = { _editorId: string; tag: string; title: string; description: string }
 
 function createEditorId(): string {
   return `row-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
+}
+
+function createEmptyPillar(tag = '', title = '', description = ''): PillarForm {
+  return {
+    _editorId: createEditorId(),
+    tag,
+    title,
+    description,
+  }
 }
 
 function createEmptyExperience(): ExperienceForm {
@@ -369,6 +438,12 @@ function createEmptyLicenseCertification(): LicenseCertificationForm {
   }
 }
 
+const defaultPillars: PillarForm[] = [
+  createEmptyPillar('PILLAR 01 · ⚡ TYPE SAFETY', 'Contract-First Systems', 'End-to-end typing from database schemas to client state, preventing runtime mismatches and contract drift.'),
+  createEmptyPillar('PILLAR 02 · ⚡ 60FPS UI', 'Sub-100ms Interactions', 'GPU-composited transforms, lightweight reactive trees, and optimized asset delivery for tactile micro-interactions.'),
+  createEmptyPillar('PILLAR 03 · ⚡ RESILIENCE', 'Fault-Tolerant Seams', 'Graceful API degradation, robust fallbacks, and automated seam tests protecting critical system boundaries.'),
+]
+
 const homeForm = reactive({
   heroTitle: '',
   heroSubtitle: '',
@@ -382,6 +457,14 @@ const aboutForm = reactive({
   name: '',
   title: '',
   bio: '',
+  availabilityStatus: 'Available for Architecture',
+  telemetry: {
+    location: 'Ho Chi Minh City, VN',
+    timezone: 'GMT+7 (Indochina)',
+    focus: 'Distributed Systems & Web Apps',
+    status: 'Production Active',
+  },
+  pillars: [...defaultPillars] as PillarForm[],
   contactInfo: {
     email: '',
     phone: '',
@@ -457,6 +540,20 @@ watch(
         credentialId: item.credentialId || '',
         credentialUrl: item.credentialUrl || '',
       }))
+      aboutForm.availabilityStatus = data.availabilityStatus || 'Available for Architecture'
+      aboutForm.telemetry = {
+        location: data.telemetry?.location || 'Ho Chi Minh City, VN',
+        timezone: data.telemetry?.timezone || 'GMT+7 (Indochina)',
+        focus: data.telemetry?.focus || 'Distributed Systems & Web Apps',
+        status: data.telemetry?.status || 'Production Active',
+      }
+      const incomingPillars = Array.isArray(data.pillars) && data.pillars.length ? data.pillars : defaultPillars
+      aboutForm.pillars = incomingPillars.map((p) => ({
+        _editorId: createEditorId(),
+        tag: p.tag || '',
+        title: p.title || '',
+        description: p.description || '',
+      }))
       aboutForm.avatarUrl = data.avatarUrl || ''
       aboutForm.resumeUrl = data.resumeUrl || ''
       const incomingSocialLinks = Array.isArray(data.socialLinks)
@@ -512,6 +609,14 @@ async function saveAbout() {
     })
     .filter((link): link is SocialLink => Boolean(link))
 
+  const pillars = aboutForm.pillars
+    .map(({ _editorId: _id, ...pillar }) => ({
+      tag: pillar.tag.trim(),
+      title: pillar.title.trim(),
+      description: pillar.description.trim(),
+    }))
+    .filter((pillar) => pillar.title || pillar.description || pillar.tag)
+
   const experience = sortExperiencesDescending(
     aboutForm.experience
     .map(({ _editorId: _id, ...exp }) => ({
@@ -551,6 +656,7 @@ async function saveAbout() {
 
   await aboutStore.updateAboutData({
     ...aboutForm,
+    pillars,
     skills,
     experience,
     education,
@@ -558,6 +664,15 @@ async function saveAbout() {
     socialLinks,
   })
   showSaved()
+}
+
+function addPillar(): void {
+  aboutForm.pillars.push(createEmptyPillar())
+}
+
+function removePillar(index: number): void {
+  if (aboutForm.pillars.length === 1) return
+  aboutForm.pillars.splice(index, 1)
 }
 
 function addExperience(): void {

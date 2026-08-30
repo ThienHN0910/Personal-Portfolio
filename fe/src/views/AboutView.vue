@@ -66,8 +66,11 @@
 
                 <!-- Live Availability Badge -->
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pastel-green text-pastel-green-text text-[11px] font-mono font-medium">
-                  <span class="w-1.5 h-1.5 rounded-full bg-pastel-green-text animate-pulse-soft"></span>
-                  <span>Available for Architecture</span>
+                  <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pastel-green-text opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-pastel-green-text"></span>
+                  </span>
+                  <span>{{ about?.availabilityStatus || 'Available for Architecture' }}</span>
                 </div>
 
                 <!-- Social & Contact Shortcuts -->
@@ -113,19 +116,19 @@
                 <div class="space-y-2.5">
                   <div class="flex items-center justify-between">
                     <span class="text-[10px] text-ink-tertiary uppercase">Location</span>
-                    <span class="text-ink text-right">Ho Chi Minh City, VN</span>
+                    <span class="text-ink text-right">{{ about?.telemetry?.location || 'Ho Chi Minh City, VN' }}</span>
                   </div>
                   <div class="flex items-center justify-between">
                     <span class="text-[10px] text-ink-tertiary uppercase">Timezone</span>
-                    <span class="text-ink tabular-nums">GMT+7 (Indochina)</span>
+                    <span class="text-ink tabular-nums">{{ about?.telemetry?.timezone || 'GMT+7 (Indochina)' }}</span>
                   </div>
                   <div class="flex items-center justify-between">
                     <span class="text-[10px] text-ink-tertiary uppercase">Focus</span>
-                    <span class="text-ink text-right">Web Apps &amp; Architecture</span>
+                    <span class="text-ink text-right truncate max-w-[140px]">{{ about?.telemetry?.focus || 'Web Apps & Architecture' }}</span>
                   </div>
                   <div class="flex items-center justify-between">
                     <span class="text-[10px] text-ink-tertiary uppercase">Status</span>
-                    <span class="text-pastel-green-text font-medium">Production Active</span>
+                    <span class="text-pastel-green-text font-medium">{{ about?.telemetry?.status || 'Production Active' }}</span>
                   </div>
                 </div>
               </div>
@@ -150,38 +153,20 @@
                   {{ about?.bio || 'Full Stack Software Engineer specializing in modern Web applications, performance engineering, scalable system design, and high-impact user experiences.' }}
                 </p>
 
-                <!-- 3 Core Engineering Pillars -->
+                <!-- Core Engineering Pillars (Dynamic) -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-                  <div class="p-4 rounded-lg bg-bone border border-stroke space-y-2">
+                  <div
+                    v-for="(pillar, index) in displayPillars"
+                    :key="pillar.title || index"
+                    class="p-4 rounded-lg bg-bone border border-stroke space-y-2 group hover:border-ink/30 transition-colors"
+                  >
                     <div class="flex items-center justify-between text-ink-tertiary font-mono text-[10px]">
-                      <span>PILLAR 01</span>
-                      <span class="text-blue-400">⚡ TYPE SAFETY</span>
+                      <span>{{ pillar.tag || `PILLAR 0${index + 1}` }}</span>
+                      <span class="text-blue-400">⚡ TENET</span>
                     </div>
-                    <h4 class="font-serif text-sm font-medium text-ink">Contract-First Systems</h4>
+                    <h4 class="font-serif text-sm font-medium text-ink group-hover:text-ink/90 transition-colors">{{ pillar.title }}</h4>
                     <p class="text-xs text-ink-secondary leading-relaxed font-sans font-light">
-                      End-to-end typing from database schemas to client state, preventing runtime mismatches and contract drift.
-                    </p>
-                  </div>
-
-                  <div class="p-4 rounded-lg bg-bone border border-stroke space-y-2">
-                    <div class="flex items-center justify-between text-ink-tertiary font-mono text-[10px]">
-                      <span>PILLAR 02</span>
-                      <span class="text-green-400">⚡ 60FPS UI</span>
-                    </div>
-                    <h4 class="font-serif text-sm font-medium text-ink">Sub-100ms Interactions</h4>
-                    <p class="text-xs text-ink-secondary leading-relaxed font-sans font-light">
-                      GPU-composited transforms, lightweight reactive trees, and optimized asset delivery for tactile micro-interactions.
-                    </p>
-                  </div>
-
-                  <div class="p-4 rounded-lg bg-bone border border-stroke space-y-2">
-                    <div class="flex items-center justify-between text-ink-tertiary font-mono text-[10px]">
-                      <span>PILLAR 03</span>
-                      <span class="text-amber-400">⚡ RESILIENCE</span>
-                    </div>
-                    <h4 class="font-serif text-sm font-medium text-ink">Fault-Tolerant Seams</h4>
-                    <p class="text-xs text-ink-secondary leading-relaxed font-sans font-light">
-                      Graceful API degradation, robust fallbacks, and automated seam tests protecting critical system boundaries.
+                      {{ pillar.description }}
                     </p>
                   </div>
                 </div>
@@ -361,6 +346,19 @@ const publicSocialLinks = computed(() => getPublicSocialLinks(about.value))
 const sortedExperiences = computed(() => sortChronologyDescending(about.value?.experience || []))
 const sortedEducation = computed(() => sortChronologyDescending(about.value?.education || []))
 const licensesCertifications = computed(() => about.value?.licensesCertifications || [])
+
+const defaultFallbackPillars = [
+  { tag: 'PILLAR 01 · ⚡ TYPE SAFETY', title: 'Contract-First Systems', description: 'End-to-end typing from database schemas to client state, preventing runtime mismatches and contract drift.' },
+  { tag: 'PILLAR 02 · ⚡ 60FPS UI', title: 'Sub-100ms Interactions', description: 'GPU-composited transforms, lightweight reactive trees, and optimized asset delivery for tactile micro-interactions.' },
+  { tag: 'PILLAR 03 · ⚡ RESILIENCE', title: 'Fault-Tolerant Seams', description: 'Graceful API degradation, robust fallbacks, and automated seam tests protecting critical system boundaries.' },
+]
+
+const displayPillars = computed(() => {
+  if (Array.isArray(about.value?.pillars) && about.value.pillars.length > 0) {
+    return about.value.pillars
+  }
+  return defaultFallbackPillars
+})
 
 function sanitizeHtml(html: string): string {
   return sanitizeRichContent(html)
