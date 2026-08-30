@@ -30,15 +30,15 @@
             </p>
           </div>
 
-          <!-- Quick Metrics Bar -->
+          <!-- Quick Metrics Bar (Dynamic Publications Telemetry) -->
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-stroke text-xs font-mono">
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Total Articles</span>
-              <span class="text-ink text-sm font-medium block tabular-nums">{{ blogStore.posts.length }} Notes</span>
+              <span class="text-ink text-sm font-medium block tabular-nums">{{ blogStore.posts.length }} Publications</span>
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Focus Areas</span>
-              <span class="text-ink text-sm font-medium block">Vue · TS · Perf</span>
+              <span class="text-ink text-sm font-medium block truncate">{{ focusAreas }}</span>
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Topic Filter</span>
@@ -46,7 +46,7 @@
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Reading Mode</span>
-              <span class="text-ink text-sm font-medium block">Longform Editorial</span>
+              <span class="text-ink text-sm font-medium block truncate">{{ readingMetric }}</span>
             </div>
           </div>
         </div>
@@ -186,6 +186,34 @@ const pageSize = 6
 const sentinelRef = ref<HTMLDivElement | null>(null)
 let pageObserver: IntersectionObserver | null = null
 let searchDebounce: ReturnType<typeof setTimeout> | null = null
+
+const focusAreas = computed(() => {
+  const counts: Record<string, number> = {}
+  blogStore.posts.forEach((p) => {
+    p.tags?.forEach((t) => {
+      counts[t] = (counts[t] || 0) + 1
+    })
+    p.categories?.forEach((c) => {
+      counts[c] = (counts[c] || 0) + 1
+    })
+  })
+  const top = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([t]) => t)
+  return top.length ? top.join(' · ') : 'Vue · TS · Architecture'
+})
+
+const readingMetric = computed(() => {
+  if (!blogStore.posts.length) return 'Longform Editorial'
+  const totalWords = blogStore.posts.reduce((acc, p) => {
+    const text = (p.content || '').replace(/<[^>]*>/g, '')
+    return acc + text.split(/\s+/).filter(Boolean).length
+  }, 0)
+  const avgWords = Math.round(totalWords / blogStore.posts.length)
+  const avgMins = Math.max(1, Math.ceil(avgWords / 200))
+  return `~${avgMins} min avg read`
+})
 
 function getMasonryLayout(index: number): 'featured' | 'tall' | 'wide' | 'standard' {
   if (index % 11 === 0) return 'featured'
