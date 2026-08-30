@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-24 sm:space-y-32">
+    <div class="w-full max-w-[1380px] mx-auto px-6 sm:px-10 lg:px-12 py-10 sm:py-14 space-y-24 sm:space-y-32">
 
       <!-- ── Hero Section ────────────────────────────────────────────── -->
       <HeroSection :data="homeStore.homeData || {}" />

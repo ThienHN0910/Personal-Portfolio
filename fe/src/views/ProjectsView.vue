@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-8 sm:py-14 space-y-10 sm:space-y-12">
+    <div class="w-full max-w-[1380px] mx-auto px-6 sm:px-10 lg:px-12 py-8 sm:py-14 space-y-12 sm:space-y-16">
 
       <!-- ── Page Header: Avant-Garde Editorial Masthead ─────────────── -->
       <header class="editorial-card">
@@ -108,7 +108,7 @@
 
       <div
         v-else-if="projectsStore.projects.length"
-        class="grid grid-cols-1 md:grid-cols-12 gap-6"
+        class="grid grid-cols-1 md:grid-cols-12 gap-7 sm:gap-8"
       >
         <div
           v-for="(project, index) in projectsStore.projects"

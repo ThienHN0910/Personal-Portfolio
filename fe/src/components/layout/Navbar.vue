@@ -1,24 +1,28 @@
 <template>
-  <header class="sticky top-0 z-[200] w-full flex justify-center pt-5 px-4 pointer-events-none">
-    <!-- Floating Island Pill -->
+  <header class="sticky top-0 z-[200] w-full flex justify-center pt-4 sm:pt-6 px-4 sm:px-6 pointer-events-none">
+    <!-- Floating Island Pill (Expanded Architecture) -->
     <div
-      class="pointer-events-auto flex items-center justify-between gap-6 px-4 py-2.5 rounded-full bg-surface/90 border border-stroke shadow-island w-full max-w-3xl backdrop-blur-md transition-all duration-[500ms] ease-[cubic-bezier(0.32,0.72,0,1)]"
+      class="pointer-events-auto flex items-center justify-between gap-4 sm:gap-8 px-5 sm:px-8 py-3 rounded-full bg-surface/90 border border-stroke shadow-island w-full max-w-4xl lg:max-w-5xl xl:max-w-6xl backdrop-blur-md transition-all duration-[500ms] ease-[cubic-bezier(0.32,0.72,0,1)]"
       :class="isScrolled ? 'shadow-island-hover border-stroke/90' : 'shadow-island'"
     >
       <!-- Logo & Brand -->
-      <RouterLink to="/" class="flex items-center gap-2.5 group active:scale-[0.98] transition-transform duration-200">
+      <RouterLink to="/" class="flex items-center gap-2.5 sm:gap-3 group active:scale-[0.98] transition-transform duration-200">
         <!-- Double-bezel logo mark -->
-        <div class="w-8 h-8 rounded-full bg-bone border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:border-ink/30 transition-colors duration-300">
-          <span class="font-mono text-ink text-xs font-semibold tracking-tighter">T/</span>
+        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-bone border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group-hover:border-ink/30 transition-colors duration-300">
+          <span class="font-mono text-ink text-xs sm:text-sm font-semibold tracking-tighter">T/</span>
         </div>
         <div class="flex flex-col leading-none">
-          <span class="font-sans font-semibold text-sm tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300">Hồ Ngọc Thiện</span>
-          <span class="font-mono text-[9px] text-ink-tertiary tracking-widest uppercase">Portfolio</span>
+          <span class="font-sans font-semibold text-sm sm:text-base tracking-tight text-ink group-hover:text-ink/80 transition-colors duration-300">
+            {{ aboutStore.aboutData?.name || 'Hồ Ngọc Thiện' }}
+          </span>
+          <span class="font-mono text-[9px] text-ink-tertiary tracking-widest uppercase">
+            {{ aboutStore.aboutData?.title || 'Full Stack Engineer' }}
+          </span>
         </div>
       </RouterLink>
 
       <!-- Desktop Nav Links -->
-      <nav class="hidden md:flex items-center gap-0.5 font-sans text-sm font-medium" aria-label="Main Navigation">
+      <nav class="hidden md:flex items-center gap-1 lg:gap-2 font-sans text-sm font-medium" aria-label="Main Navigation">
         <RouterLink
           v-for="link in navLinks"
           :key="link.to"
@@ -132,7 +136,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useCommandPalette } from '@/composables/useCommandPalette'
+import { useAboutStore } from '@/stores/about'
 
+const aboutStore = useAboutStore()
 const { openPalette } = useCommandPalette()
 const isMobileMenuOpen = ref(false)
 const isScrolled = ref(false)
