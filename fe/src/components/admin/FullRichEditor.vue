@@ -25,74 +25,78 @@
     </div>
 
     <!-- AI Prompt & Master Synthesis Modal -->
-    <div
-      v-if="showAiModal"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm"
-    >
-      <div class="glass-panel max-w-xl w-full p-6 border border-cyber-border/40 shadow-cyan-glow space-y-4 max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between pb-2 border-b border-white/10">
-          <div class="space-y-0.5">
-            <h3 class="text-base font-bold text-white flex items-center gap-2">
-              <span>✨</span>
-              <span>AI Design-System Content Assistant</span>
-            </h3>
-            <p class="text-[11px] text-slate-400 font-mono">
-              Auto-formats raw markdown / CONTEXT.md into avant-garde HTML with 60fps design system classes.
-            </p>
-          </div>
-          <button
-            type="button"
-            class="text-slate-400 hover:text-white text-lg font-mono ml-3"
-            @click="showAiModal = false"
-          >
-            ✕
-          </button>
-        </div>
-
-        <div class="space-y-3 text-xs font-mono">
-          <!-- Raw Context Input -->
-          <div class="space-y-1">
-            <label class="block text-slate-300 uppercase">Source Content / Raw Notes (Optional if editor already has text):</label>
-            <textarea
-              v-model="rawSourceInput"
-              rows="6"
-              placeholder="Paste raw CONTEXT.md, AGENTS.md, GitHub README, dev logs, or project notes here..."
-              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan font-mono text-xs"
-            />
+    <Teleport to="body">
+      <div
+        v-if="showAiModal"
+        class="fixed inset-0 z-[9999] flex items-start justify-center p-4 sm:p-6 bg-slate-950/85 backdrop-blur-md overflow-y-auto overscroll-contain"
+        data-lenis-prevent
+        @click.self="showAiModal = false"
+      >
+        <div class="glass-panel max-w-xl w-full my-auto p-6 border border-cyber-border/40 shadow-cyan-glow space-y-4 max-h-[85vh] overflow-y-auto overscroll-contain" data-lenis-prevent>
+          <div class="flex items-center justify-between pb-2 border-b border-white/10">
+            <div class="space-y-0.5">
+              <h3 class="text-base font-bold text-white flex items-center gap-2">
+                <span>✨</span>
+                <span>AI Design-System Content Assistant</span>
+              </h3>
+              <p class="text-[11px] text-slate-400 font-mono">
+                Auto-formats raw markdown / CONTEXT.md into avant-garde HTML with 60fps design system classes.
+              </p>
+            </div>
+            <button
+              type="button"
+              class="text-slate-400 hover:text-white text-lg font-mono ml-3 w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors"
+              @click="showAiModal = false"
+            >
+              ✕
+            </button>
           </div>
 
-          <!-- Custom Prompt Input -->
-          <div class="space-y-1">
-            <label class="block text-slate-300 uppercase">Additional Custom Instructions (Optional):</label>
-            <textarea
-              v-model="customPrompt"
-              rows="2"
-              placeholder="e.g., Emphasize 60fps GPU performance, write in Vietnamese, or highlight database sharding..."
-              class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan text-xs"
-            />
-          </div>
-        </div>
+          <div class="space-y-3 text-xs font-mono">
+            <!-- Raw Context Input -->
+            <div class="space-y-1">
+              <label class="block text-slate-300 uppercase">Source Content / Raw Notes (Optional if editor already has text):</label>
+              <textarea
+                v-model="rawSourceInput"
+                rows="6"
+                placeholder="Paste raw CONTEXT.md, AGENTS.md, GitHub README, dev logs, or project notes here..."
+                class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan font-mono text-xs"
+              />
+            </div>
 
-        <!-- Modal Actions -->
-        <div class="flex items-center justify-end gap-3 pt-2">
-          <button
-            type="button"
-            class="px-4 py-2 rounded-lg text-xs font-mono bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10"
-            @click="showAiModal = false"
-          >
-            Cancel
-          </button>
-          <button
-            type="button"
-            class="px-4 py-2 rounded-lg text-xs font-mono font-bold bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 hover:shadow-cyan-glow transition-all"
-            :disabled="isImproving"
-            @click="handleRunAi"
-          >
-            {{ isImproving ? 'Synthesizing...' : '✨ Generate with Design System' }}
-          </button>
+            <!-- Custom Prompt Input -->
+            <div class="space-y-1">
+              <label class="block text-slate-300 uppercase">Additional Custom Instructions (Optional):</label>
+              <textarea
+                v-model="customPrompt"
+                rows="2"
+                placeholder="e.g., Emphasize 60fps GPU performance, write in Vietnamese, or highlight database sharding..."
+                class="w-full px-3 py-2 rounded-lg bg-slate-900 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-cyber-cyan text-xs"
+              />
+            </div>
+          </div>
+
+          <!-- Modal Actions -->
+          <div class="flex items-center justify-end gap-3 pt-2">
+            <button
+              type="button"
+              class="px-4 py-2 rounded-lg text-xs font-mono bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10"
+              @click="showAiModal = false"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="px-4 py-2 rounded-lg text-xs font-mono font-bold bg-gradient-to-r from-cyber-cyan to-indigo-500 text-slate-950 hover:shadow-cyan-glow transition-all"
+              :disabled="isImproving"
+              @click="handleRunAi"
+            >
+              {{ isImproving ? 'Synthesizing...' : '✨ Generate with Design System' }}
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 

@@ -64,11 +64,22 @@
       <!-- Modal -->
       <Teleport to="body">
         <Transition name="admin-fade-scale">
-          <div v-if="showModal" class="admin-modal-backdrop">
-            <div class="admin-modal">
-              <p class="admin-kicker mb-2">Blog Builder</p>
-              <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'New' }} Post</h2>
-              <p class="admin-modal__desc mb-5">Cover image will be taken from the first image inside content.</p>
+          <div v-if="showModal" class="admin-modal-backdrop" data-lenis-prevent @click.self="showModal = false">
+            <div class="admin-modal max-w-3xl" data-lenis-prevent>
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+                <div>
+                  <p class="admin-kicker mb-1">Blog Builder</p>
+                  <h2 class="admin-modal__title !mb-0">{{ isEditing ? 'Edit' : 'New' }} Post</h2>
+                </div>
+                <button
+                  type="button"
+                  class="text-gray-400 hover:text-white text-lg font-mono w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors"
+                  @click="showModal = false"
+                >
+                  ✕
+                </button>
+              </div>
+              <p class="admin-modal__desc mb-5 text-xs text-slate-400">Cover image will be taken from the first image inside content.</p>
 
               <form @submit.prevent="handleSubmit">
                 <div class="form-group">

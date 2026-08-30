@@ -54,14 +54,22 @@ function handleGlobalKeydown(e: KeyboardEvent) {
 }
 
 watch(
-  () => route.fullPath,
-  () => {
-    scrollTo(0, { immediate: true })
-  }
+  () => route.path,
+  (newPath) => {
+    if (newPath.startsWith('/admin')) {
+      destroySmoothScroll()
+    } else {
+      initSmoothScroll()
+      scrollTo(0, { immediate: true })
+    }
+  },
+  { immediate: true },
 )
 
 onMounted(() => {
-  initSmoothScroll()
+  if (!isAdminRoute.value) {
+    initSmoothScroll()
+  }
   window.addEventListener('keydown', handleGlobalKeydown)
 })
 

@@ -68,10 +68,21 @@
       <!-- Modal -->
       <Teleport to="body">
         <Transition name="admin-fade-scale">
-          <div v-if="showModal" class="admin-modal-backdrop">
-            <div class="admin-modal max-w-2xl">
-              <p class="admin-kicker mb-2">Case Study &amp; Architecture Editor</p>
-              <h2 class="admin-modal__title">{{ isEditing ? 'Edit' : 'Add' }} Case Study</h2>
+          <div v-if="showModal" class="admin-modal-backdrop" data-lenis-prevent @click.self="showModal = false">
+            <div class="admin-modal max-w-3xl" data-lenis-prevent>
+              <div class="flex items-center justify-between pb-3 mb-4 border-b border-white/10">
+                <div>
+                  <p class="admin-kicker mb-1">Case Study &amp; Architecture Editor</p>
+                  <h2 class="admin-modal__title !mb-0">{{ isEditing ? 'Edit' : 'Add' }} Case Study</h2>
+                </div>
+                <button
+                  type="button"
+                  class="text-gray-400 hover:text-white text-lg font-mono w-8 h-8 rounded-lg hover:bg-white/10 flex items-center justify-center transition-colors"
+                  @click="showModal = false"
+                >
+                  ✕
+                </button>
+              </div>
 
               <form @submit.prevent="handleSubmit">
                 <div class="form-group">
