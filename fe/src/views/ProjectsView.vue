@@ -1,27 +1,53 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
-      <!-- ── Page Header: Avant-Garde Editorial Architecture ─────────── -->
+    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-8 sm:py-14 space-y-10 sm:space-y-12">
+
+      <!-- ── Page Header: Avant-Garde Editorial Masthead ─────────────── -->
       <header class="editorial-card">
         <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
-          <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-4">
             <span class="eyebrow-tag">
               <span class="status-dot"></span>
               Selected Engineering Archive
             </span>
-            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest tabular-nums">
-              {{ projectsStore.projects.length }} Case Studies Indexed
-            </span>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-bone border border-stroke text-ink-secondary tabular-nums">
+                {{ projectsStore.projects.length }} Case Studies Indexed
+              </span>
+              <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-amber text-pastel-amber-text uppercase font-medium">
+                Production Ready
+              </span>
+            </div>
           </div>
 
-          <div class="space-y-4 max-w-3xl">
+          <div class="space-y-4 max-w-4xl">
             <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-light tracking-[-0.035em] leading-[1.04] text-ink text-balance">
               Case studies &amp;
               <span class="block italic text-ink-secondary mt-1">production architectures</span>
             </h1>
-            <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-2xl">
-              Production-grade web platforms, scalable backend services, and interactive user interfaces engineered with Vue 3, TypeScript, and Node.js.
+            <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-3xl">
+              Production-grade web platforms, scalable backend services, distributed systems, and interactive user interfaces engineered with Vue 3, TypeScript, Node.js, and Cloud Infrastructure.
             </p>
+          </div>
+
+          <!-- Quick Metrics Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-stroke text-xs font-mono">
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Catalog Total</span>
+              <span class="text-ink text-sm font-medium block tabular-nums">{{ projectsStore.projects.length }} Architectures</span>
+            </div>
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Primary Stack</span>
+              <span class="text-ink text-sm font-medium block">Vue 3 · TS · Node</span>
+            </div>
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Category Filter</span>
+              <span class="text-pastel-blue-text text-sm font-medium block truncate">{{ activeCategory || 'All Disciplines' }}</span>
+            </div>
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Status Check</span>
+              <span class="text-pastel-green-text text-sm font-medium block">100% Live Tested</span>
+            </div>
           </div>
         </div>
       </header>
@@ -37,16 +63,24 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search projects, technologies, architectures (Vue 3, TypeScript, Node.js, AWS...)"
-              class="w-full pl-11 pr-4 py-3 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/40 transition-all"
+              placeholder="Search case studies, technologies, architectures (Vue 3, TypeScript, Node.js, Cloud, Docker...)"
+              class="w-full pl-11 pr-10 py-3 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/40 transition-all"
             />
+            <button
+              v-if="searchQuery"
+              type="button"
+              class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-bone border border-stroke text-ink-tertiary hover:text-ink flex items-center justify-center text-xs transition-colors"
+              @click="searchQuery = ''"
+            >
+              ✕
+            </button>
           </div>
 
           <!-- Filter Pills -->
-          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+          <div class="flex flex-wrap items-center gap-2 pt-1">
             <button
               type="button"
-              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200 inline-flex items-center gap-1.5"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200 inline-flex items-center gap-2"
               :class="activeCategory === '' ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
               @click="activeCategory = ''"
             >
@@ -69,40 +103,48 @@
         </div>
       </div>
 
-      <!-- ── Projects Grid Showcase: Asymmetric Broken Masonry ───────── -->
+      <!-- ── Projects Grid Showcase: Asymmetric Broken Bento ─────────── -->
       <LoadingSpinner v-if="initialLoading" />
 
       <div
         v-else-if="projectsStore.projects.length"
-        class="grid grid-cols-1 md:grid-cols-12 gap-5"
+        class="grid grid-cols-1 md:grid-cols-12 gap-6"
       >
         <div
           v-for="(project, index) in projectsStore.projects"
           :key="project._id"
           :class="[
-            index % 6 === 0 ? 'col-span-12 xl:col-span-7' :
-            index % 6 === 1 ? 'col-span-12 xl:col-span-5' :
-            index % 6 === 2 ? 'col-span-12 md:col-span-5 xl:col-span-4' :
-            index % 6 === 3 ? 'col-span-12 md:col-span-7 xl:col-span-8' :
-            index % 6 === 4 ? 'col-span-12 xl:col-span-8' :
-                               'col-span-12 xl:col-span-4'
+            index % 6 === 0 ? 'col-span-12 xl:col-span-8' :
+            index % 6 === 1 ? 'col-span-12 xl:col-span-4' :
+            index % 6 === 2 ? 'col-span-12 md:col-span-5 xl:col-span-5' :
+            index % 6 === 3 ? 'col-span-12 md:col-span-7 xl:col-span-7' :
+            index % 6 === 4 ? 'col-span-12 xl:col-span-6' :
+                               'col-span-12 xl:col-span-6'
           ]"
         >
           <ProjectCard :project="project" :layout="getMasonryLayout(index)" />
         </div>
       </div>
 
-
       <!-- Empty State -->
       <div v-else class="editorial-card">
-        <div class="editorial-card__inner p-12 text-center text-ink-tertiary space-y-3">
-          <div class="w-10 h-10 rounded-full bg-bone border border-stroke flex items-center justify-center text-ink-tertiary mx-auto">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <div class="editorial-card__inner p-12 sm:p-16 text-center text-ink-tertiary space-y-4 max-w-lg mx-auto">
+          <div class="w-12 h-12 rounded-full bg-bone border border-stroke flex items-center justify-center text-ink-tertiary mx-auto">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
           </div>
-          <p class="text-base text-ink font-serif font-normal">No case studies matching your criteria</p>
-          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your query or resetting category filters.</p>
+          <p class="text-lg text-ink font-serif font-light">No case studies matching your criteria</p>
+          <p class="text-xs text-ink-secondary font-mono leading-relaxed">
+            Try adjusting your search query or reset your domain filter to view the complete catalog.
+          </p>
+          <button
+            type="button"
+            class="px-4 py-2 rounded-md bg-ink text-surface text-xs font-mono font-medium active:scale-95 transition-all"
+            @click="searchQuery = ''; activeCategory = ''"
+          >
+            Reset All Filters
+          </button>
         </div>
       </div>
 
@@ -115,11 +157,10 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
-
-
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'

@@ -1,27 +1,53 @@
 <template>
   <div class="min-h-[100dvh] bg-canvas">
-    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-8 sm:py-12 space-y-10 sm:space-y-12">
-      <!-- ── Page Header: Avant-Garde Editorial Architecture ─────────── -->
+    <div class="w-full max-w-[1600px] mx-auto px-3 sm:px-6 py-8 sm:py-14 space-y-10 sm:space-y-12">
+
+      <!-- ── Page Header: Avant-Garde Publication Masthead ───────────── -->
       <header class="editorial-card">
         <div class="editorial-card__inner p-8 sm:p-14 flex flex-col justify-between gap-8">
-          <div class="flex items-center justify-between gap-3">
+          <div class="flex flex-wrap items-center justify-between gap-4">
             <span class="eyebrow-tag">
               <span class="status-dot"></span>
               Engineering Publications &amp; Insights
             </span>
-            <span class="hidden sm:block font-mono text-[10px] text-ink-tertiary uppercase tracking-widest tabular-nums">
-              {{ blogStore.posts.length }} Articles Published
-            </span>
+            <div class="flex items-center gap-2">
+              <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-bone border border-stroke text-ink-secondary tabular-nums">
+                {{ blogStore.posts.length }} Articles Published
+              </span>
+              <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-green text-pastel-green-text uppercase font-medium">
+                Technical Dispatches
+              </span>
+            </div>
           </div>
 
-          <div class="space-y-4 max-w-3xl">
+          <div class="space-y-4 max-w-4xl">
             <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-light tracking-[-0.035em] leading-[1.04] text-ink text-balance">
               Technical writings &amp;
               <span class="block italic text-ink-secondary mt-1">architectural notes</span>
             </h1>
-            <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-2xl">
-              Deep dives on Vue 3 reactivity internals, TypeScript system design patterns, web performance, and developer productivity by Hồ Ngọc Thiện.
+            <p class="text-base sm:text-lg text-ink-secondary leading-relaxed font-sans font-light max-w-3xl">
+              Deep dives on Vue 3 reactivity internals, TypeScript type systems, web performance engineering, and scalable distributed system design by Hồ Ngọc Thiện.
             </p>
+          </div>
+
+          <!-- Quick Metrics Bar -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-stroke text-xs font-mono">
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Total Articles</span>
+              <span class="text-ink text-sm font-medium block tabular-nums">{{ blogStore.posts.length }} Notes</span>
+            </div>
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Focus Areas</span>
+              <span class="text-ink text-sm font-medium block">Vue · TS · Perf</span>
+            </div>
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Topic Filter</span>
+              <span class="text-pastel-green-text text-sm font-medium block truncate">{{ activeCategory || 'All Topics' }}</span>
+            </div>
+            <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
+              <span class="text-[10px] text-ink-tertiary uppercase">Reading Mode</span>
+              <span class="text-ink text-sm font-medium block">Longform Editorial</span>
+            </div>
           </div>
         </div>
       </header>
@@ -36,15 +62,23 @@
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search articles, technical topics, keywords (Vue 3, TypeScript, Performance...)"
-              class="w-full pl-11 pr-4 py-3 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/40 transition-all"
+              placeholder="Search articles, technical topics, keywords (Vue 3, TypeScript, Reactivity, Performance, Architecture...)"
+              class="w-full pl-11 pr-10 py-3 rounded-lg bg-bone border border-stroke text-ink placeholder-ink-tertiary font-sans text-sm focus:outline-none focus:border-ink/40 transition-all"
             />
+            <button
+              v-if="searchQuery"
+              type="button"
+              class="absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-bone border border-stroke text-ink-tertiary hover:text-ink flex items-center justify-center text-xs transition-colors"
+              @click="searchQuery = ''"
+            >
+              ✕
+            </button>
           </div>
 
-          <div class="flex flex-wrap items-center gap-1.5 pt-1">
+          <div class="flex flex-wrap items-center gap-2 pt-1">
             <button
               type="button"
-              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200 inline-flex items-center gap-1.5"
+              class="px-3.5 py-1.5 rounded-md text-xs font-mono transition-all border active:scale-95 duration-200 inline-flex items-center gap-2"
               :class="activeCategory === '' ? 'bg-ink text-surface border-ink font-medium shadow-sm' : 'bg-bone text-ink-secondary border-stroke hover:border-ink/20 hover:text-ink'"
               @click="activeCategory = ''"
             >
@@ -67,21 +101,21 @@
         </div>
       </div>
 
-      <!-- ── Articles Grid: Asymmetric Broken Masonry ────────────────── -->
+      <!-- ── Articles Grid: Asymmetric Broken Bento ──────────────────── -->
       <LoadingSpinner v-if="initialLoading" />
 
       <div
         v-else-if="blogStore.posts.length"
-        class="grid grid-cols-1 md:grid-cols-12 gap-5"
+        class="grid grid-cols-1 md:grid-cols-12 gap-6"
       >
         <div
           v-for="(post, index) in blogStore.posts"
           :key="post._id"
           :class="[
-            index % 5 === 0 ? 'col-span-12 xl:col-span-7' :
-            index % 5 === 1 ? 'col-span-12 xl:col-span-5' :
-            index % 5 === 2 ? 'col-span-12 md:col-span-5 xl:col-span-4' :
-            index % 5 === 3 ? 'col-span-12 md:col-span-7 xl:col-span-8' :
+            index % 5 === 0 ? 'col-span-12 xl:col-span-8' :
+            index % 5 === 1 ? 'col-span-12 xl:col-span-4' :
+            index % 5 === 2 ? 'col-span-12 md:col-span-5 xl:col-span-5' :
+            index % 5 === 3 ? 'col-span-12 md:col-span-7 xl:col-span-7' :
                                'col-span-12'
           ]"
         >
@@ -89,17 +123,25 @@
         </div>
       </div>
 
-
       <!-- Empty State -->
       <div v-else class="editorial-card">
-        <div class="editorial-card__inner p-12 text-center text-ink-tertiary space-y-3">
-          <div class="w-10 h-10 rounded-full bg-bone border border-stroke flex items-center justify-center text-ink-tertiary mx-auto">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+        <div class="editorial-card__inner p-12 sm:p-16 text-center text-ink-tertiary space-y-4 max-w-lg mx-auto">
+          <div class="w-12 h-12 rounded-full bg-bone border border-stroke flex items-center justify-center text-ink-tertiary mx-auto">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
           </div>
-          <p class="text-base text-ink font-serif font-normal">No articles matching your topic query</p>
-          <p class="text-xs text-ink-tertiary font-mono">Try adjusting your search keywords or resetting the topic filter.</p>
+          <p class="text-lg text-ink font-serif font-light">No articles matching your topic query</p>
+          <p class="text-xs text-ink-secondary font-mono leading-relaxed">
+            Try adjusting your search keywords or reset your topic filter to browse all published engineering notes.
+          </p>
+          <button
+            type="button"
+            class="px-4 py-2 rounded-md bg-ink text-surface text-xs font-mono font-medium active:scale-95 transition-all"
+            @click="searchQuery = ''; activeCategory = ''"
+          >
+            Reset All Topics
+          </button>
         </div>
       </div>
 
@@ -112,11 +154,10 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>
-
-
 
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
