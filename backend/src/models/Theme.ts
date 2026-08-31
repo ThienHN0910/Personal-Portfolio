@@ -2,6 +2,7 @@ import mongoose, { Schema, type Document } from 'mongoose'
 
 export interface ITheme extends Document {
   name: string
+  activeThemeId: string
   primaryColor: string
   secondaryColor: string
   accentColor: string
@@ -18,18 +19,19 @@ export interface ITheme extends Document {
 
 const ThemeSchema = new Schema<ITheme>(
   {
-    name: { type: String, default: 'Ocean Aurora', trim: true },
+    name: { type: String, default: 'Editorial Design System', trim: true },
+    activeThemeId: { type: String, default: 'editorial-dark', trim: true },
     primaryColor: { type: String, default: '#3b82f6' },
     secondaryColor: { type: String, default: '#06b6d4' },
     accentColor: { type: String, default: '#f59e0b' },
-    backgroundFrom: { type: String, default: '#0f172a' },
-    backgroundTo: { type: String, default: '#1e293b' },
-    surfaceFrom: { type: String, default: '#111827' },
-    surfaceTo: { type: String, default: '#0b1220' },
-    headingGradientFrom: { type: String, default: '#38bdf8' },
-    headingGradientTo: { type: String, default: '#f97316' },
-    textPrimary: { type: String, default: '#e2e8f0' },
-    textMuted: { type: String, default: '#94a3b8' },
+    backgroundFrom: { type: String, default: '#090A0C' },
+    backgroundTo: { type: String, default: '#12141A' },
+    surfaceFrom: { type: String, default: '#181A22' },
+    surfaceTo: { type: String, default: '#12141A' },
+    headingGradientFrom: { type: String, default: '#F5F5F7' },
+    headingGradientTo: { type: String, default: '#8E919A' },
+    textPrimary: { type: String, default: '#F5F5F7' },
+    textMuted: { type: String, default: '#8E919A' },
     useAnimatedGlow: { type: Boolean, default: true },
   },
   { timestamps: true },

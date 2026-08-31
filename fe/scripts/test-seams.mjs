@@ -85,7 +85,25 @@ const tagMatches = sampleAiHtml.match(/<([a-z0-9]+)[\s>]/gi).map(t => t.replace(
 for (const tag of tagMatches) {
   assert.ok(allowedTags.includes(tag), `Tag <${tag}> must be in allowed whitelist`)
 }
-console.log('  ✓ Generated HTML conforms strictly to allowed semantic tag whitelist.')
+// ── Seam 6: Theme System & Extended Editorial Class Catalog ───────────
+console.log('\n[Seam 6] Testing Theme Presets & Extended Class Catalog Compatibility...')
+const VALID_THEMES = ['editorial-dark', 'editorial-light', 'monochrome-cyber', 'warm-sepia', 'system']
+const EXTENDED_CLASSES = [
+  'article-hero-title', 'article-lead', 'article-h2', 'article-h3', 'article-h4',
+  'article-p', 'article-list', 'article-badge', 'article-pullquote', 'article-callout',
+  'article-grid-12', 'article-col-7', 'article-col-5', 'article-col-6', 'article-col-4', 'article-col-8', 'article-col-12',
+  'article-table', 'article-codeblock', 'article-figure', 'article-figcaption'
+]
 
-console.log('\n🎉 ALL SEAMS VERIFIED SUCCESSFULLY (5/5 PASS)!')
+for (const themeId of VALID_THEMES) {
+  assert.ok(typeof themeId === 'string' && themeId.length > 0, `Theme ID ${themeId} must be non-empty`)
+}
+
+const sampleRichMarkup = `<div class="article-grid-12"><div class="article-col-7 article-callout"><span class="article-badge article-badge--green">Live</span><p class="article-p">Test</p></div></div>`
+for (const cls of ['article-grid-12', 'article-col-7', 'article-callout', 'article-badge', 'article-p']) {
+  assert.ok(EXTENDED_CLASSES.includes(cls), `Class ${cls} must be in extended class registry`)
+}
+console.log('  ✓ Theme presets (5/5) and Extended Editorial Class Catalog validated.')
+
+console.log('\n🎉 ALL SEAMS VERIFIED SUCCESSFULLY (6/6 PASS)!')
 

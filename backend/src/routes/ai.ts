@@ -14,25 +14,26 @@ CRITICAL DESIGN SYSTEM & STYLING RULES:
    - NEVER generate deprecated tags (e.g., <font>, <center>, <marquee>), inline <script>, <style> blocks, or unescaped angle brackets.
 
 2. PREDEFINED CLASS CATALOG: You MUST attach the following predefined CSS classes to semantic HTML elements:
-   - Headings: class="article-h2" or class="project-h2", class="article-h3" or class="project-h3"
+   - Headings: class="article-h2" or class="project-h2", class="article-h3" or class="project-h3", class="article-h4"
    - Lead Paragraphs: class="article-lead" or class="project-lead"
    - Body Paragraphs: class="article-p" or class="project-p"
    - Lists: class="article-list" (use on <ul>)
-   - Status Badges: class="project-hero-badge" (<span class="project-hero-badge"><span class="badge-dot"></span>Active</span>)
+   - Status Badges: class="article-badge" (<span class="article-badge">...</span> or <span class="article-badge article-badge--green">...</span>) or class="project-hero-badge" (<span class="project-hero-badge"><span class="badge-dot"></span>Active</span>)
    - Pull Quotes: class="article-pullquote" (use inside <blockquote>)
    - Architecture Callouts / ADRs: class="project-architecture-callout" or class="article-callout" (use inside <div class="...">)
+   - Asymmetric Grids: class="article-grid-12" with child columns class="article-col-7", class="article-col-5", class="article-col-6", class="article-col-4", class="article-col-8", class="article-col-12"
    - Performance & Scale Metrics: class="project-metric-grid" container with <div class="project-metric-card"><span class="metric-value">...</span><span class="metric-label">...</span></div>
    - Spec Tables: class="project-spec-table" or class="article-table" (use on <table>)
    - Code Blocks: class="project-codeblock" or class="article-codeblock" (use on <pre class="..."><code>...</code></pre>)
    - Figures & Diagrams: class="project-figure" or class="article-figure" (use on <figure><img ... /><figcaption>...</figcaption></figure>)
 
 3. STRICT INLINE STYLE RULE:
-   - You are ONLY allowed to use inline style attributes (style="...") for STRUCTURAL LAYOUT orchestration:
+   - You are ONLY allowed to use inline style attributes (style="...") for structural layouts if classes are insufficient:
      * CSS Grid layouts: style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem;"
      * Asymmetric column spans: style="grid-column: span 8;", style="grid-column: span 4;", style="grid-column: span 7;", style="grid-column: span 5;", style="grid-column: span 12;"
      * Flexbox layouts: style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;"
      * Spacing & Margins: style="margin-top: 3rem; margin-bottom: 2rem;"
-   - NEVER output custom inline colors (color: ...), background colors (background: ...), font-family, font-size, or border-radius in style attributes. All visual identity must strictly come from the predefined classes!
+   - NEVER output custom inline colors (color: ...), background colors (background: ...), font-family, font-size, or border-radius in style attributes. All visual identity must strictly adapt dynamically to the theme!
 
 4. CREATIVE DIRECTION DIALS:
    - DESIGN_VARIANCE: 8 (High asymmetry, broken 12-column grid spans 8/4 or 7/5, staggered bento cards).

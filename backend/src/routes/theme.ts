@@ -8,6 +8,7 @@ const router = Router()
 
 type ThemePayload = {
   name: string
+  activeThemeId: string
   primaryColor: string
   secondaryColor: string
   accentColor: string
@@ -23,20 +24,23 @@ type ThemePayload = {
 }
 
 const DEFAULT_THEME: ThemePayload = {
-  name: 'Ocean Aurora',
+  name: 'Editorial Design System',
+  activeThemeId: 'editorial-dark',
   primaryColor: '#3b82f6',
   secondaryColor: '#06b6d4',
   accentColor: '#f59e0b',
-  backgroundFrom: '#0f172a',
-  backgroundTo: '#1e293b',
-  surfaceFrom: '#111827',
-  surfaceTo: '#0b1220',
-  headingGradientFrom: '#38bdf8',
-  headingGradientTo: '#f97316',
-  textPrimary: '#e2e8f0',
-  textMuted: '#94a3b8',
+  backgroundFrom: '#090A0C',
+  backgroundTo: '#12141A',
+  surfaceFrom: '#181A22',
+  surfaceTo: '#12141A',
+  headingGradientFrom: '#F5F5F7',
+  headingGradientTo: '#8E919A',
+  textPrimary: '#F5F5F7',
+  textMuted: '#8E919A',
   useAnimatedGlow: true,
 }
+
+const VALID_THEME_IDS = ['editorial-dark', 'editorial-light', 'monochrome-cyber', 'warm-sepia', 'system']
 
 function isHexColor(value: string): boolean {
   return /^#(?:[\da-fA-F]{3}|[\da-fA-F]{6})$/.test(value)
@@ -51,8 +55,13 @@ function normalizeColor(input: unknown, fallback: string): string {
 function normalizeThemeInput(input: unknown): ThemePayload {
   const payload = input && typeof input === 'object' ? input as Record<string, unknown> : {}
 
+  const activeThemeId = typeof payload.activeThemeId === 'string' && VALID_THEME_IDS.includes(payload.activeThemeId)
+    ? payload.activeThemeId
+    : DEFAULT_THEME.activeThemeId
+
   return {
     name: typeof payload.name === 'string' && payload.name.trim() ? payload.name.trim() : DEFAULT_THEME.name,
+    activeThemeId,
     primaryColor: normalizeColor(payload.primaryColor, DEFAULT_THEME.primaryColor),
     secondaryColor: normalizeColor(payload.secondaryColor, DEFAULT_THEME.secondaryColor),
     accentColor: normalizeColor(payload.accentColor, DEFAULT_THEME.accentColor),
