@@ -1,12 +1,117 @@
 <template>
-  <div class="min-h-[100dvh] bg-canvas">
-    <div class="w-full max-w-[1380px] mx-auto px-6 sm:px-10 lg:px-12 py-10 sm:py-14 space-y-24 sm:space-y-32">
+  <div ref="homeRootRef" class="min-h-[100dvh] bg-canvas relative overflow-hidden">
+    <!-- ── Interactive 60fps Particle Mesh Constellation Background ──── -->
+    <ParticleBackground />
+
+    <div class="relative z-10 w-full max-w-[1380px] mx-auto px-6 sm:px-10 lg:px-12 py-10 sm:py-14 space-y-24 sm:space-y-32">
 
       <!-- ── Hero Section ────────────────────────────────────────────── -->
       <HeroSection :data="homeStore.homeData || {}" />
 
+      <!-- ── Core Engineering Tenets (Taste-Skill Editorial Depth) ────── -->
+      <section data-aos="fade-up" class="space-y-8">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div class="space-y-2">
+            <span class="eyebrow-tag">
+              <span class="status-dot"></span>
+              Engineering Philosophy
+            </span>
+            <h2 class="font-serif text-3xl sm:text-5xl font-light tracking-[-0.03em] leading-tight text-ink">
+              Core system tenets
+              <span class="italic text-ink-secondary">&amp; architectural principles</span>
+            </h2>
+          </div>
+          <span class="font-mono text-[10px] text-ink-tertiary uppercase tracking-widest hidden sm:inline-block">
+            Foundational Disciplines
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <!-- Pillar 1 -->
+          <div
+            data-aos="fade-up"
+            data-aos-delay="100"
+            class="editorial-card spotlight-card group"
+            @mousemove="onCardMove"
+            @mouseleave="onCardLeave"
+          >
+            <div class="editorial-card__inner p-8 space-y-4 flex flex-col justify-between min-h-[220px]">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between text-[10px] font-mono text-ink-tertiary">
+                  <span class="px-2.5 py-0.5 rounded-full bg-pastel-blue text-pastel-blue-text font-medium">TENET 01</span>
+                  <span>⚡ CONTRACT-FIRST</span>
+                </div>
+                <h3 class="font-serif text-xl font-medium text-ink group-hover:text-ink/90 transition-colors">
+                  End-to-End Type Safety
+                </h3>
+                <p class="text-xs text-ink-secondary leading-relaxed font-sans font-light">
+                  Unified TypeScript contracts connecting database schemas, API payloads, and reactive client state to prevent contract drift and runtime errors.
+                </p>
+              </div>
+              <div class="pt-3 border-t border-stroke text-[11px] font-mono text-ink-tertiary">
+                Zero Schema Mismatch
+              </div>
+            </div>
+          </div>
+
+          <!-- Pillar 2 -->
+          <div
+            data-aos="fade-up"
+            data-aos-delay="200"
+            class="editorial-card spotlight-card group"
+            @mousemove="onCardMove"
+            @mouseleave="onCardLeave"
+          >
+            <div class="editorial-card__inner p-8 space-y-4 flex flex-col justify-between min-h-[220px]">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between text-[10px] font-mono text-ink-tertiary">
+                  <span class="px-2.5 py-0.5 rounded-full bg-pastel-green text-pastel-green-text font-medium">TENET 02</span>
+                  <span>⚡ 60FPS UI</span>
+                </div>
+                <h3 class="font-serif text-xl font-medium text-ink group-hover:text-ink/90 transition-colors">
+                  Sub-100ms Interactions
+                </h3>
+                <p class="text-xs text-ink-secondary leading-relaxed font-sans font-light">
+                  Hardware-composited GPU transforms, lightweight reactivity trees, Lenis inertia scrolling, and sub-second asset delivery pipelines.
+                </p>
+              </div>
+              <div class="pt-3 border-t border-stroke text-[11px] font-mono text-ink-tertiary">
+                GPU-Accelerated Transforms
+              </div>
+            </div>
+          </div>
+
+          <!-- Pillar 3 -->
+          <div
+            data-aos="fade-up"
+            data-aos-delay="300"
+            class="editorial-card spotlight-card group"
+            @mousemove="onCardMove"
+            @mouseleave="onCardLeave"
+          >
+            <div class="editorial-card__inner p-8 space-y-4 flex flex-col justify-between min-h-[220px]">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between text-[10px] font-mono text-ink-tertiary">
+                  <span class="px-2.5 py-0.5 rounded-full bg-pastel-amber text-pastel-amber-text font-medium">TENET 03</span>
+                  <span>⚡ RESILIENCE</span>
+                </div>
+                <h3 class="font-serif text-xl font-medium text-ink group-hover:text-ink/90 transition-colors">
+                  Fault-Tolerant Seams
+                </h3>
+                <p class="text-xs text-ink-secondary leading-relaxed font-sans font-light">
+                  Graceful API degradation, automated seam testing, rate-limiting boundaries, and build-time SEO static snapshot prerendering.
+                </p>
+              </div>
+              <div class="pt-3 border-t border-stroke text-[11px] font-mono text-ink-tertiary">
+                Verified Seam Boundaries
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ── Curated Exploration Pathways (Asymmetric Bento) ─────────── -->
-      <section ref="bentoEl" class="space-y-8">
+      <section class="space-y-8">
         <!-- Section Header -->
         <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
           <div class="space-y-2">
@@ -14,10 +119,7 @@
               <span class="status-dot"></span>
               Core Disciplines &amp; Pathways
             </span>
-            <h2
-              class="font-serif text-3xl sm:text-5xl font-light tracking-[-0.03em] leading-tight text-ink reveal"
-              :class="bentoVisible ? 'is-visible' : ''"
-            >
+            <h2 class="font-serif text-3xl sm:text-5xl font-light tracking-[-0.03em] leading-tight text-ink">
               Curated archives
               <span class="italic text-ink-secondary">&amp; perspectives</span>
             </h2>
@@ -32,11 +134,16 @@
 
           <!-- Card 1: Case Studies (Span 7) -->
           <div
-            class="md:col-span-7 reveal"
-            :class="bentoVisible ? 'is-visible' : ''"
-            style="transition-delay: 80ms"
+            data-aos="fade-right"
+            data-aos-delay="100"
+            class="md:col-span-7"
           >
-            <RouterLink to="/projects" class="group block h-full editorial-card">
+            <RouterLink
+              to="/projects"
+              class="group block h-full editorial-card spotlight-card"
+              @mousemove="onCardMove"
+              @mouseleave="onCardLeave"
+            >
               <div class="editorial-card__inner p-8 sm:p-10 flex flex-col justify-between gap-8 min-h-[260px]">
                 <div class="space-y-4">
                   <div class="flex items-center justify-between">
@@ -69,11 +176,16 @@
 
           <!-- Card 2: Biography & Skills (Span 5) -->
           <div
-            class="md:col-span-5 reveal"
-            :class="bentoVisible ? 'is-visible' : ''"
-            style="transition-delay: 160ms"
+            data-aos="fade-left"
+            data-aos-delay="150"
+            class="md:col-span-5"
           >
-            <RouterLink to="/about" class="group block h-full editorial-card">
+            <RouterLink
+              to="/about"
+              class="group block h-full editorial-card spotlight-card"
+              @mousemove="onCardMove"
+              @mouseleave="onCardLeave"
+            >
               <div class="editorial-card__inner p-8 sm:p-10 flex flex-col justify-between gap-8 min-h-[260px]">
                 <div class="space-y-4">
                   <div class="flex items-center justify-between">
@@ -106,11 +218,16 @@
 
           <!-- Card 3: Publications (Span 8) -->
           <div
-            class="md:col-span-8 reveal"
-            :class="bentoVisible ? 'is-visible' : ''"
-            style="transition-delay: 240ms"
+            data-aos="fade-right"
+            data-aos-delay="200"
+            class="md:col-span-8"
           >
-            <RouterLink to="/blog" class="group block h-full editorial-card">
+            <RouterLink
+              to="/blog"
+              class="group block h-full editorial-card spotlight-card"
+              @mousemove="onCardMove"
+              @mouseleave="onCardLeave"
+            >
               <div class="editorial-card__inner p-8 sm:p-10 flex flex-col justify-between gap-8 min-h-[220px]">
                 <div class="space-y-4">
                   <div class="flex items-center justify-between">
@@ -143,11 +260,16 @@
 
           <!-- Card 4: Inquiries (Span 4) -->
           <div
-            class="md:col-span-4 reveal"
-            :class="bentoVisible ? 'is-visible' : ''"
-            style="transition-delay: 300ms"
+            data-aos="fade-left"
+            data-aos-delay="250"
+            class="md:col-span-4"
           >
-            <RouterLink to="/contact" class="group block h-full editorial-card">
+            <RouterLink
+              to="/contact"
+              class="group block h-full editorial-card spotlight-card"
+              @mousemove="onCardMove"
+              @mouseleave="onCardLeave"
+            >
               <div class="editorial-card__inner p-8 sm:p-10 flex flex-col justify-between gap-8 min-h-[220px]">
                 <div class="space-y-4">
                   <div class="flex items-center justify-between">
@@ -182,10 +304,12 @@
       </section>
 
       <!-- ── Featured Projects Section ───────────────────────────────── -->
-      <FeaturedProjects />
+      <div data-aos="fade-up">
+        <FeaturedProjects />
+      </div>
 
       <!-- ── Direct Inquiry Footer Banner ────────────────────────────── -->
-      <section class="editorial-card">
+      <section data-aos="zoom-in" class="editorial-card spotlight-card" @mousemove="onCardMove" @mouseleave="onCardLeave">
         <div class="editorial-card__inner p-8 sm:p-14 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
           <div class="space-y-2 max-w-xl">
             <span class="eyebrow-tag">
@@ -203,6 +327,8 @@
           <RouterLink
             to="/contact"
             class="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-md bg-ink text-surface text-sm font-sans font-medium tracking-tight active:scale-[0.98] transition-all duration-200 shrink-0"
+            @mousemove="handleMagneticMove"
+            @mouseleave="handleMagneticLeave"
           >
             <span>Start a Conversation</span>
             <span class="w-5 h-5 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
@@ -219,13 +345,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, nextTick } from 'vue'
 import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
+import ParticleBackground from '@/components/ui/ParticleBackground.vue'
 import HeroSection from '@/components/sections/HeroSection.vue'
 import FeaturedProjects from '@/components/sections/FeaturedProjects.vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
+import { useSpotlight } from '@/composables/useSpotlight'
+import { use3DTilt } from '@/composables/use3DTilt'
+import { useMagnetic } from '@/composables/useMagnetic'
 import { applySeo } from '@/utils/seo'
 import { getHomeSeoMeta } from '@/utils/seoPriority'
 
@@ -234,27 +365,33 @@ const aboutStore = useAboutStore()
 const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
 
-const bentoEl = ref<HTMLElement | null>(null)
-const bentoVisible = ref(false)
+const homeRootRef = ref<HTMLElement | null>(null)
+const { initAosReveals } = useScrollReveal()
+const { handleSpotlightMove } = useSpotlight()
+const { handleTiltMove, handleTiltLeave } = use3DTilt({ maxTilt: 4.5, scale: 1.012 })
+const { handleMagneticMove, handleMagneticLeave } = useMagnetic()
+
+function onCardMove(e: MouseEvent) {
+  handleSpotlightMove(e)
+  handleTiltMove(e)
+}
+
+function onCardLeave(e: MouseEvent) {
+  handleTiltLeave(e)
+}
 
 onMounted(async () => {
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        bentoVisible.value = true
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.05 }
-  )
-  if (bentoEl.value) observer.observe(bentoEl.value)
-
   await Promise.all([
     homeStore.fetchHomeData(),
     aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
     projectsStore.projects.length ? Promise.resolve() : projectsStore.fetchProjects(),
     blogStore.posts.length ? Promise.resolve() : blogStore.fetchPosts(),
   ])
+
+  await nextTick()
+  if (homeRootRef.value) {
+    initAosReveals(homeRootRef.value)
+  }
 
   applySeo({
     ...getHomeSeoMeta({
@@ -267,4 +404,3 @@ onMounted(async () => {
   })
 })
 </script>
-
