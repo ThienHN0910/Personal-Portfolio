@@ -3,7 +3,10 @@
     :to="`/blog/${post.slug || post._id}`"
     class="editorial-card spotlight-card group flex flex-col h-full active:scale-[0.99] transition-all duration-300"
     :class="[`blog-card--${layout}`]"
-    @mousemove="handleSpotlightMove"
+    data-cursor="read"
+    data-cursor-label="Read"
+    @mousemove="onMouseMove"
+    @mouseleave="onMouseLeave"
   >
     <div class="editorial-card__inner flex flex-col flex-1 p-0 overflow-hidden">
       <!-- ── Media / Cover Image Frame ────────────────────────────────── -->
@@ -106,9 +109,20 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useSpotlight } from '@/composables/useSpotlight'
+import { use3DTilt } from '@/composables/use3DTilt'
 import type { BlogPost } from '@/types'
 
 const { handleSpotlightMove } = useSpotlight()
+const { handleTiltMove, handleTiltLeave } = use3DTilt({ maxTilt: 5, scale: 1.012 })
+
+function onMouseMove(e: MouseEvent) {
+  handleSpotlightMove(e)
+  handleTiltMove(e)
+}
+
+function onMouseLeave(e: MouseEvent) {
+  handleTiltLeave(e)
+}
 
 const props = withDefaults(
   defineProps<{

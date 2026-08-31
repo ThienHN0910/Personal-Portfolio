@@ -1352,3 +1352,26 @@ a {
   opacity: 0;
   transform: scale(0.96) translateY(8px);
 }
+
+/* ─── Kinetic Typography & 3D Perspective Utilities ───────────────────── */
+.kinetic-word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  padding-bottom: 0.15em;
+  margin-bottom: -0.15em;
+}
+
+.kinetic-word {
+  display: inline-block;
+  will-change: transform, opacity;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+

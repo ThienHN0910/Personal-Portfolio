@@ -86,11 +86,19 @@
 
       <!-- ── Right: Precision Avatar & Live Status (Col 4) ───────────────── -->
       <div class="lg:col-span-4 flex flex-col">
-        <div class="editorial-card h-full">
+        <div
+          class="editorial-card spotlight-card h-full"
+          @mousemove="onRightCardMouseMove"
+          @mouseleave="onRightCardMouseLeave"
+        >
           <div class="editorial-card__inner p-7 flex flex-col justify-between gap-6 min-h-[440px]">
 
             <!-- Framed Portrait Container -->
-            <div class="relative w-full aspect-[4/3] rounded-[10px] overflow-hidden bg-bone border border-stroke group">
+            <div
+              class="relative w-full aspect-[4/3] rounded-[10px] overflow-hidden bg-bone border border-stroke group cursor-pointer"
+              data-cursor="view"
+              data-cursor-label="Hi"
+            >
               <img
                 v-if="data.profileImage"
                 :src="data.profileImage"
@@ -135,6 +143,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import gsap from 'gsap'
+import { useSpotlight } from '@/composables/useSpotlight'
+import { use3DTilt } from '@/composables/use3DTilt'
 
 defineProps<{ data: any }>()
 
@@ -143,6 +153,18 @@ const headingRef = ref<HTMLElement | null>(null)
 const descRef = ref<HTMLElement | null>(null)
 const pillsRef = ref<HTMLElement | null>(null)
 const ctaRowRef = ref<HTMLElement | null>(null)
+
+const { handleSpotlightMove } = useSpotlight()
+const { handleTiltMove, handleTiltLeave } = use3DTilt({ maxTilt: 4.5, scale: 1.01 })
+
+function onRightCardMouseMove(e: MouseEvent) {
+  handleSpotlightMove(e)
+  handleTiltMove(e)
+}
+
+function onRightCardMouseLeave(e: MouseEvent) {
+  handleTiltLeave(e)
+}
 
 const techPills = ['Vue 3', 'TypeScript', 'Node.js', 'Vite', 'Tailwind CSS', 'System Architecture', 'REST APIs']
 

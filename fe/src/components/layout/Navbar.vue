@@ -52,6 +52,8 @@
           type="button"
           class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-bone border border-stroke hover:border-ink/20 hover:bg-bone/80 text-ink-secondary hover:text-ink transition-all duration-200 text-xs font-mono group active:scale-[0.98]"
           @click="openPalette"
+          @mousemove="handleMagneticMove"
+          @mouseleave="handleMagneticLeave"
           aria-label="Open command palette"
         >
           <!-- Magnifier — thin SVG icon -->
@@ -139,11 +141,13 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { useCommandPalette } from '@/composables/useCommandPalette'
+import { useMagnetic } from '@/composables/useMagnetic'
 import { useAboutStore } from '@/stores/about'
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher.vue'
 
 const aboutStore = useAboutStore()
 const { openPalette } = useCommandPalette()
+const { handleMagneticMove, handleMagneticLeave } = useMagnetic()
 const isMobileMenuOpen = ref(false)
 const isScrolled = ref(false)
 const isMac = ref(false)
