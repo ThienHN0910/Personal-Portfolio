@@ -37,7 +37,7 @@
         </div>
 
         <!-- ── Editorial Hero Header Card with Embedded Publication Spec Rail ── -->
-        <header class="editorial-card">
+        <header data-aos="fade-up" class="editorial-card">
           <div class="editorial-card__inner p-8 sm:p-12 lg:p-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <!-- Left Header: Eyebrow, Title & Overview (Col 8) -->
             <div class="lg:col-span-8 space-y-6">
@@ -50,6 +50,7 @@
                   v-for="tag in (post.tags || []).slice(0, 3)"
                   :key="tag"
                   class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-blue text-pastel-blue-text uppercase tracking-wider font-medium"
+                  data-cursor="explore"
                 >
                   #{{ tag }}
                 </span>

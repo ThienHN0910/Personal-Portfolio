@@ -8,7 +8,7 @@
       </RouterLink>
 
       <!-- Page Header -->
-      <div class="editorial-card">
+      <div data-aos="fade-up" class="editorial-card">
         <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
           <div class="flex items-center justify-between gap-3">
             <span class="eyebrow-tag">
@@ -43,7 +43,7 @@
 
       <div v-else class="space-y-6">
         <!-- PDF Actions Header Bar -->
-        <div class="editorial-card">
+        <div data-aos="fade-up" data-aos-delay="100" class="editorial-card">
           <div class="editorial-card__inner p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
             <div class="flex items-center gap-2 text-xs font-mono text-ink-secondary">
               <span class="w-1.5 h-1.5 rounded-full bg-pastel-green-text"></span>
@@ -55,14 +55,18 @@
                 :href="resumeUrl"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-cursor="visit"
+                data-cursor-label="Open"
                 class="px-3.5 py-2 rounded-md bg-bone border border-stroke text-ink-secondary text-xs font-mono hover:border-ink/20 hover:text-ink active:scale-[0.98] transition-all"
               >
                 Open in Tab ↗
               </a>
               <a
                 :href="resumeUrl"
-                download
-                class="group px-4 py-2 rounded-md bg-ink text-surface text-xs font-sans font-medium active:scale-[0.98] transition-all inline-flex items-center gap-1.5"
+                download="Ho-Ngoc-Thien-CV.pdf"
+                data-cursor="verify"
+                data-cursor-label="Download"
+                class="px-4 py-2 rounded-md bg-ink text-surface text-xs font-sans font-medium active:scale-[0.98] transition-all inline-flex items-center gap-1.5"
               >
                 <span>Download PDF</span>
                 <span>↓</span>

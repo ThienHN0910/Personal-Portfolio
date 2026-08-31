@@ -1,7 +1,19 @@
 import { ref } from 'vue'
 import gsap from 'gsap'
 
-export type CursorMode = 'default' | 'pointer' | 'view' | 'read' | 'magnetic' | 'text'
+export type CursorMode =
+  | 'default'
+  | 'pointer'
+  | 'view'
+  | 'read'
+  | 'copy'
+  | 'code'
+  | 'visit'
+  | 'verify'
+  | 'chat'
+  | 'explore'
+  | 'magnetic'
+  | 'text'
 
 export interface CustomCursorState {
   x: number
@@ -27,11 +39,22 @@ const cursorState = ref<CustomCursorState>({
 
 let isTouchDevice = false
 
+const DEFAULT_LABELS: Record<string, string> = {
+  view: 'View',
+  read: 'Read',
+  copy: 'Copy',
+  code: 'Code',
+  visit: 'Visit',
+  verify: 'Verify',
+  chat: 'Say Hi',
+  explore: 'Explore',
+}
+
 export function useCustomCursor() {
   function setCursorMode(mode: CursorMode, label = '') {
     if (isTouchDevice) return
     cursorState.value.mode = mode
-    cursorState.value.label = label
+    cursorState.value.label = label || DEFAULT_LABELS[mode] || ''
   }
 
   function resetCursorMode() {
@@ -69,7 +92,7 @@ export function useCustomCursor() {
       const cardEl = target.closest('[data-cursor]') as HTMLElement | null
       if (cardEl) {
         const cursorType = cardEl.getAttribute('data-cursor') as CursorMode
-        const customLabel = cardEl.getAttribute('data-cursor-label') || (cursorType === 'view' ? 'View' : (cursorType === 'read' ? 'Read' : ''))
+        const customLabel = cardEl.getAttribute('data-cursor-label') || DEFAULT_LABELS[cursorType] || ''
         setCursorMode(cursorType || 'pointer', customLabel)
         return
       }
