@@ -76,7 +76,7 @@ const navItems = [
   { to: '/admin/appearance', label: 'Appearance', icon: 'appearance' as const },
 ]
 
-const themeName = computed(() => themeStore.theme.name || 'Obsidian Dark')
+const themeName = computed(() => themeStore.activePreset.name || 'Editorial Dark')
 
 watch(() => route.fullPath, () => {
   sidebarOpen.value = false

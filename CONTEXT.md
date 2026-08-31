@@ -101,13 +101,33 @@ When generating or editing rich content for **Articles** (`/blog`) and **Case St
 | `<table>` | `.project-spec-table`, `.article-table` | Monospace specification table with uppercase headers and smooth row hover highlight. |
 | `<figure>` | `.project-figure`, `.article-figure` | Embedded image or architectural diagram with rounded frame (`14px`), zoom on hover (`scale(1.02)`), and monospace `<figcaption>`. |
 
-### 4. Strict Inline Style Rules for AI Generation
+### 4. Extended Layout Grids & Badges
+
+| Semantic Tag | Predefined CSS Class | Purpose & Rendering |
+| :--- | :--- | :--- |
+| `<div>` | `.article-grid-12`, `.project-grid-12` | Responsive 12-column asymmetric grid container. |
+| `<div>` | `.article-col-7`, `.article-col-5`, `.article-col-6`, `.article-col-4`, `.article-col-8`, `.article-col-12` | Column span classes that collapse cleanly to single-column on mobile viewports. |
+| `<span>` | `.article-badge`, `.project-badge` | Monospace pill badge with spot pastel tint (`--pastel-blue`, `--pastel-green`, `--pastel-amber`, `--pastel-red`). |
+
+---
+
+## Multi-Theme Architecture & Palette System
+
+The platform supports 5 curated editorial palettes driven dynamically via CSS custom properties:
+1. **`editorial-dark`**: Obsidian Black canvas (`#090A0C`), Bone surface (`#12141A`), High-contrast crisp ink (`#F5F5F7`), and subtle dark-mode pastel spot tints.
+2. **`editorial-light`**: Warm Fine Paper canvas (`#FAFAF8`), Bone cards (`#F0EFEA`), Crisp elevated surface (`#FFFFFF`), Deep typography (`#111317`).
+3. **`monochrome-cyber`**: Pure Jet Black canvas (`#000000`), Dark zinc bone (`#0D0D0E`), Emerald and pure white accents.
+4. **`warm-sepia`**: Newsprint Sepia canvas (`#F4EFE6`), Warm stone surfaces, Espresso ink (`#2D251E`).
+5. **`system`**: Dynamic OS Preference Auto-detection via `window.matchMedia('(prefers-color-scheme: dark)')`.
+
+### 5. Strict Inline Style Rules for AI Generation
 
 - **Permitted**: Structural layout attributes on `<div>`, `<section>`, `<figure>`:
   - `style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem;"`
   - `style="grid-column: span 8;"`, `style="grid-column: span 4;"`, `style="grid-column: span 7;"`, `style="grid-column: span 5;"`
   - `style="display: flex; justify-content: space-between; align-items: stretch; gap: 1.25rem;"`
   - `style="margin-top: 3rem; margin-bottom: 2rem;"`
-- **Strictly Prohibited**: Inline colors (`color: ...`), background colors (`background: ...`), custom fonts (`font-family: ...`), font sizes (`font-size: ...`), or border-radius. All visual identity is governed exclusively by the CSS classes above.
+- **Strictly Prohibited**: Inline colors (`color: ...`), background colors (`background: ...`), custom fonts (`font-family: ...`), font sizes (`font-size: ...`), or border-radius. All visual identity is governed exclusively by the CSS classes and theme custom properties.
 - **Creative Direction Dials**: `DESIGN_VARIANCE: 8` (asymmetric bento grids), `MOTION_INTENSITY: 8` (60fps GPU acceleration), `VISUAL_DENSITY: 3` (airy negative space).
+
 

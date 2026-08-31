@@ -7,28 +7,28 @@ export default {
   theme: {
     extend: {
       colors: {
-        canvas: '#090A0C',
-        bone: '#12141A',
-        surface: '#181A22',
+        canvas: 'var(--canvas)',
+        bone: 'var(--bone)',
+        surface: 'var(--surface)',
         ink: {
-          DEFAULT: '#F5F5F7',
-          secondary: '#8E919A',
-          tertiary: '#565963',
+          DEFAULT: 'var(--ink)',
+          secondary: 'var(--ink-secondary)',
+          tertiary: 'var(--ink-tertiary)',
         },
         stroke: {
-          DEFAULT: 'rgba(255, 255, 255, 0.08)',
-          soft: 'rgba(255, 255, 255, 0.04)',
+          DEFAULT: 'var(--stroke)',
+          soft: 'var(--stroke-soft)',
         },
-        // Muted dark-mode spot pastels
+        // Spot pastels mapped dynamically to theme variables
         pastel: {
-          red: '#281014',
-          'red-text': '#F87171',
-          blue: '#0E1F36',
-          'blue-text': '#60A5FA',
-          green: '#0E2616',
-          'green-text': '#4ADE80',
-          amber: '#281D08',
-          'amber-text': '#FBBF24',
+          red: 'var(--pastel-red)',
+          'red-text': 'var(--pastel-red-text)',
+          blue: 'var(--pastel-blue)',
+          'blue-text': 'var(--pastel-blue-text)',
+          green: 'var(--pastel-green)',
+          'green-text': 'var(--pastel-green-text)',
+          amber: 'var(--pastel-amber)',
+          'amber-text': 'var(--pastel-amber-text)',
         },
       },
       fontFamily: {
