@@ -93,23 +93,31 @@
         >
           <div class="editorial-card__inner p-7 flex flex-col justify-between gap-6 min-h-[440px]">
 
-            <!-- Framed Portrait Container -->
-            <div
-              class="relative w-full aspect-[4/3] rounded-[10px] overflow-hidden bg-bone border border-stroke group cursor-pointer"
-              data-cursor="view"
-              data-cursor-label="Hi"
-            >
-              <img
-                v-if="data.profileImage"
-                :src="data.profileImage"
-                alt="Hồ Ngọc Thiện"
-                class="w-full h-full object-cover grayscale-[12%] group-hover:grayscale-0 transition-all duration-700"
-              />
-              <div v-else class="w-full h-full flex flex-col items-center justify-center gap-3 bg-bone">
-                <div class="w-16 h-16 rounded-2xl bg-surface border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
-                  <span class="font-mono text-ink-secondary font-semibold text-lg tracking-tighter">HN</span>
+            <!-- Framed Portrait Container with Floating Spec Pill -->
+            <div class="relative">
+              <div
+                class="relative w-full aspect-[4/3] rounded-[10px] overflow-hidden bg-bone border border-stroke group cursor-pointer"
+                data-cursor="view"
+                data-cursor-label="Hi"
+              >
+                <img
+                  v-if="data.profileImage"
+                  :src="data.profileImage"
+                  alt="Hồ Ngọc Thiện"
+                  class="w-full h-full object-cover grayscale-[12%] group-hover:grayscale-0 transition-all duration-700"
+                />
+                <div v-else class="w-full h-full flex flex-col items-center justify-center gap-3 bg-bone">
+                  <div class="w-16 h-16 rounded-2xl bg-surface border border-stroke flex items-center justify-center shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]">
+                    <span class="font-mono text-ink-secondary font-semibold text-lg tracking-tighter">HN</span>
+                  </div>
+                  <span class="font-serif italic text-ink-secondary text-sm">Hồ Ngọc Thiện</span>
                 </div>
-                <span class="font-serif italic text-ink-secondary text-sm">Hồ Ngọc Thiện</span>
+              </div>
+
+              <!-- Floating Ambient Pill -->
+              <div class="absolute -bottom-2.5 -right-2 px-3 py-1 rounded-full bg-surface/95 border border-stroke/90 shadow-island backdrop-blur-md text-[10px] font-mono text-ink flex items-center gap-1.5 animate-float z-10 pointer-events-none">
+                <span class="w-1.5 h-1.5 rounded-full bg-pastel-blue-text"></span>
+                <span>Full-Stack &amp; Arch</span>
               </div>
             </div>
 

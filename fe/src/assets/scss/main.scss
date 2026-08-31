@@ -1375,3 +1375,33 @@ a {
   transform-style: preserve-3d;
 }
 
+/* ─── Ambient Floating Physics ─────────────────────────────────────────── */
+@keyframes floatAmbient {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0);
+  }
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -12px, 0) rotate(1.5deg);
+  }
+}
+
+.animate-float {
+  animation: floatAmbient 5s ease-in-out infinite;
+  will-change: transform;
+}
+
+.animate-float-slow {
+  animation: floatSlow 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+
