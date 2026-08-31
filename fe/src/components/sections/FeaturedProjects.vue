@@ -7,10 +7,7 @@
           <span class="status-dot"></span>
           Selected Architectures
         </span>
-        <h2
-          class="font-serif text-3xl sm:text-5xl font-light tracking-[-0.03em] leading-tight text-ink reveal"
-          :class="isVisible ? 'is-visible' : ''"
-        >
+        <h2 ref="headerTitleRef" class="font-serif text-3xl sm:text-5xl font-light tracking-[-0.03em] leading-tight text-ink">
           Featured case studies
           <span class="italic text-ink-secondary">&amp; deployments</span>
         </h2>
@@ -18,7 +15,9 @@
 
       <RouterLink
         to="/projects"
-        class="group self-start sm:self-auto inline-flex items-center gap-2.5 px-5 py-3 rounded-md bg-ink text-surface text-xs font-sans font-medium active:scale-[0.98] transition-transform duration-200 shrink-0"
+        class="group self-start sm:self-auto inline-flex items-center gap-2.5 px-5 py-3 rounded-md bg-ink text-surface text-xs font-sans font-medium active:scale-[0.98] transition-all duration-200 shrink-0"
+        @mousemove="handleMagneticMove"
+        @mouseleave="handleMagneticLeave"
       >
         <span>View Full Archive</span>
         <span class="w-5 h-5 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
@@ -35,16 +34,14 @@
     <LoadingSpinner v-if="loading" />
 
     <!-- ── Asymmetric Projects Grid ────────────────────────────────── -->
-    <div v-else-if="featuredProjects.length" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+    <div v-else-if="featuredProjects.length" ref="gridRef" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
       <div
         v-for="(project, index) in featuredProjects"
         :key="project._id"
-        class="reveal"
+        class="project-card-wrapper"
         :class="[
-          index === 0 ? 'lg:col-span-8' : (index === 1 ? 'lg:col-span-4' : 'lg:col-span-12'),
-          isVisible ? 'is-visible' : ''
+          index === 0 ? 'lg:col-span-8' : (index === 1 ? 'lg:col-span-4' : 'lg:col-span-12')
         ]"
-        :style="`transition-delay: ${60 + index * 90}ms`"
       >
         <ProjectCard :project="project" :layout="index === 0 ? 'featured' : (index === 2 ? 'wide' : 'standard')" />
       </div>
@@ -59,10 +56,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import ProjectCard from '@/components/ui/ProjectCard.vue'
+import { useMagnetic } from '@/composables/useMagnetic'
+import { useScrollReveal } from '@/composables/useScrollReveal'
 import { useProjectsStore } from '@/stores/projects'
 
 const projectsStore = useProjectsStore()
@@ -70,22 +69,24 @@ const loading = computed(() => projectsStore.loading)
 const featuredProjects = computed(() => projectsStore.projects.filter((p) => p.featured).slice(0, 3))
 
 const sectionEl = ref<HTMLElement | null>(null)
-const isVisible = ref(false)
+const headerTitleRef = ref<HTMLElement | null>(null)
+const gridRef = ref<HTMLElement | null>(null)
 
-onMounted(() => {
+const { reveal } = useScrollReveal()
+const { handleMagneticMove, handleMagneticLeave } = useMagnetic()
+
+onMounted(async () => {
   if (!projectsStore.projects.length) {
-    void projectsStore.fetchProjects()
+    await projectsStore.fetchProjects()
   }
-  const observer = new IntersectionObserver(
-    ([entry]) => {
-      if (entry.isIntersecting) {
-        isVisible.value = true
-        observer.disconnect()
-      }
-    },
-    { threshold: 0.05 }
-  )
-  if (sectionEl.value) observer.observe(sectionEl.value)
+
+  await nextTick()
+  if (headerTitleRef.value) {
+    reveal(headerTitleRef.value, { y: 24, duration: 0.65 })
+  }
+  if (gridRef.value && gridRef.value.children.length) {
+    reveal(Array.from(gridRef.value.children), { y: 35, stagger: 0.12, duration: 0.75, scale: 0.98 })
+  }
 })
 </script>
 

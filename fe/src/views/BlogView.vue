@@ -106,6 +106,7 @@
 
       <div
         v-else-if="blogStore.posts.length"
+        ref="blogGridRef"
         class="grid grid-cols-1 md:grid-cols-12 gap-7 sm:gap-8"
       >
         <div
@@ -168,11 +169,14 @@ import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
 import BlogCard from '@/components/ui/BlogCard.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
 import { applySeo } from '@/utils/seo'
 import { getBlogSeoMeta } from '@/utils/seoPriority'
 
 const blogStore = useBlogStore()
 const homeStore = useHomeStore()
+const { reveal } = useScrollReveal()
+const blogGridRef = ref<HTMLElement | null>(null)
 const aboutStore = useAboutStore()
 const projectsStore = useProjectsStore()
 const categoriesStore = useCategoriesStore()
@@ -303,6 +307,9 @@ watch([searchQuery, activeCategory], () => {
     initialLoading.value = false
     await nextTick()
     setupObserver()
+    if (blogGridRef.value && blogGridRef.value.children.length) {
+      reveal(Array.from(blogGridRef.value.children), { y: 30, stagger: 0.08, duration: 0.65, scale: 0.98 })
+    }
   }, 250)
 })
 
@@ -318,6 +325,9 @@ onMounted(async () => {
   initialLoading.value = false
   await nextTick()
   setupObserver()
+  if (blogGridRef.value && blogGridRef.value.children.length) {
+    reveal(Array.from(blogGridRef.value.children), { y: 30, stagger: 0.08, duration: 0.65, scale: 0.98 })
+  }
 
   applySeo({
     ...getBlogSeoMeta({
