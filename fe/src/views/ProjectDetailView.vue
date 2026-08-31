@@ -211,58 +211,114 @@
           @close="closeLightbox"
         />
 
-        <!-- ── Related Case Studies & Technical Notes ──────────────────── -->
-        <section v-if="relatedProjects.length || relatedArticles.length" class="space-y-6 pt-10 border-t border-stroke">
-          <div class="flex items-center justify-between">
+        <!-- ── Related Case Studies & Connected Technical Articles ─────── -->
+        <section v-if="relatedProjects.length || relatedArticles.length" class="space-y-8 pt-12 border-t border-stroke">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
             <div class="space-y-1">
               <span class="eyebrow-tag">
                 <span class="status-dot"></span>
-                Connected Research
+                Connected Research &amp; Deployments
               </span>
-              <h2 class="text-2xl sm:text-3xl font-serif font-light text-ink">Related Case Studies &amp; Articles</h2>
+              <h2 class="text-2xl sm:text-4xl font-serif font-light text-ink">Related Systems &amp; Publications</h2>
             </div>
-            <RouterLink to="/projects" class="text-xs font-mono text-ink-secondary hover:text-ink transition-colors">
-              Explore Catalog →
-            </RouterLink>
+            <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Dynamic Cross-Reference</span>
           </div>
 
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            <!-- Related Projects -->
             <div
               v-for="relProj in relatedProjects"
               :key="relProj._id"
-              class="editorial-card"
+              class="editorial-card group hover:-translate-y-1 transition-transform duration-300 flex flex-col justify-between"
             >
-              <RouterLink :to="`/projects/${relProj.slug || relProj._id}`" class="block h-full p-6 space-y-4 group">
-                <div class="flex items-center justify-between text-[10px] font-mono text-ink-tertiary">
-                  <span class="uppercase">Case Study</span>
-                  <span class="text-pastel-blue-text">View ↗</span>
+              <div class="editorial-card__inner p-5 space-y-4 flex-1 flex flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="overflow-hidden rounded-md bg-bone border border-stroke aspect-[16/9] relative">
+                    <img
+                      v-if="relProj.imageUrl"
+                      :src="relProj.imageUrl"
+                      :alt="relProj.title"
+                      class="w-full h-full object-cover grayscale-[15%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    />
+                    <div v-else class="w-full h-full flex items-center justify-center text-ink-tertiary text-xs font-mono">
+                      Case Study
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="px-2 py-0.5 rounded bg-pastel-blue text-pastel-blue-text uppercase">Case Study</span>
+                    <span class="text-ink-tertiary">{{ relProj.duration || '2025' }}</span>
+                  </div>
+
+                  <h3 class="font-serif text-lg font-medium text-ink group-hover:text-ink/80 transition-colors line-clamp-1">
+                    {{ relProj.title }}
+                  </h3>
+                  <p class="text-xs text-ink-secondary line-clamp-2 font-sans font-light leading-relaxed">
+                    {{ relProj.description }}
+                  </p>
                 </div>
-                <h3 class="font-serif text-lg font-medium text-ink group-hover:text-ink/80 transition-colors">
-                  {{ relProj.title }}
-                </h3>
-                <p class="text-xs text-ink-secondary line-clamp-2 font-sans font-light">
-                  {{ relProj.description }}
-                </p>
-              </RouterLink>
+
+                <div class="pt-3 border-t border-stroke/60 flex items-center justify-between text-xs font-mono">
+                  <span class="text-[10px] text-ink-tertiary uppercase truncate max-w-[120px]">
+                    {{ relProj.technologies?.[0] || 'System' }}
+                  </span>
+                  <RouterLink
+                    :to="`/projects/${relProj.slug || relProj._id}`"
+                    class="text-ink font-medium hover:underline inline-flex items-center gap-1"
+                  >
+                    <span>View Case</span>
+                    <span>↗</span>
+                  </RouterLink>
+                </div>
+              </div>
             </div>
 
+            <!-- Related Articles -->
             <div
               v-for="relPost in relatedArticles"
               :key="relPost._id"
-              class="editorial-card"
+              class="editorial-card group hover:-translate-y-1 transition-transform duration-300 flex flex-col justify-between"
             >
-              <RouterLink :to="`/blog/${relPost.slug || relPost._id}`" class="block h-full p-6 space-y-4 group">
-                <div class="flex items-center justify-between text-[10px] font-mono text-ink-tertiary">
-                  <span class="uppercase text-pastel-green-text">Technical Note</span>
-                  <span>Read ↗</span>
+              <div class="editorial-card__inner p-5 space-y-4 flex-1 flex flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="overflow-hidden rounded-md bg-bone border border-stroke aspect-[16/9] relative">
+                    <img
+                      v-if="relPost.coverImage"
+                      :src="relPost.coverImage"
+                      :alt="relPost.title"
+                      class="w-full h-full object-cover grayscale-[15%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    />
+                    <div v-else class="w-full h-full flex items-center justify-center text-ink-tertiary text-xs font-mono">
+                      Technical Article
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="px-2 py-0.5 rounded bg-pastel-green text-pastel-green-text uppercase">Article</span>
+                    <span class="text-ink-tertiary">{{ relPost.categories?.[0] || 'Publication' }}</span>
+                  </div>
+
+                  <h3 class="font-serif text-lg font-medium text-ink group-hover:text-ink/80 transition-colors line-clamp-1">
+                    {{ relPost.title }}
+                  </h3>
+                  <p class="text-xs text-ink-secondary line-clamp-2 font-sans font-light leading-relaxed">
+                    {{ relPost.excerpt }}
+                  </p>
                 </div>
-                <h3 class="font-serif text-lg font-medium text-ink group-hover:text-ink/80 transition-colors">
-                  {{ relPost.title }}
-                </h3>
-                <p class="text-xs text-ink-secondary line-clamp-2 font-sans font-light">
-                  {{ relPost.excerpt }}
-                </p>
-              </RouterLink>
+
+                <div class="pt-3 border-t border-stroke/60 flex items-center justify-between text-xs font-mono">
+                  <span class="text-[10px] text-ink-tertiary uppercase truncate max-w-[120px]">
+                    #{{ relPost.tags?.[0] || 'Guide' }}
+                  </span>
+                  <RouterLink
+                    :to="`/blog/${relPost.slug || relPost._id}`"
+                    class="text-ink font-medium hover:underline inline-flex items-center gap-1"
+                  >
+                    <span>Read Note</span>
+                    <span>↗</span>
+                  </RouterLink>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -294,6 +350,7 @@ import type { Project } from '@/types'
 import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
 import { getProjectDetailSeoMeta } from '@/utils/seoPriority'
+import { getRelatedArticlesForProject, getRelatedProjectsForProject } from '@/utils/relatedRecommender'
 
 const route = useRoute()
 const router = useRouter()
@@ -313,14 +370,12 @@ const sanitizedProjectContext = computed(() => {
 
 const relatedProjects = computed(() => {
   if (!project.value) return []
-  const currentId = project.value.slug || project.value._id
-  return projectsStore.projects
-    .filter((p) => (p.slug || p._id) !== currentId)
-    .slice(0, 2)
+  return getRelatedProjectsForProject(project.value, projectsStore.projects, 2)
 })
 
 const relatedArticles = computed(() => {
-  return blogStore.posts.slice(0, 1)
+  if (!project.value) return []
+  return getRelatedArticlesForProject(project.value, blogStore.posts, 2)
 })
 
 watch(sanitizedProjectContext, () => {

@@ -103,6 +103,118 @@
           @close="closeLightbox"
         />
 
+        <!-- ── Related Case Studies & Connected Technical Articles ─────── -->
+        <section v-if="relatedArticles.length || relatedProjects.length" class="space-y-8 pt-12 border-t border-stroke">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+            <div class="space-y-1">
+              <span class="eyebrow-tag">
+                <span class="status-dot"></span>
+                Connected Research &amp; Deployments
+              </span>
+              <h2 class="text-2xl sm:text-4xl font-serif font-light text-ink">Related Systems &amp; Publications</h2>
+            </div>
+            <span class="text-[10px] font-mono text-ink-tertiary uppercase tracking-wider">Dynamic Cross-Reference</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 sm:gap-6">
+            <!-- Related Articles -->
+            <div
+              v-for="relPost in relatedArticles"
+              :key="relPost._id"
+              class="editorial-card group hover:-translate-y-1 transition-transform duration-300 flex flex-col justify-between"
+            >
+              <div class="editorial-card__inner p-5 space-y-4 flex-1 flex flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="overflow-hidden rounded-md bg-bone border border-stroke aspect-[16/9] relative">
+                    <img
+                      v-if="relPost.coverImage"
+                      :src="relPost.coverImage"
+                      :alt="relPost.title"
+                      class="w-full h-full object-cover grayscale-[15%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    />
+                    <div v-else class="w-full h-full flex items-center justify-center text-ink-tertiary text-xs font-mono">
+                      Technical Article
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="px-2 py-0.5 rounded bg-pastel-green text-pastel-green-text uppercase">Article</span>
+                    <span class="text-ink-tertiary">{{ relPost.categories?.[0] || 'Publication' }}</span>
+                  </div>
+
+                  <h3 class="font-serif text-lg font-medium text-ink group-hover:text-ink/80 transition-colors line-clamp-1">
+                    {{ relPost.title }}
+                  </h3>
+                  <p class="text-xs text-ink-secondary line-clamp-2 font-sans font-light leading-relaxed">
+                    {{ relPost.excerpt }}
+                  </p>
+                </div>
+
+                <div class="pt-3 border-t border-stroke/60 flex items-center justify-between text-xs font-mono">
+                  <span class="text-[10px] text-ink-tertiary uppercase truncate max-w-[120px]">
+                    #{{ relPost.tags?.[0] || 'Guide' }}
+                  </span>
+                  <RouterLink
+                    :to="`/blog/${relPost.slug || relPost._id}`"
+                    class="text-ink font-medium hover:underline inline-flex items-center gap-1"
+                  >
+                    <span>Read Note</span>
+                    <span>↗</span>
+                  </RouterLink>
+                </div>
+              </div>
+            </div>
+
+            <!-- Related Projects -->
+            <div
+              v-for="relProj in relatedProjects"
+              :key="relProj._id"
+              class="editorial-card group hover:-translate-y-1 transition-transform duration-300 flex flex-col justify-between"
+            >
+              <div class="editorial-card__inner p-5 space-y-4 flex-1 flex flex-col justify-between">
+                <div class="space-y-3">
+                  <div class="overflow-hidden rounded-md bg-bone border border-stroke aspect-[16/9] relative">
+                    <img
+                      v-if="relProj.imageUrl"
+                      :src="relProj.imageUrl"
+                      :alt="relProj.title"
+                      class="w-full h-full object-cover grayscale-[15%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500"
+                    />
+                    <div v-else class="w-full h-full flex items-center justify-center text-ink-tertiary text-xs font-mono">
+                      Case Study
+                    </div>
+                  </div>
+
+                  <div class="flex items-center justify-between text-[10px] font-mono">
+                    <span class="px-2 py-0.5 rounded bg-pastel-blue text-pastel-blue-text uppercase">Case Study</span>
+                    <span class="text-ink-tertiary">{{ relProj.duration || '2025' }}</span>
+                  </div>
+
+                  <h3 class="font-serif text-lg font-medium text-ink group-hover:text-ink/80 transition-colors line-clamp-1">
+                    {{ relProj.title }}
+                  </h3>
+                  <p class="text-xs text-ink-secondary line-clamp-2 font-sans font-light leading-relaxed">
+                    {{ relProj.description }}
+                  </p>
+                </div>
+
+                <div class="pt-3 border-t border-stroke/60 flex items-center justify-between text-xs font-mono">
+                  <span class="text-[10px] text-ink-tertiary uppercase truncate max-w-[120px]">
+                    {{ relProj.technologies?.[0] || 'System' }}
+                  </span>
+                  <RouterLink
+                    :to="`/projects/${relProj.slug || relProj._id}`"
+                    class="text-ink font-medium hover:underline inline-flex items-center gap-1"
+                  >
+                    <span>View Case</span>
+                    <span>↗</span>
+                  </RouterLink>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- ── Article Footer & Author Bio Card ────────────────────────── -->
         <footer class="editorial-card">
           <div class="editorial-card__inner p-8 sm:p-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
@@ -151,14 +263,18 @@ import ImageLightboxModal from '@/components/ui/ImageLightboxModal.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
 import { useRichContentEnhancer } from '@/composables/useRichContentEnhancer'
 import { useBlogStore } from '@/stores/blog'
+import { useProjectsStore } from '@/stores/projects'
 import type { BlogPost } from '@/types'
 import { sanitizeRichContent } from '@/utils/richContent'
 import { applySeo } from '@/utils/seo'
 import { getBlogDetailSeoMeta } from '@/utils/seoPriority'
+import { getRelatedArticlesForPost, getRelatedProjectsForPost } from '@/utils/relatedRecommender'
 
 const route = useRoute()
 const router = useRouter()
 const blogStore = useBlogStore()
+const projectsStore = useProjectsStore()
+
 const post = ref<BlogPost | null>(null)
 const loading = ref(true)
 const readingProgress = ref(0)
@@ -169,6 +285,16 @@ const { lightbox, closeLightbox, scheduleEnhance } = useRichContentEnhancer(arti
 const sanitizedContent = computed(() => {
   const html = post.value?.content || ''
   return sanitizeRichContent(html)
+})
+
+const relatedArticles = computed(() => {
+  if (!post.value) return []
+  return getRelatedArticlesForPost(post.value, blogStore.posts, 2)
+})
+
+const relatedProjects = computed(() => {
+  if (!post.value) return []
+  return getRelatedProjectsForPost(post.value, projectsStore.projects, 2)
 })
 
 watch(sanitizedContent, () => {
@@ -237,8 +363,14 @@ watch(
   { immediate: true },
 )
 
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener('scroll', updateReadingProgress, { passive: true })
+  if (!blogStore.posts.length) {
+    void blogStore.fetchPosts({ limit: 12 })
+  }
+  if (!projectsStore.projects.length) {
+    void projectsStore.fetchProjects({ limit: 12 })
+  }
 })
 
 onUnmounted(() => {
