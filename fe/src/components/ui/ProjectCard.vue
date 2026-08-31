@@ -3,7 +3,10 @@
     class="editorial-card spotlight-card flex flex-col group cursor-pointer h-full active:scale-[0.99] transition-all duration-300"
     role="link"
     tabindex="0"
-    @mousemove="handleSpotlightMove"
+    data-cursor="view"
+    data-cursor-label="View"
+    @mousemove="onMouseMove"
+    @mouseleave="onMouseLeave"
     @click="handleCardClick"
     @keydown.enter.prevent="openDetail"
     @keydown.space.prevent="openDetail"
@@ -129,9 +132,20 @@ import { useRouter, RouterLink } from 'vue-router'
 
 import IconGlyph from '@/components/ui/IconGlyph.vue'
 import { useSpotlight } from '@/composables/useSpotlight'
+import { use3DTilt } from '@/composables/use3DTilt'
 import type { Project } from '@/types'
 
 const { handleSpotlightMove } = useSpotlight()
+const { handleTiltMove, handleTiltLeave } = use3DTilt({ maxTilt: 5, scale: 1.012 })
+
+function onMouseMove(e: MouseEvent) {
+  handleSpotlightMove(e)
+  handleTiltMove(e)
+}
+
+function onMouseLeave(e: MouseEvent) {
+  handleTiltLeave(e)
+}
 
 const props = withDefaults(
   defineProps<{

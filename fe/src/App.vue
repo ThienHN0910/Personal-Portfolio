@@ -20,7 +20,8 @@
     </main>
     <Footer v-if="!isAdminRoute" />
 
-    <!-- Global Command Palette & Notifications -->
+    <!-- Global Command Palette, Notifications & Fluid Cursor -->
+    <CustomCursor v-if="!isAdminRoute" />
     <CommandPalette />
     <ToastNotification />
     <!-- Scroll to Top FAB (public pages only) -->
@@ -35,6 +36,7 @@ import { Analytics } from '@vercel/analytics/vue'
 
 import Navbar from '@/components/layout/Navbar.vue'
 import Footer from '@/components/layout/Footer.vue'
+import CustomCursor from '@/components/ui/CustomCursor.vue'
 import CommandPalette from '@/components/ui/CommandPalette.vue'
 import ToastNotification from '@/components/ui/ToastNotification.vue'
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton.vue'
