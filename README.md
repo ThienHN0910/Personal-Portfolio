@@ -3,17 +3,22 @@
 A full-stack portfolio monorepo with a Vue frontend and an Express backend.
 
 ## Highlights
-
-- Public pages: Home, About, Projects, Blog, Contact, CV Viewer
-- Admin CMS: Dashboard, Projects, Blog, Categories, Messages, Content, Appearance
-- Public Projects and Blog pages use progressive infinite scroll loading
-- Dynamic theme system:
-  - Runtime gradient and color variables
-  - Admin-editable appearance settings
-  - Default style first, then cached/fetched theme for smoother loading
-- Shared CKEditor 5 for admin blog and about experience content
-- CV PDF upload and viewer with pdf.js
-- Cloudinary upload flow for images and raw files (for example PDF)
+ 
+- Public pages: Home, About, Case Studies (Projects), Publications (Blog), Contact, CV Viewer
+- Admin CMS: Dashboard, Projects (Case Studies), Blog (Articles), Categories, Messages, About & Chronology, Appearance
+- **Curated Multi-Theme System (Taste-Skill UI)**:
+  - 5 switchable palettes: `editorial-dark`, `editorial-light`, `monochrome-cyber`, `warm-sepia`, `system`
+  - Dynamic CSS custom properties (`--canvas`, `--bone`, `--surface`, `--ink`, `--stroke`, `--pastel-...`)
+  - Floating Navbar Theme Switcher Pill with live swatch preview and popover selector
+  - Zero-breakage CKEditor rich content compatibility
+- **10 Masterclass Technical Publications**: Deep long-form articles with architecture diagrams, benchmarks, security guides, and production pitfalls
+- **Decoupled Case Study Architecture**: Independent architectural dossiers with System Spec Rail, 60fps GPU acceleration, and smart cross-linking recommender
+- **Unified AI Synthesis Engine**: Automated content enhancement adhering strictly to the Semantic Class Catalog
+- **Automated Seam Verification Suite**: 6-point deterministic boundary testing
+- **Snapshot Static SEO Prerender**: 25 pre-rendered pages with dynamic OpenGraph / Twitter metadata tags
+- Shared CKEditor 5 with DOMPurify XSS sanitization
+- CV PDF upload and embedded viewer with PDF.js
+- Cloudinary global CDN asset pipeline with automatic format and compression negotiation (`f_auto,q_auto`)
 
 ## Tech Stack
 
