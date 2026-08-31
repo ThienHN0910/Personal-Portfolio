@@ -1,8 +1,9 @@
 <template>
   <article
-    class="editorial-card flex flex-col group cursor-pointer h-full active:scale-[0.99] transition-transform duration-200"
+    class="editorial-card spotlight-card flex flex-col group cursor-pointer h-full active:scale-[0.99] transition-all duration-300"
     role="link"
     tabindex="0"
+    @mousemove="handleSpotlightMove"
     @click="handleCardClick"
     @keydown.enter.prevent="openDetail"
     @keydown.space.prevent="openDetail"
@@ -127,7 +128,10 @@ import { computed } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
 
 import IconGlyph from '@/components/ui/IconGlyph.vue'
+import { useSpotlight } from '@/composables/useSpotlight'
 import type { Project } from '@/types'
+
+const { handleSpotlightMove } = useSpotlight()
 
 const props = withDefaults(
   defineProps<{

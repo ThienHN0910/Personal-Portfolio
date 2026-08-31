@@ -136,7 +136,7 @@
           </aside>
 
           <!-- ── RIGHT MAIN CANVAS: Narrative, Principles, Skills, History ── -->
-          <div class="space-y-10 min-w-0">
+          <div ref="mainCanvasRef" class="space-y-10 min-w-0">
 
             <!-- ── Executive Biography & Architectural Focus ──────────── -->
             <div class="editorial-card">
@@ -322,7 +322,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, nextTick, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
@@ -330,6 +330,7 @@ import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
+import { useScrollReveal } from '@/composables/useScrollReveal'
 import { getPublicSocialLinks } from '@/utils/aboutPresentation'
 import { sortChronologyDescending } from '@/utils/experienceSort'
 import { sanitizeRichContent } from '@/utils/richContent'
@@ -340,6 +341,8 @@ const aboutStore = useAboutStore()
 const homeStore = useHomeStore()
 const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
+const { reveal } = useScrollReveal()
+const mainCanvasRef = ref<HTMLElement | null>(null)
 const loading = computed(() => aboutStore.loading)
 const about = computed(() => aboutStore.aboutData)
 const publicSocialLinks = computed(() => getPublicSocialLinks(about.value))
@@ -371,6 +374,11 @@ onMounted(async () => {
     projectsStore.projects.length ? Promise.resolve() : projectsStore.fetchProjects(),
     blogStore.posts.length ? Promise.resolve() : blogStore.fetchPosts(),
   ])
+
+  await nextTick()
+  if (mainCanvasRef.value && mainCanvasRef.value.children.length) {
+    reveal(Array.from(mainCanvasRef.value.children), { y: 28, stagger: 0.12, duration: 0.7, scale: 0.99 })
+  }
 
   applySeo({
     ...getAboutSeoMeta({

@@ -110,6 +110,7 @@
 
       <div
         v-else-if="projectsStore.projects.length"
+        ref="projectsGridRef"
         class="grid grid-cols-1 md:grid-cols-12 gap-7 sm:gap-8"
       >
         <div
@@ -173,11 +174,14 @@ import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
 import ProjectCard from '@/components/ui/ProjectCard.vue'
 import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import { useScrollReveal } from '@/composables/useScrollReveal'
 import { applySeo } from '@/utils/seo'
 import { getProjectsSeoMeta } from '@/utils/seoPriority'
 
 const projectsStore = useProjectsStore()
 const homeStore = useHomeStore()
+const { reveal } = useScrollReveal()
+const projectsGridRef = ref<HTMLElement | null>(null)
 const aboutStore = useAboutStore()
 const blogStore = useBlogStore()
 const categoriesStore = useCategoriesStore()
@@ -298,6 +302,9 @@ watch([searchQuery, activeCategory], () => {
     initialLoading.value = false
     await nextTick()
     setupObserver()
+    if (projectsGridRef.value && projectsGridRef.value.children.length) {
+      reveal(Array.from(projectsGridRef.value.children), { y: 30, stagger: 0.08, duration: 0.65, scale: 0.98 })
+    }
   }, 250)
 })
 
@@ -313,6 +320,9 @@ onMounted(async () => {
   initialLoading.value = false
   await nextTick()
   setupObserver()
+  if (projectsGridRef.value && projectsGridRef.value.children.length) {
+    reveal(Array.from(projectsGridRef.value.children), { y: 30, stagger: 0.08, duration: 0.65, scale: 0.98 })
+  }
 
   applySeo({
     ...getProjectsSeoMeta({

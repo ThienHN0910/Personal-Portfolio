@@ -1,8 +1,9 @@
 <template>
   <RouterLink
     :to="`/blog/${post.slug || post._id}`"
-    class="editorial-card group flex flex-col h-full active:scale-[0.99] transition-transform duration-200"
+    class="editorial-card spotlight-card group flex flex-col h-full active:scale-[0.99] transition-all duration-300"
     :class="[`blog-card--${layout}`]"
+    @mousemove="handleSpotlightMove"
   >
     <div class="editorial-card__inner flex flex-col flex-1 p-0 overflow-hidden">
       <!-- ── Media / Cover Image Frame ────────────────────────────────── -->
@@ -104,7 +105,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useSpotlight } from '@/composables/useSpotlight'
 import type { BlogPost } from '@/types'
+
+const { handleSpotlightMove } = useSpotlight()
 
 const props = withDefaults(
   defineProps<{

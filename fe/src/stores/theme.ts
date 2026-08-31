@@ -95,12 +95,29 @@ function applyThemeAttribute(id: ThemeId): void {
   if (typeof document === 'undefined') return
   const effective = resolveEffectiveTheme(id)
   const root = document.documentElement
-  root.setAttribute('data-theme', effective)
 
-  // Color scheme meta
-  const isDark = effective === 'editorial-dark' || effective === 'monochrome-cyber'
-  root.classList.toggle('dark', isDark)
-  root.classList.toggle('light', !isDark)
+  const applyDOM = () => {
+    root.setAttribute('data-theme', effective)
+    const isDark = effective === 'editorial-dark' || effective === 'monochrome-cyber'
+    root.classList.toggle('dark', isDark)
+    root.classList.toggle('light', !isDark)
+  }
+
+  // Use modern View Transitions API if supported and not reduced motion
+  const supportsViewTransitions = typeof document.startViewTransition === 'function'
+  const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+  if (supportsViewTransitions && !prefersReducedMotion) {
+    document.startViewTransition(() => {
+      applyDOM()
+    })
+  } else {
+    root.classList.add('theme-transitioning')
+    applyDOM()
+    setTimeout(() => {
+      root.classList.remove('theme-transitioning')
+    }, 450)
+  }
 }
 
 export const useThemeStore = defineStore('theme', () => {

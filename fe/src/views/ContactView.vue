@@ -2,7 +2,7 @@
   <div class="min-h-[100dvh] bg-canvas">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-12">
       <!-- Header -->
-      <div class="editorial-card">
+      <div ref="headerCardRef" class="editorial-card">
         <div class="editorial-card__inner p-8 sm:p-12 flex flex-col justify-between gap-6">
           <div class="flex items-center justify-between gap-3">
             <span class="eyebrow-tag">
@@ -27,7 +27,7 @@
       </div>
 
       <!-- Contact Form & Info Grid -->
-      <div class="editorial-card">
+      <div ref="formCardRef" class="editorial-card">
         <div class="editorial-card__inner p-6 sm:p-10 space-y-8">
           <form class="space-y-5" @submit.prevent="handleSubmit">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -102,8 +102,10 @@
             <!-- Submit Button (Button in button) -->
             <button
               type="submit"
-              class="group w-full py-3 px-6 rounded-md bg-ink text-surface font-sans font-medium text-sm flex items-center justify-center gap-3 active:scale-[0.98] transition-transform duration-200 disabled:opacity-50"
+              class="group w-full py-3 px-6 rounded-md bg-ink text-surface font-sans font-medium text-sm flex items-center justify-center gap-3 active:scale-[0.98] transition-all duration-200 disabled:opacity-50"
               :disabled="contactStore.loading"
+              @mousemove="handleMagneticMove"
+              @mouseleave="handleMagneticLeave"
             >
               <span>{{ contactStore.loading ? 'Sending message...' : 'Send Message' }}</span>
               <span class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
@@ -120,16 +122,23 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
+import { onMounted, reactive, ref, nextTick } from 'vue'
+
 import { useAboutStore } from '@/stores/about'
-import { useHomeStore } from '@/stores/home'
 import { useContactStore } from '@/stores/contact'
+import { useHomeStore } from '@/stores/home'
+import { useMagnetic } from '@/composables/useMagnetic'
+import { useScrollReveal } from '@/composables/useScrollReveal'
 import { applySeo } from '@/utils/seo'
 import { getContactSeoMeta } from '@/utils/seoPriority'
 
 const contactStore = useContactStore()
 const aboutStore = useAboutStore()
 const homeStore = useHomeStore()
+const { reveal } = useScrollReveal()
+const { handleMagneticMove, handleMagneticLeave } = useMagnetic()
+const headerCardRef = ref<HTMLElement | null>(null)
+const formCardRef = ref<HTMLElement | null>(null)
 
 const form = reactive({
   name: '',
@@ -170,6 +179,14 @@ onMounted(async () => {
     aboutStore.aboutData ? Promise.resolve() : aboutStore.fetchAboutData(),
     homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
   ])
+
+  await nextTick()
+  if (headerCardRef.value) {
+    reveal(headerCardRef.value, { y: 24, duration: 0.65 })
+  }
+  if (formCardRef.value) {
+    reveal(formCardRef.value, { y: 30, duration: 0.75, delay: 0.1 })
+  }
 
   applySeo({
     ...getContactSeoMeta({
