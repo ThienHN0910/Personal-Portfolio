@@ -15,7 +15,7 @@
   - `Snapshot Prerender` (the build-time static HTML crawler generator)
   - `Bearer Session` (stateless JWT authentication)
   - `Optimized Asset Delivery` (Cloudinary CDN pipeline)
-- **Respect Architectural Decision Records:** Every architectural choice is documented under [`docs/adr/`](./docs/adr/). Review relevant ADRs (ADR-0001 through ADR-0005) before making structural changes.
+- **Respect Architectural Decision Records:** Every architectural choice is documented under [`docs/adr/`](./docs/adr/). Review relevant ADRs (ADR-0001 through ADR-0010) before making structural changes.
 
 ---
 
@@ -87,7 +87,7 @@ Before opening a PR or declaring a ticket complete, agents MUST run and verify:
 # 1. Backend Typecheck & Build
 cd backend && npm run build
 
-# 2. Automated Seam Verification Suite
+# 2. Automated Seam Verification Suite (6 Seams)
 cd fe && node ./scripts/test-seams.mjs
 
 # 3. Frontend Typecheck, Vite Bundling & SEO Prerendering (25 pages)
@@ -106,7 +106,23 @@ All UI code must preserve the project's creative direction:
 
 ---
 
-## 7. Security & Secrets Hygiene
+## 7. Multi-Theme Architecture & Editorial Class Catalog
+
+- **Dynamic Theme Properties:** Always use CSS custom properties (`--canvas`, `--bone`, `--surface`, `--ink`, `--stroke`, `--pastel-...`) instead of hardcoded hex values to support all 5 curated palettes (`editorial-dark`, `editorial-light`, `monochrome-cyber`, `warm-sepia`, `system`).
+- **Strict Editorial Class Whitelist:** Rich content and AI-generated text must use the predefined catalog:
+  - Lead: `.article-lead` / `.project-lead`
+  - Headings: `.article-h2` / `.project-h2`, `.article-h3` / `.project-h3`, `.article-h4`
+  - Body: `.article-p` / `.project-p`, `.article-list`
+  - Badges: `.article-badge`, `.article-badge--green`, `.article-badge--amber`, `.article-badge--red`, `.project-hero-badge`
+  - Layouts: `.article-grid-12`, `.article-col-7`, `.article-col-5`, `.article-col-6`, `.article-col-4`, `.article-col-8`, `.article-col-12`
+  - Callouts & ADRs: `.article-callout`, `.project-architecture-callout`
+  - Code & Tables: `.article-codeblock`, `.project-codeblock`, `.article-table`, `.project-spec-table`
+  - Quotes & Figures: `.article-pullquote`, `.article-figure`, `.project-figure`
+- **Zero Inline Hardcoded Colors:** Never output inline color or background-color hex codes in rich content.
+
+---
+
+## 8. Security & Secrets Hygiene
 
 - **NEVER write real secrets, API keys, or bot tokens into `.md` documentation files.**
 - Place all environment variables exclusively in local `.env` files (which are strictly `.gitignore`d).
