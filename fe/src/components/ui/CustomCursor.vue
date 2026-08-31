@@ -9,13 +9,13 @@
       class="custom-cursor-follower"
       :class="[
         `custom-cursor-follower--${cursorState.mode}`,
-        { 'is-expanded': cursorState.mode === 'view' || cursorState.mode === 'read' }
+        { 'is-expanded': !!cursorState.label }
       ]"
       :style="followerStyle"
     >
       <span
         v-if="cursorState.label"
-        class="custom-cursor-label text-[11px] font-mono uppercase tracking-widest text-canvas font-bold animate-fade-in"
+        class="custom-cursor-label text-[10.5px] font-mono uppercase tracking-widest text-surface font-bold animate-fade-in"
       >
         {{ cursorState.label }}
       </span>
@@ -23,7 +23,7 @@
 
     <!-- Precision Center Dot -->
     <div
-      v-if="cursorState.mode === 'default' || cursorState.mode === 'pointer'"
+      v-if="!cursorState.label && (cursorState.mode === 'default' || cursorState.mode === 'pointer')"
       class="custom-cursor-dot"
       :class="{ 'is-hovering': cursorState.mode === 'pointer' }"
       :style="dotStyle"
@@ -104,23 +104,22 @@ onUnmounted(() => {
   backdrop-filter: blur(2px);
 
   &--pointer {
-    width: 52px;
-    height: 52px;
-    margin-top: -26px;
-    margin-left: -26px;
+    width: 50px;
+    height: 50px;
+    margin-top: -25px;
+    margin-left: -25px;
     background-color: rgba(var(--ink-rgb), 0.08);
     border-color: rgba(var(--ink-rgb), 0.3);
   }
 
-  &--view,
-  &--read {
+  &.is-expanded {
     width: 78px;
     height: 78px;
     margin-top: -39px;
     margin-left: -39px;
     background-color: var(--ink);
     border-color: var(--ink);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35);
   }
 }
 
@@ -130,7 +129,7 @@ onUnmounted(() => {
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @media (hover: none) and (pointer: coarse) {

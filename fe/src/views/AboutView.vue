@@ -44,7 +44,11 @@
             <div class="editorial-card">
               <div class="editorial-card__inner p-6 flex flex-col items-center text-center space-y-5">
                 <!-- Avatar Frame -->
-                <div class="relative w-36 h-36 rounded-2xl overflow-hidden bg-bone border border-stroke shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group">
+                <div
+                  class="relative w-36 h-36 rounded-2xl overflow-hidden bg-bone border border-stroke shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] group cursor-pointer"
+                  data-cursor="view"
+                  data-cursor-label="Hi"
+                >
                   <img
                     v-if="about?.avatarUrl"
                     :src="about.avatarUrl"
@@ -65,7 +69,7 @@
                 </div>
 
                 <!-- Live Availability Badge -->
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pastel-green text-pastel-green-text text-[11px] font-mono font-medium">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pastel-green text-pastel-green-text text-[11px] font-mono font-medium animate-float-slow">
                   <span class="relative flex h-2 w-2">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-pastel-green-text opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2 w-2 bg-pastel-green-text"></span>
@@ -81,6 +85,8 @@
                     :href="link.href"
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-cursor="chat"
+                    data-cursor-label="Connect"
                     class="px-2.5 py-1 rounded-md text-[11px] font-mono text-ink-secondary bg-bone border border-stroke hover:border-ink/20 hover:text-ink transition-all active:scale-95 flex items-center gap-1"
                   >
                     <span>{{ link.label }}</span>
@@ -92,6 +98,8 @@
                 <div v-if="about?.resumeUrl" class="w-full pt-2">
                   <RouterLink
                     to="/cv"
+                    data-cursor="verify"
+                    data-cursor-label="Get CV"
                     class="group w-full py-2.5 px-4 rounded-md bg-ink text-surface font-sans font-medium text-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-transform duration-200"
                   >
                     <span>View Curriculum Vitae</span>

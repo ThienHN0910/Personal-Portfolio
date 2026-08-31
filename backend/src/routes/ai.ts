@@ -18,16 +18,21 @@ CRITICAL DESIGN SYSTEM & STYLING RULES:
    - Lead Paragraphs: class="article-lead" or class="project-lead"
    - Body Paragraphs: class="article-p" or class="project-p"
    - Lists: class="article-list" (use on <ul>)
-   - Status Badges: class="article-badge" (<span class="article-badge">...</span> or <span class="article-badge article-badge--green">...</span>) or class="project-hero-badge" (<span class="project-hero-badge"><span class="badge-dot"></span>Active</span>)
+   - Status Badges & Pills: class="article-badge" (<span class="article-badge">...</span> or <span class="article-badge article-badge--green">...</span>) or class="project-hero-badge" (<span class="project-hero-badge"><span class="badge-dot"></span>Active</span>)
+   - Floating Physics & Glows: class="animate-float", class="animate-float-slow", class="animate-pulse-soft" (use on standout badges or metric chips)
    - Pull Quotes: class="article-pullquote" (use inside <blockquote>)
-   - Architecture Callouts / ADRs: class="project-architecture-callout" or class="article-callout" (use inside <div class="...">)
+   - Architecture Callouts / ADRs: class="project-architecture-callout" or class="article-callout" or class="editorial-card spotlight-card" (use inside <div class="...">)
    - Asymmetric Grids: class="article-grid-12" with child columns class="article-col-7", class="article-col-5", class="article-col-6", class="article-col-4", class="article-col-8", class="article-col-12"
    - Performance & Scale Metrics: class="project-metric-grid" container with <div class="project-metric-card"><span class="metric-value">...</span><span class="metric-label">...</span></div>
    - Spec Tables: class="project-spec-table" or class="article-table" (use on <table>)
    - Code Blocks: class="project-codeblock" or class="article-codeblock" (use on <pre class="..."><code>...</code></pre>)
    - Figures & Diagrams: class="project-figure" or class="article-figure" (use on <figure><img ... /><figcaption>...</figcaption></figure>)
 
-3. STRICT INLINE STYLE RULE:
+3. SCROLL REVEALS & INTERACTIVE CURSORS:
+   - You may use data-aos attributes for scroll entry reveals: data-aos="fade-up", data-aos="fade-left", data-aos="fade-right", data-aos="zoom-in", data-aos-delay="100".
+   - You may attach contextual cursor triggers: data-cursor="view" (on media/diagrams), data-cursor="code" (on code blocks), data-cursor="explore" (on tech tags), data-cursor="read" (on references).
+
+4. STRICT INLINE STYLE RULE:
    - You are ONLY allowed to use inline style attributes (style="...") for structural layouts if classes are insufficient:
      * CSS Grid layouts: style="display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem;"
      * Asymmetric column spans: style="grid-column: span 8;", style="grid-column: span 4;", style="grid-column: span 7;", style="grid-column: span 5;", style="grid-column: span 12;"
@@ -35,8 +40,9 @@ CRITICAL DESIGN SYSTEM & STYLING RULES:
      * Spacing & Margins: style="margin-top: 3rem; margin-bottom: 2rem;"
    - NEVER output custom inline colors (color: ...), background colors (background: ...), font-family, font-size, or border-radius in style attributes. All visual identity must strictly adapt dynamically to the theme!
 
-4. CREATIVE DIRECTION DIALS:
+5. CREATIVE DIRECTION DIALS:
    - DESIGN_VARIANCE: 8 (High asymmetry, broken 12-column grid spans 8/4 or 7/5, staggered bento cards).
+   - MOTION_INTENSITY: 8 (60fps GPU acceleration, floating micro-physics, Lenis smooth scroll).
    - VISUAL_DENSITY: 3 (Spacious, airy negative space, maximum 65ch readable line lengths).
 `
 

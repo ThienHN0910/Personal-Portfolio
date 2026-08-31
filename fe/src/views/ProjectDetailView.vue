@@ -26,7 +26,7 @@
         </div>
 
         <!-- ── Editorial Hero Header Card with Embedded System Spec Rail ── -->
-        <header class="editorial-card">
+        <header data-aos="fade-up" class="editorial-card">
           <div class="editorial-card__inner p-8 sm:p-12 lg:p-14 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <!-- Left Header: Eyebrow, Title & Overview (Col 8) -->
             <div class="lg:col-span-8 space-y-6">
@@ -86,7 +86,7 @@
         <!-- ── 2-Column Layout: Left Sticky Tech Stack & Right Main Canvas ── -->
         <div class="grid grid-cols-1 xl:grid-cols-[280px_1fr] gap-8 items-start">
           <!-- ── LEFT STICKY RAIL: Tech Stack & System Actions ────────────── -->
-          <aside class="xl:sticky xl:top-24 xl:self-start space-y-4">
+          <aside data-aos="fade-right" data-aos-delay="100" class="xl:sticky xl:top-24 xl:self-start space-y-4">
             <div class="editorial-card">
               <div class="editorial-card__inner p-6 space-y-6">
                 <div class="flex items-center justify-between pb-3 border-b border-stroke">
@@ -102,6 +102,7 @@
                       v-for="tech in project.technologies"
                       :key="tech"
                       class="px-2.5 py-1 rounded bg-bone border border-stroke text-ink text-xs font-mono hover:border-ink/30 transition-colors"
+                      data-cursor="explore"
                     >
                       {{ tech }}
                     </span>
@@ -115,11 +116,13 @@
                     :href="project.liveUrl"
                     target="_blank"
                     rel="noopener noreferrer"
+                    data-cursor="visit"
+                    data-cursor-label="Visit"
                     class="group w-full py-3 px-4 rounded-md bg-ink text-surface font-sans font-medium text-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-200"
                   >
                     <span>Launch Live App</span>
-                    <span class="w-4 h-4 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform duration-200">
-                      <svg class="w-2.5 h-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                    <span class="w-4 h-4 rounded-full bg-surface/20 flex items-center justify-center group-hover:translate-x-0.5 group-hover:-translate-y-px transition-transform">
+                      <svg class="w-2 h-2" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M2.5 9.5 9.5 2.5M5 2.5h4.5V7"/>
                       </svg>
                     </span>
@@ -130,9 +133,12 @@
                     :href="project.githubUrl"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="w-full py-2.5 px-4 rounded-md bg-bone border border-stroke text-ink-secondary hover:text-ink hover:border-ink/30 font-sans font-medium text-xs text-center active:scale-[0.98] transition-all block"
+                    data-cursor="code"
+                    data-cursor-label="Code"
+                    class="group w-full py-3 px-4 rounded-md bg-bone border border-stroke text-ink-secondary hover:text-ink hover:border-ink/30 font-sans font-medium text-xs flex items-center justify-center gap-2 active:scale-[0.98] transition-all duration-200"
                   >
-                    Repository
+                    <span>Source Repository</span>
+                    <span class="group-hover:translate-x-0.5 transition-transform">↗</span>
                   </a>
 
                   <RouterLink
