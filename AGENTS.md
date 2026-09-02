@@ -122,9 +122,11 @@ All UI code must preserve the project's creative direction:
 
 ---
 
-## 8. Security & Secrets Hygiene
+## 8. Security & Secrets Hygiene (Zero-Leakage Policy)
 
-- **NEVER write real secrets, API keys, or bot tokens into `.md` documentation files.**
-- Place all environment variables exclusively in local `.env` files (which are strictly `.gitignore`d).
-- Update `.env.example` with sanitized placeholders whenever new environment variables are introduced.
-- Client-rendered HTML MUST pass through `sanitizeRichContent()` (`fe/src/utils/richContent.ts`) via `DOMPurify` to eliminate XSS vectors.
+- **NEVER write real secrets, API keys, database connection strings, or bot tokens into `.md` documentation files, source code, scripts, or commit messages.**
+- **Strict Environment Variable Usage:** Place all environment variables exclusively in local `.env` files (e.g. `backend/.env`, `fe/.env.local`), which are strictly `.gitignore`d.
+- **Dynamic Credential Loading:** All backend scripts, tools, and libraries must load credentials dynamically via `dotenv` and `process.env` (e.g. `process.env.MONGODB_URI`, `process.env.JWT_SECRET`, `process.env.GEMINI_API_KEY`).
+- **Sanitized Placeholders:** Update `.env.example` with sanitized placeholders whenever new environment variables are introduced.
+- **Pre-Push Security Scan:** Always verify `git status` and staged diffs before pushing to confirm no `.env` files or secret values are being committed.
+- **XSS Sanitization:** Client-rendered HTML MUST pass through `sanitizeRichContent()` (`fe/src/utils/richContent.ts`) via `DOMPurify` to eliminate XSS vectors.
