@@ -1,6 +1,25 @@
+import fs from 'node:fs'
+import path from 'node:path'
+import dotenv from 'dotenv'
 import { MongoClient } from 'mongodb'
 
-const uri = 'mongodb+srv://hntvnvn_db_user:ktiwf5f2TCPWugaM@cluster0.0bfcapn.mongodb.net/?appName=Cluster0'
+// Load environment variables
+const backendEnvPath = path.resolve(process.cwd(), '.env')
+const rootEnvPath = path.resolve(process.cwd(), '..', '.env')
+
+if (fs.existsSync(backendEnvPath)) {
+  dotenv.config({ path: backendEnvPath })
+} else if (fs.existsSync(rootEnvPath)) {
+  dotenv.config({ path: rootEnvPath })
+} else {
+  dotenv.config()
+}
+
+const uri = process.env.MONGODB_URI
+if (!uri) {
+  console.error('❌ MONGODB_URI environment variable is not defined')
+  process.exit(1)
+}
 
 function upgradeHtmlContent(html) {
   if (!html || typeof html !== 'string') return html
@@ -30,52 +49,56 @@ function upgradeHtmlContent(html) {
 async function main() {
   const client = new MongoClient(uri)
   await client.connect()
-  console.log('Connected to MongoDB Atlas...')
+  console.log('Connected to MongoDB Atlas using MONGODB_URI from environment...')
 
   const db = client.db()
   const projectsCol = db.collection('projects')
   const blogsCol = db.collection('blogposts')
 
   const projects = await projectsCol.find({}).toArray()
-  console.log(`Found ${projects.length} projects to upgrade...`)
+  console.log(`Found ${projects.length} projects to inspect/upgrade...`)
 
   for (const proj of projects) {
     const updatedContent = upgradeHtmlContent(proj.content)
     const updatedDossier = upgradeHtmlContent(proj.architectureDossierContext)
 
-    await projectsCol.updateOne(
-      { _id: proj._id },
-      {
-        $set: {
-          content: updatedContent,
-          architectureDossierContext: updatedDossier,
-          updatedAt: new Date()
-        }
-      }
-    )
-    console.log(`  ✓ Upgraded project: ${proj.title}`)
+    if (updatedContent !== proj.content || updatedDossier !== proj.architectureDossierContext) {
+      await projectsCol.updateOne(
+        { _id: proj._id },
+        {
+          $set: {
+            content: updatedContent,
+            architectureDossierContext: updatedDossier,
+            updatedAt: new Date(),
+          },
+        },
+      )
+      console.log(`  ✓ Upgraded project: ${proj.title}`)
+    }
   }
 
   const posts = await blogsCol.find({}).toArray()
-  console.log(`Found ${posts.length} blog posts to upgrade...`)
+  console.log(`Found ${posts.length} blog posts to inspect/upgrade...`)
 
   for (const post of posts) {
     const updatedContent = upgradeHtmlContent(post.content)
 
-    await blogsCol.updateOne(
-      { _id: post._id },
-      {
-        $set: {
-          content: updatedContent,
-          updatedAt: new Date()
-        }
-      }
-    )
-    console.log(`  ✓ Upgraded blog post: ${post.title}`)
+    if (updatedContent !== post.content) {
+      await blogsCol.updateOne(
+        { _id: post._id },
+        {
+          $set: {
+            content: updatedContent,
+            updatedAt: new Date(),
+          },
+        },
+      )
+      console.log(`  ✓ Upgraded blog post: ${post.title}`)
+    }
   }
 
   await client.close()
-  console.log('🎉 All database records upgraded with AOS & Interactive Motion attributes!')
+  console.log('🎉 Database verification and upgrade complete!')
 }
 
 main().catch((err) => {
