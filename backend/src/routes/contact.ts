@@ -69,7 +69,7 @@ router.post('/', async (req, res) => {
     }
 
     await Contact.create({ name, email, subject, message })
-    void sendTelegramNotification({ name, email, subject, message })
+    await sendTelegramNotification({ name, email, subject, message })
 
     return res.status(201).json({ success: true, message: 'Message sent successfully' })
   } catch (err) {

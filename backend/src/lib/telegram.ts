@@ -39,6 +39,7 @@ export async function sendTelegramNotification(payload: ContactNotificationPaylo
         text,
         parse_mode: 'Markdown',
       }),
+      signal: AbortSignal.timeout(4500),
     })
 
     const data = (await response.json()) as { ok: boolean; description?: string }
