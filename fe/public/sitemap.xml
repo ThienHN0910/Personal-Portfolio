@@ -2,151 +2,151 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://thienhn0910.vercel.app/</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/about</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/contact</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/cv</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/innovationlab</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/assisstantbot-telegram-overview</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/picx-art-marketplace-website</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/google-workspace-personal-assistant</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/breakthroughcv-aipowered-job-candidate-cv-optimization-platform</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/words-note</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/geminipowered-smart-facebook-chatbot-system</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/simplemp3-app-desktop</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/projects/universal-travel-coop-2player</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/git-branching-conventional-commits-ci-pipeline</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/architecting-custom-agent-skills-mcp-workflows</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/optimizing-ai-coding-workflow-matt-pocock-and-taste-skills</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/optimizing-mongodb-and-redis-caching-in-node</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/zero-cost-reactivity-vue3-60fps-performance</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/shift-left-security-github-actions-docker</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/lessons-learned-vue3-dotnet-state-and-api-integration</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/mastering-jwt-and-session-security-in-dotnet-and-vue</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/owasp-top-10-web-security-fundamentals-for-juniors</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://thienhn0910.vercel.app/blog/one-line-dev-environment-setup-powershell-winget</loc>
-    <lastmod>2026-09-02</lastmod>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
