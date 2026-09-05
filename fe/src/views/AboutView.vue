@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[100dvh] bg-canvas">
+  <div class="min-h-[100dvh] bg-transparent">
     <div class="w-full max-w-[1380px] mx-auto px-6 sm:px-10 lg:px-12 py-8 sm:py-14 space-y-12 sm:space-y-16">
 
       <!-- ── Page Header: Avant-Garde Profile Masthead ────────────────── -->

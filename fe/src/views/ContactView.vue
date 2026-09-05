@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[100dvh] bg-canvas">
+  <div class="min-h-[100dvh] bg-transparent">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-12">
       <!-- Header -->
       <div ref="headerCardRef" class="editorial-card">

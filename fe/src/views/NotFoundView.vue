@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[80vh] flex items-center justify-center pt-8 pb-20 px-4 sm:px-6 relative bg-canvas">
+  <div class="min-h-[80vh] flex items-center justify-center pt-8 pb-20 px-4 sm:px-6 relative bg-transparent">
     <div class="max-w-xl w-full mx-auto relative z-10 text-center space-y-8">
       <!-- 404 Visual Header -->
       <div class="space-y-4">

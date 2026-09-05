@@ -1,7 +1,5 @@
 <template>
-  <div ref="homeRootRef" class="min-h-[100dvh] bg-canvas relative overflow-hidden">
-    <!-- ── Interactive 60fps Particle Mesh Constellation Background ──── -->
-    <ParticleBackground />
+  <div ref="homeRootRef" class="min-h-[100dvh] bg-transparent relative overflow-hidden">
 
     <div class="relative z-10 w-full max-w-[1380px] mx-auto px-6 sm:px-10 lg:px-12 py-10 sm:py-14 space-y-24 sm:space-y-32">
 
@@ -350,7 +348,6 @@ import { useAboutStore } from '@/stores/about'
 import { useBlogStore } from '@/stores/blog'
 import { useHomeStore } from '@/stores/home'
 import { useProjectsStore } from '@/stores/projects'
-import ParticleBackground from '@/components/ui/ParticleBackground.vue'
 import HeroSection from '@/components/sections/HeroSection.vue'
 import FeaturedProjects from '@/components/sections/FeaturedProjects.vue'
 import { useScrollReveal } from '@/composables/useScrollReveal'

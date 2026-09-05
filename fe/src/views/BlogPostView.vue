@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[100dvh] bg-canvas relative">
+  <div class="min-h-[100dvh] bg-transparent relative">
     <!-- ── Top Reading Progress Bar ──────────────────────────────────────── -->
     <div
       class="fixed top-0 left-0 right-0 h-[2.5px] bg-ink z-[300] transition-transform duration-75 origin-left"
