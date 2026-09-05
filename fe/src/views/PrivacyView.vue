@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[100dvh] bg-canvas">
+  <div class="min-h-[100dvh] bg-transparent">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10 space-y-10">
       <!-- Breadcrumb Link -->
       <RouterLink to="/" class="inline-flex items-center gap-2 text-ink-tertiary hover:text-ink transition-colors text-xs font-mono group active:scale-95">

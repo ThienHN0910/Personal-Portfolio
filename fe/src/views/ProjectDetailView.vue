@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-[100dvh] bg-canvas">
+  <div class="min-h-[100dvh] bg-transparent relative">
     <!-- Outer balanced canvas wrapper -->
     <div class="w-full max-w-[1440px] mx-auto px-6 sm:px-10 lg:px-12 py-8 sm:py-12">
       <LoadingSpinner v-if="loading" />
