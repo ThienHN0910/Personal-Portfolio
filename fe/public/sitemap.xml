@@ -91,7 +91,19 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thienhn0910.vercel.app/blog/git-branching-conventional-commits-ci-pipeline</loc>
+    <loc>https://thienhn0910.vercel.app/blog/bot-engineering-showdown-facebook-webhooks-vs-telegram-api</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thienhn0910.vercel.app/blog/zero-overhead-vps-orchestration-telegram-bot-pm2-nginx</loc>
+    <lastmod>2026-09-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thienhn0910.vercel.app/blog/architecting-g-ops-hub-dotnet-cqrs-hangfire</loc>
     <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
@@ -109,37 +121,13 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thienhn0910.vercel.app/blog/optimizing-mongodb-and-redis-caching-in-node</loc>
-    <lastmod>2026-09-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://thienhn0910.vercel.app/blog/zero-cost-reactivity-vue3-60fps-performance</loc>
-    <lastmod>2026-09-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://thienhn0910.vercel.app/blog/shift-left-security-github-actions-docker</loc>
-    <lastmod>2026-09-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://thienhn0910.vercel.app/blog/lessons-learned-vue3-dotnet-state-and-api-integration</loc>
-    <lastmod>2026-09-06</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://thienhn0910.vercel.app/blog/mastering-jwt-and-session-security-in-dotnet-and-vue</loc>
     <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thienhn0910.vercel.app/blog/owasp-top-10-web-security-fundamentals-for-juniors</loc>
+    <loc>https://thienhn0910.vercel.app/blog/owasp-top-10-web-security-fundamentals</loc>
     <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
