@@ -44,12 +44,6 @@
         <!-- Theme Switcher Pill -->
         <ThemeSwitcher />
 
-        <!-- Availability tag — desktop only -->
-        <div class="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-pastel-green border border-pastel-green-text/20 text-pastel-green-text text-[10px] font-mono font-medium uppercase tracking-wider">
-          <span class="w-1.5 h-1.5 rounded-full bg-pastel-green-text animate-pulse-soft"></span>
-          <span>Available</span>
-        </div>
-
         <!-- Desktop Search trigger -->
         <button
           type="button"
