@@ -318,6 +318,26 @@ html.theme-transitioning *::after {
   transition-delay: 0s !important;
 }
 
+/* Modern View Transitions API: Circular Ripple Support */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
+  }
+}
+
 /* ─── Global Page Transitions ────────────────────────────────────────────── */
 .page-enter-active,
 .page-leave-active {

@@ -91,7 +91,7 @@ function resolveEffectiveTheme(id: ThemeId): Exclude<ThemeId, 'system'> {
   return id
 }
 
-function applyThemeAttribute(id: ThemeId): void {
+function applyThemeAttribute(id: ThemeId, origin?: { x: number; y: number }): void {
   if (typeof document === 'undefined') return
   const effective = resolveEffectiveTheme(id)
   const root = document.documentElement
@@ -108,8 +108,32 @@ function applyThemeAttribute(id: ThemeId): void {
   const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
   if (supportsViewTransitions && !prefersReducedMotion) {
-    document.startViewTransition(() => {
+    const x = origin?.x ?? (typeof window !== 'undefined' ? window.innerWidth / 2 : 0)
+    const y = origin?.y ?? (typeof window !== 'undefined' ? window.innerHeight / 2 : 0)
+    const endRadius = typeof window !== 'undefined'
+      ? Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y))
+      : 1200
+
+    const transition = document.startViewTransition(() => {
       applyDOM()
+    })
+
+    transition.ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${endRadius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 480,
+          easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          pseudoElement: '::view-transition-new(root)',
+        }
+      )
+    }).catch(() => {
+      // If transition was skipped or aborted, DOM changes are already applied
     })
   } else {
     root.classList.add('theme-transitioning')
@@ -136,20 +160,20 @@ export const useThemeStore = defineStore('theme', () => {
     return effective === 'editorial-dark' || effective === 'monochrome-cyber'
   })
 
-  function setThemeId(id: ThemeId, persist = true): void {
+  function setThemeId(id: ThemeId, persist = true, origin?: { x: number; y: number }): void {
     currentThemeId.value = id
-    applyThemeAttribute(id)
+    applyThemeAttribute(id, origin)
 
     if (persist && typeof localStorage !== 'undefined') {
       localStorage.setItem(STORAGE_THEME_ID_KEY, id)
     }
   }
 
-  function cycleTheme(): void {
+  function cycleTheme(origin?: { x: number; y: number }): void {
     const order: ThemeId[] = ['editorial-dark', 'editorial-light', 'monochrome-cyber', 'warm-sepia', 'system']
     const currentIndex = order.indexOf(currentThemeId.value)
     const nextIndex = (currentIndex + 1) % order.length
-    setThemeId(order[nextIndex], true)
+    setThemeId(order[nextIndex], true, origin)
   }
 
   async function fetchTheme(): Promise<void> {
