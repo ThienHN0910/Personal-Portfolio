@@ -124,6 +124,7 @@
             index % 6 === 4 ? 'col-span-12 xl:col-span-6' :
                                'col-span-12 xl:col-span-6'
           ]"
+          data-case-card="true"
         >
           <ProjectCard :project="project" :layout="getMasonryLayout(index)" />
         </div>

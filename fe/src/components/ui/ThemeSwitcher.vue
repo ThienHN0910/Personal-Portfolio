@@ -12,8 +12,9 @@ function togglePopover() {
   isOpen.value = !isOpen.value
 }
 
-function selectTheme(id: ThemeId) {
-  themeStore.setThemeId(id)
+function selectTheme(id: ThemeId, event?: MouseEvent) {
+  const origin = event ? { x: event.clientX, y: event.clientY } : undefined
+  themeStore.setThemeId(id, true, origin)
   isOpen.value = false
 }
 
@@ -114,7 +115,7 @@ onUnmounted(() => {
             type="button"
             class="w-full flex items-center justify-between px-3 py-2 rounded-xl text-left transition-all duration-150 group"
             :class="themeStore.currentThemeId === preset.id ? 'bg-bone text-ink font-medium shadow-sm' : 'text-ink-secondary hover:bg-bone/50 hover:text-ink'"
-            @click="selectTheme(preset.id)"
+            @click="selectTheme(preset.id, $event)"
           >
             <div class="flex items-center gap-2.5 min-w-0">
               <!-- Swatch Circle -->

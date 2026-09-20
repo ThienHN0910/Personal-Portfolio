@@ -51,22 +51,31 @@ export function useRichContentEnhancer(containerRef: Ref<HTMLElement | null>) {
       langBadge.textContent = lang
       toolbar.appendChild(langBadge)
 
-      // Copy button
+      // Copy button with tactile bounce & SVG icon
       const copyBtn = document.createElement('button')
       copyBtn.type = 'button'
       copyBtn.className =
-        'text-[10px] font-mono px-2 py-0.5 rounded bg-white/15 hover:bg-white/25 text-white border border-white/20 active:scale-95 transition-all flex items-center gap-1 cursor-pointer select-none'
-      copyBtn.innerHTML = '<span>Copy</span>'
+        'text-[10px] font-mono px-2.5 py-1 rounded-md bg-white/10 hover:bg-white/20 text-white/90 hover:text-white border border-white/15 hover:border-white/30 active:scale-[0.92] hover:scale-[1.03] transition-all duration-100 flex items-center gap-1.5 cursor-pointer select-none shadow-xs'
+
+      const copyIcon = `<svg class="w-3 h-3 text-white/70 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>`
+      const checkIcon = `<svg class="w-3 h-3 text-[#4ade80] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`
+
+      copyBtn.innerHTML = `${copyIcon}<span>Copy</span>`
 
       copyBtn.addEventListener('click', async () => {
         try {
           await navigator.clipboard.writeText(codeText)
-          copyBtn.innerHTML = '<span style="color:#4ade80;">Copied! ✓</span>'
+          copyBtn.classList.add('border-[#4ade80]/50', 'bg-[#4ade80]/15')
+          copyBtn.innerHTML = `${checkIcon}<span class="text-[#4ade80] font-medium">Copied!</span>`
           setTimeout(() => {
-            copyBtn.innerHTML = '<span>Copy</span>'
+            copyBtn.classList.remove('border-[#4ade80]/50', 'bg-[#4ade80]/15')
+            copyBtn.innerHTML = `${copyIcon}<span>Copy</span>`
           }, 2000)
         } catch {
           copyBtn.innerHTML = '<span>Failed</span>'
+          setTimeout(() => {
+            copyBtn.innerHTML = `${copyIcon}<span>Copy</span>`
+          }, 2000)
         }
       })
 
