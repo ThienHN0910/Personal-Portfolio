@@ -14,8 +14,8 @@ import categoriesRouter from './routes/categories'
 import themeRouter from './routes/theme'
 import uploadRouter from './routes/upload'
 import aiRouter from './routes/ai'
-
 import analyticsRouter from './routes/analytics'
+import weatherRouter from './routes/weather'
 
 const backendEnvPath = path.resolve(process.cwd(), '.env')
 const rootEnvPath = path.resolve(process.cwd(), '..', '.env')
@@ -54,6 +54,7 @@ app.use('/api/theme', themeRouter)
 app.use('/api/upload', uploadRouter)
 app.use('/api/ai', aiRouter)
 app.use('/api/analytics', analyticsRouter)
+app.use('/api/weather', weatherRouter)
 
 app.use('/api/*', (_req, res) => {
   res.status(404).json({ success: false, error: 'Not found' })
