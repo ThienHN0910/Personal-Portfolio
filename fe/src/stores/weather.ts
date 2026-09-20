@@ -182,6 +182,13 @@ export const useWeatherStore = defineStore('weather', () => {
     })
   }
 
+  function destroyHourlyRefresh(): void {
+    if (hourlyTimer) {
+      clearInterval(hourlyTimer)
+      hourlyTimer = null
+    }
+  }
+
   return {
     weatherData,
     loading,
@@ -199,5 +206,6 @@ export const useWeatherStore = defineStore('weather', () => {
     setPreviewCondition,
     toggleWeather,
     initHourlyRefresh,
+    destroyHourlyRefresh,
   }
 })
