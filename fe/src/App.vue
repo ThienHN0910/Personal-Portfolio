@@ -26,6 +26,7 @@
     <!-- Global Command Palette, Notifications & Fluid Cursor -->
     <CustomCursor v-if="!isAdminRoute" />
     <CommandPalette />
+    <KeyboardShortcutsModal />
     <ToastNotification />
     <!-- Scroll to Top FAB (public pages only) -->
     <ScrollToTopButton v-if="!isAdminRoute" />
@@ -42,24 +43,18 @@ import Footer from '@/components/layout/Footer.vue'
 import CustomCursor from '@/components/ui/CustomCursor.vue'
 import ParticleBackground from '@/components/ui/ParticleBackground.vue'
 import CommandPalette from '@/components/ui/CommandPalette.vue'
+import KeyboardShortcutsModal from '@/components/ui/KeyboardShortcutsModal.vue'
 import ToastNotification from '@/components/ui/ToastNotification.vue'
 import ScrollToTopButton from '@/components/ui/ScrollToTopButton.vue'
-import { useCommandPalette } from '@/composables/useCommandPalette'
+import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 import { useSmoothScroll } from '@/composables/useSmoothScroll'
 import { useScrollReveal } from '@/composables/useScrollReveal'
 
 const route = useRoute()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
-const { togglePalette } = useCommandPalette()
+const { initKeyboardListeners, destroyKeyboardListeners } = useKeyboardShortcuts()
 const { initSmoothScroll, destroySmoothScroll, scrollTo } = useSmoothScroll()
 const { initAosReveals } = useScrollReveal()
-
-function handleGlobalKeydown(e: KeyboardEvent) {
-  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-    e.preventDefault()
-    togglePalette()
-  }
-}
 
 watch(
   () => route.path,
@@ -82,11 +77,11 @@ onMounted(() => {
   if (!isAdminRoute.value) {
     initSmoothScroll()
   }
-  window.addEventListener('keydown', handleGlobalKeydown)
+  initKeyboardListeners()
 })
 
 onUnmounted(() => {
   destroySmoothScroll()
-  window.removeEventListener('keydown', handleGlobalKeydown)
+  destroyKeyboardListeners()
 })
 </script>
