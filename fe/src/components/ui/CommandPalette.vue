@@ -123,7 +123,15 @@
                       ]"
                     >
                       <!-- Icon Switcher -->
-                      <svg v-if="item.category === 'page'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                      <span
+                        v-if="item.swatchBg"
+                        class="w-3.5 h-3.5 rounded-full border border-stroke/70 shrink-0 shadow-inner"
+                        :style="{ background: item.swatchBg, borderColor: item.swatchBorder || 'var(--stroke)' }"
+                      />
+                      <svg v-else-if="item.category === 'theme'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="9"/><path d="M12 3v18"/>
+                      </svg>
+                      <svg v-else-if="item.category === 'page'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/>
                       </svg>
                       <svg v-else-if="item.category === 'project'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
@@ -219,14 +227,18 @@ import { useToast } from '@/composables/useToast'
 import { useProjectsStore } from '@/stores/projects'
 import { useBlogStore } from '@/stores/blog'
 import { useAboutStore } from '@/stores/about'
+import { useThemeStore, THEME_PRESETS } from '@/stores/theme'
+import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 
 export interface CommandItem {
   id: string
   title: string
   subtitle?: string
-  category: 'recent' | 'page' | 'project' | 'article' | 'action'
+  category: 'recent' | 'page' | 'project' | 'article' | 'action' | 'theme'
   badge?: string
   shortcut?: string
+  swatchBg?: string
+  swatchBorder?: string
   perform: () => void | Promise<void>
 }
 
@@ -243,6 +255,8 @@ const router = useRouter()
 const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
 const aboutStore = useAboutStore()
+const themeStore = useThemeStore()
+const { openShortcuts } = useKeyboardShortcuts()
 
 const searchQuery = ref('')
 const selectedIndex = ref(0)
@@ -456,6 +470,30 @@ const quickActions = computed<CommandItem[]>(() => {
       },
     },
     {
+      id: 'action-shortcuts',
+      title: 'Keyboard Shortcuts Guide',
+      subtitle: 'Open interactive HUD cheat-sheet for power-user navigation',
+      category: 'action',
+      badge: 'Help',
+      shortcut: '?',
+      perform: () => {
+        closePalette()
+        openShortcuts()
+      },
+    },
+    {
+      id: 'action-cycle-theme',
+      title: 'Cycle Theme Palette',
+      subtitle: `Currently active: ${themeStore.activePreset.name}`,
+      category: 'action',
+      badge: 'Theme',
+      shortcut: 'T',
+      perform: () => {
+        themeStore.cycleTheme()
+        showToast(`Theme changed to ${themeStore.activePreset.name}`, 'info')
+      },
+    },
+    {
       id: 'action-linkedin',
       title: 'Open LinkedIn Profile',
       subtitle: 'View professional profile and connections',
@@ -467,6 +505,26 @@ const quickActions = computed<CommandItem[]>(() => {
       },
     },
   ]
+})
+
+// Dynamic theme preset items
+const themeItems = computed<CommandItem[]>(() => {
+  return THEME_PRESETS.map((preset) => {
+    const isActive = themeStore.currentThemeId === preset.id
+    return {
+      id: `theme-${preset.id}`,
+      title: `Theme: ${preset.name}`,
+      subtitle: `${preset.description}${isActive ? ' (Currently Active)' : ''}`,
+      category: 'theme' as const,
+      badge: isActive ? 'Active' : 'Theme',
+      swatchBg: preset.swatchBg,
+      swatchBorder: preset.swatchBorder,
+      perform: () => {
+        themeStore.setThemeId(preset.id)
+        showToast(`Activated ${preset.name}`, 'success')
+      },
+    }
+  })
 })
 
 // Dynamic project items
@@ -535,6 +593,12 @@ const groupedItems = computed<GroupedCategory[]>(() => {
       items: quickActions.value,
     })
 
+    groups.push({
+      category: 'theme',
+      title: 'Theme & Appearance',
+      items: themeItems.value,
+    })
+
     if (projectItems.value.length > 0) {
       groups.push({
         category: 'project',
@@ -544,6 +608,28 @@ const groupedItems = computed<GroupedCategory[]>(() => {
     }
 
     return groups
+  }
+
+  // Filter Themes
+  const isThemeSearch =
+    q.includes('theme') ||
+    q.includes('palette') ||
+    q.includes('color') ||
+    q.includes('mode') ||
+    q.includes('dark') ||
+    q.includes('light') ||
+    q.includes('cyber') ||
+    q.includes('sepia')
+
+  const matchedThemes = themeItems.value.filter(
+    (item) => isThemeSearch || item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
+  )
+  if (matchedThemes.length > 0) {
+    groups.push({
+      category: 'theme',
+      title: 'Theme & Appearance',
+      items: matchedThemes,
+    })
   }
 
   // Filter Quick Actions
