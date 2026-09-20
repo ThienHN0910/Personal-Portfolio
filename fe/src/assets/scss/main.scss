@@ -1426,4 +1426,35 @@ a {
   will-change: transform;
 }
 
+/* ─── Sub-100ms Skeleton Shimmer Utility ──────────────────────────────── */
+@keyframes shimmerWave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--bone) 0%,
+    var(--surface) 50%,
+    var(--bone) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerWave 1.8s ease-in-out infinite;
+  border-radius: 0.5rem;
+  will-change: background-position;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-shimmer {
+    animation: none !important;
+    background: var(--bone) !important;
+  }
+}
+
+
 

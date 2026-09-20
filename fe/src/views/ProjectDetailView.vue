@@ -51,7 +51,7 @@
             </div>
 
             <!-- Right Header: System Spec Rail (Col 4) -->
-            <div class="lg:col-span-4 p-5 rounded-xl bg-bone border border-stroke space-y-4 text-xs font-mono">
+            <div class="lg:col-span-4 p-5 rounded-xl bg-bone border border-stroke hover:border-ink/25 space-y-4 text-xs font-mono transition-all duration-200 hover:-translate-y-0.5 shadow-xs">
               <div class="flex items-center justify-between pb-2.5 border-b border-stroke">
                 <span class="text-[10px] text-ink-tertiary uppercase tracking-widest">System Spec Rail</span>
                 <span class="w-2 h-2 rounded-full" :class="project.liveUrl ? 'bg-pastel-green-text animate-pulse-soft' : 'bg-ink-tertiary'"></span>
@@ -101,7 +101,7 @@
                     <span
                       v-for="tech in project.technologies"
                       :key="tech"
-                      class="px-2.5 py-1 rounded bg-bone border border-stroke text-ink text-xs font-mono hover:border-ink/30 transition-colors"
+                      class="px-2.5 py-1 rounded bg-bone border border-stroke text-ink text-xs font-mono hover:border-ink/30 hover:-translate-y-px active:scale-95 transition-all duration-150"
                       data-cursor="explore"
                     >
                       {{ tech }}
