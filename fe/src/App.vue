@@ -49,8 +49,10 @@ import ScrollToTopButton from '@/components/ui/ScrollToTopButton.vue'
 import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 import { useSmoothScroll } from '@/composables/useSmoothScroll'
 import { useScrollReveal } from '@/composables/useScrollReveal'
+import { useWeatherStore } from '@/stores/weather'
 
 const route = useRoute()
+const weatherStore = useWeatherStore()
 const isAdminRoute = computed(() => route.path.startsWith('/admin'))
 const { initKeyboardListeners, destroyKeyboardListeners } = useKeyboardShortcuts()
 const { initSmoothScroll, destroySmoothScroll, scrollTo } = useSmoothScroll()
@@ -76,6 +78,7 @@ watch(
 onMounted(() => {
   if (!isAdminRoute.value) {
     initSmoothScroll()
+    weatherStore.initHourlyRefresh()
   }
   initKeyboardListeners()
 })
@@ -83,5 +86,6 @@ onMounted(() => {
 onUnmounted(() => {
   destroySmoothScroll()
   destroyKeyboardListeners()
+  weatherStore.destroyHourlyRefresh()
 })
 </script>

@@ -219,4 +219,21 @@ export interface AnalyticsStats {
   topCompanies: Array<{ company: string; count: number; lastVisit?: string }>
 }
 
+export type WeatherCondition = 'clear' | 'cloudy' | 'rain' | 'thunderstorm' | 'snow'
+
+export interface WeatherData {
+  city: string
+  country: string
+  latitude: number
+  longitude: number
+  temperature: number
+  weatherCode: number
+  condition: WeatherCondition
+  isDay: boolean
+  cached?: boolean
+  cachedAt?: string
+  fallback?: boolean
+}
+
+
 

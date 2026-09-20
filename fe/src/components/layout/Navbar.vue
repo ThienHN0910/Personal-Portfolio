@@ -38,6 +38,9 @@
 
       <!-- Right actions -->
       <div class="flex items-center gap-2">
+        <!-- Weather Telemetry Badge -->
+        <WeatherBadge />
+
         <!-- Theme Switcher Pill -->
         <ThemeSwitcher />
 
@@ -144,6 +147,7 @@ import { useCommandPalette } from '@/composables/useCommandPalette'
 import { useMagnetic } from '@/composables/useMagnetic'
 import { useAboutStore } from '@/stores/about'
 import ThemeSwitcher from '@/components/ui/ThemeSwitcher.vue'
+import WeatherBadge from '@/components/ui/WeatherBadge.vue'
 
 const aboutStore = useAboutStore()
 const { openPalette } = useCommandPalette()

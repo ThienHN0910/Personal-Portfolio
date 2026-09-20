@@ -131,6 +131,9 @@
                       <svg v-else-if="item.category === 'theme'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="9"/><path d="M12 3v18"/>
                       </svg>
+                      <svg v-else-if="item.category === 'weather'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>
+                      </svg>
                       <svg v-else-if="item.category === 'page'" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                         <rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18M9 21V9"/>
                       </svg>
@@ -160,6 +163,8 @@
                           :class="[
                             item.badge === 'Featured'
                               ? 'bg-pastel-amber text-pastel-amber-text'
+                              : item.badge === 'Active' || item.badge === 'Current'
+                              ? 'bg-pastel-green text-pastel-green-text'
                               : 'bg-bone text-ink-tertiary border border-stroke'
                           ]"
                         >
@@ -228,13 +233,14 @@ import { useProjectsStore } from '@/stores/projects'
 import { useBlogStore } from '@/stores/blog'
 import { useAboutStore } from '@/stores/about'
 import { useThemeStore, THEME_PRESETS } from '@/stores/theme'
+import { useWeatherStore } from '@/stores/weather'
 import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
 
 export interface CommandItem {
   id: string
   title: string
   subtitle?: string
-  category: 'recent' | 'page' | 'project' | 'article' | 'action' | 'theme'
+  category: 'recent' | 'page' | 'project' | 'article' | 'action' | 'theme' | 'weather'
   badge?: string
   shortcut?: string
   swatchBg?: string
@@ -256,6 +262,7 @@ const projectsStore = useProjectsStore()
 const blogStore = useBlogStore()
 const aboutStore = useAboutStore()
 const themeStore = useThemeStore()
+const weatherStore = useWeatherStore()
 const { openShortcuts } = useKeyboardShortcuts()
 
 const searchQuery = ref('')
@@ -557,6 +564,98 @@ const blogItems = computed<CommandItem[]>(() => {
   }))
 })
 
+// Dynamic weather commands
+const weatherItems = computed<CommandItem[]>(() => {
+  const isEnabled = weatherStore.isWeatherEnabled
+  const currentCondition = weatherStore.effectiveCondition
+
+  return [
+    {
+      id: 'weather-toggle',
+      title: isEnabled ? 'Disable Weather Background' : 'Enable Weather Background',
+      subtitle: isEnabled
+        ? 'Turn off ambient weather atmosphere particles'
+        : 'Turn on auto-detected IP weather atmosphere',
+      category: 'weather' as const,
+      badge: isEnabled ? 'Active' : 'Disabled',
+      perform: () => {
+        weatherStore.toggleWeather()
+        showToast(
+          weatherStore.isWeatherEnabled ? 'Weather background enabled' : 'Weather background disabled',
+          'info',
+        )
+      },
+    },
+    {
+      id: 'weather-live-sync',
+      title: 'Sync Weather to Live Location',
+      subtitle: `Reset simulation and auto-detect from client IP (${weatherStore.weatherData?.city || 'Local IP'})`,
+      category: 'weather' as const,
+      badge: !weatherStore.previewOverride ? 'Current' : 'Action',
+      perform: async () => {
+        weatherStore.setPreviewCondition(null)
+        await weatherStore.fetchWeather(true)
+        showToast(`Live weather synced: ${weatherStore.conditionLabel} (${weatherStore.temperatureDisplay})`, 'success')
+      },
+    },
+    {
+      id: 'weather-preview-clear',
+      title: 'Preview Atmosphere: Clear Sky',
+      subtitle: 'Simulate warm sunbeams / starry night celestial ambience',
+      category: 'weather' as const,
+      badge: currentCondition === 'clear' && weatherStore.previewOverride ? 'Active' : 'Atmosphere',
+      perform: () => {
+        weatherStore.setPreviewCondition('clear')
+        showToast('Atmosphere switched to Clear Sky', 'info')
+      },
+    },
+    {
+      id: 'weather-preview-rain',
+      title: 'Preview Atmosphere: Rain & Showers',
+      subtitle: 'Simulate delicate diagonal falling raindrops and cool misty tones',
+      category: 'weather' as const,
+      badge: currentCondition === 'rain' ? 'Active' : 'Atmosphere',
+      perform: () => {
+        weatherStore.setPreviewCondition('rain')
+        showToast('Atmosphere switched to Rain & Showers', 'info')
+      },
+    },
+    {
+      id: 'weather-preview-clouds',
+      title: 'Preview Atmosphere: Overcast / Cloudy',
+      subtitle: 'Simulate low-contrast slow-floating overcast atmospheric fog',
+      category: 'weather' as const,
+      badge: currentCondition === 'cloudy' ? 'Active' : 'Atmosphere',
+      perform: () => {
+        weatherStore.setPreviewCondition('cloudy')
+        showToast('Atmosphere switched to Overcast Clouds', 'info')
+      },
+    },
+    {
+      id: 'weather-preview-thunderstorm',
+      title: 'Preview Atmosphere: Thunderstorm',
+      subtitle: 'Simulate heavy storm droplets, deep indigo aura, and subtle flashes',
+      category: 'weather' as const,
+      badge: currentCondition === 'thunderstorm' ? 'Active' : 'Atmosphere',
+      perform: () => {
+        weatherStore.setPreviewCondition('thunderstorm')
+        showToast('Atmosphere switched to Thunderstorm', 'info')
+      },
+    },
+    {
+      id: 'weather-preview-snow',
+      title: 'Preview Atmosphere: Snow Flurries',
+      subtitle: 'Simulate gentle swirling crystalline snowflakes and icy aura',
+      category: 'weather' as const,
+      badge: currentCondition === 'snow' ? 'Active' : 'Atmosphere',
+      perform: () => {
+        weatherStore.setPreviewCondition('snow')
+        showToast('Atmosphere switched to Snow Flurries', 'info')
+      },
+    },
+  ]
+})
+
 // Filtered grouped items
 const groupedItems = computed<GroupedCategory[]>(() => {
   const q = searchQuery.value.trim().toLowerCase()
@@ -599,6 +698,12 @@ const groupedItems = computed<GroupedCategory[]>(() => {
       items: themeItems.value,
     })
 
+    groups.push({
+      category: 'weather',
+      title: 'Weather & Atmosphere',
+      items: weatherItems.value,
+    })
+
     if (projectItems.value.length > 0) {
       groups.push({
         category: 'project',
@@ -629,6 +734,30 @@ const groupedItems = computed<GroupedCategory[]>(() => {
       category: 'theme',
       title: 'Theme & Appearance',
       items: matchedThemes,
+    })
+  }
+
+  // Filter Weather
+  const isWeatherSearch =
+    q.includes('weather') ||
+    q.includes('thoi tiet') ||
+    q.includes('rain') ||
+    q.includes('mua') ||
+    q.includes('sun') ||
+    q.includes('storm') ||
+    q.includes('snow') ||
+    q.includes('cloud') ||
+    q.includes('ambient') ||
+    q.includes('atmosphere')
+
+  const matchedWeather = weatherItems.value.filter(
+    (item) => isWeatherSearch || item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
+  )
+  if (matchedWeather.length > 0) {
+    groups.push({
+      category: 'weather',
+      title: 'Weather & Atmosphere',
+      items: matchedWeather,
     })
   }
 

@@ -5,9 +5,11 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { useWeatherStore } from '@/stores/weather'
 
 const canvasRef = ref<HTMLCanvasElement | null>(null)
+const weatherStore = useWeatherStore()
 
 interface Particle {
   x: number
@@ -21,18 +23,51 @@ interface Particle {
   colorType: number // 0 for primary, 1 for accent
 }
 
+interface RainDrop {
+  x: number
+  y: number
+  length: number
+  speed: number
+  alpha: number
+}
+
+interface SnowFlake {
+  x: number
+  y: number
+  size: number
+  speedY: number
+  speedX: number
+  phase: number
+}
+
 interface ThemePalette {
   primaryRgb: string
   accentRgb: string
   lineRgb: string
   lineAlpha: number
   particleAlphaScale: number
-  glowTopLeft: string
-  glowBottomRight: string
+  glowTopRgb: [number, number, number]
+  glowTopAlpha: number
+  glowBottomRgb: [number, number, number]
+  glowBottomAlpha: number
+}
+
+interface AtmosphereState {
+  rainAlpha: number
+  mistAlpha: number
+  snowAlpha: number
+  thunderFlashAlpha: number
+  particleSpeedScale: number
+  glowTopRgb: [number, number, number]
+  glowTopAlpha: number
+  glowBottomRgb: [number, number, number]
+  glowBottomAlpha: number
 }
 
 let animationFrameId: number | null = null
 let particles: Particle[] = []
+let rainDrops: RainDrop[] = []
+let snowFlakes: SnowFlake[] = []
 let mouseX = -1000
 let mouseY = -1000
 let width = 0
@@ -41,19 +76,36 @@ let ctx: CanvasRenderingContext2D | null = null
 let themeObserver: MutationObserver | null = null
 let activePalette: ThemePalette
 
+let mistOffset = 0
+let thunderTimer = 0
+let thunderFlashRemaining = 0
+
+// Atmospheric state interpolation (lerp)
+const currentAtmosphere: AtmosphereState = {
+  rainAlpha: 0,
+  mistAlpha: 0,
+  snowAlpha: 0,
+  thunderFlashAlpha: 0,
+  particleSpeedScale: 1.0,
+  glowTopRgb: [96, 165, 250],
+  glowTopAlpha: 0.045,
+  glowBottomRgb: [74, 222, 128],
+  glowBottomAlpha: 0.035,
+}
+
+let targetAtmosphere: AtmosphereState = { ...currentAtmosphere }
+
 function getEffectiveTheme(): string {
   if (typeof document === 'undefined') return 'editorial-dark'
   const html = document.documentElement
   const dataTheme = html.getAttribute('data-theme')
   if (dataTheme && dataTheme !== 'system') return dataTheme
 
-  // Fallback check classes
   if (html.classList.contains('editorial-light')) return 'editorial-light'
   if (html.classList.contains('monochrome-cyber')) return 'monochrome-cyber'
   if (html.classList.contains('warm-sepia')) return 'warm-sepia'
   if (html.classList.contains('editorial-dark')) return 'editorial-dark'
 
-  // System mode check
   if (typeof window !== 'undefined' && window.matchMedia) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'editorial-dark' : 'editorial-light'
   }
@@ -66,46 +118,144 @@ function resolvePalette(): ThemePalette {
   switch (theme) {
     case 'editorial-light':
       return {
-        primaryRgb: '30, 41, 59',       // Deep slate charcoal
-        accentRgb: '29, 78, 216',        // Deep editorial cobalt
-        lineRgb: '51, 65, 85',          // Crisp slate line
+        primaryRgb: '30, 41, 59',
+        accentRgb: '29, 78, 216',
+        lineRgb: '51, 65, 85',
         lineAlpha: 0.16,
         particleAlphaScale: 0.55,
-        glowTopLeft: 'rgba(37, 99, 235, 0.025)',
-        glowBottomRight: 'rgba(180, 83, 9, 0.020)',
+        glowTopRgb: [37, 99, 235],
+        glowTopAlpha: 0.025,
+        glowBottomRgb: [180, 83, 9],
+        glowBottomAlpha: 0.02,
       }
     case 'monochrome-cyber':
       return {
-        primaryRgb: '255, 255, 255',    // Pure stark white
-        accentRgb: '16, 185, 129',      // Cyber emerald
-        lineRgb: '255, 255, 255',       // Pure white hairline
+        primaryRgb: '255, 255, 255',
+        accentRgb: '16, 185, 129',
+        lineRgb: '255, 255, 255',
         lineAlpha: 0.15,
         particleAlphaScale: 0.65,
-        glowTopLeft: 'rgba(16, 185, 129, 0.040)',
-        glowBottomRight: 'rgba(56, 189, 248, 0.030)',
+        glowTopRgb: [16, 185, 129],
+        glowTopAlpha: 0.04,
+        glowBottomRgb: [56, 189, 248],
+        glowBottomAlpha: 0.03,
       }
     case 'warm-sepia':
       return {
-        primaryRgb: '68, 51, 38',       // Deep espresso umber
-        accentRgb: '180, 83, 9',        // Golden bronze sepia
-        lineRgb: '115, 82, 53',         // Warm umber hairline
+        primaryRgb: '68, 51, 38',
+        accentRgb: '180, 83, 9',
+        lineRgb: '115, 82, 53',
         lineAlpha: 0.18,
         particleAlphaScale: 0.55,
-        glowTopLeft: 'rgba(180, 83, 9, 0.030)',
-        glowBottomRight: 'rgba(146, 64, 14, 0.025)',
+        glowTopRgb: [180, 83, 9],
+        glowTopAlpha: 0.03,
+        glowBottomRgb: [146, 64, 14],
+        glowBottomAlpha: 0.025,
       }
     case 'editorial-dark':
     default:
       return {
-        primaryRgb: '240, 243, 250',    // Soft starlight bone
-        accentRgb: '96, 165, 250',      // Electric sapphire pastel blue
-        lineRgb: '147, 197, 253',       // Icy blue hairline
+        primaryRgb: '240, 243, 250',
+        accentRgb: '96, 165, 250',
+        lineRgb: '147, 197, 253',
         lineAlpha: 0.15,
         particleAlphaScale: 0.55,
-        glowTopLeft: 'rgba(96, 165, 250, 0.045)',
-        glowBottomRight: 'rgba(74, 222, 128, 0.035)',
+        glowTopRgb: [96, 165, 250],
+        glowTopAlpha: 0.045,
+        glowBottomRgb: [74, 222, 128],
+        glowBottomAlpha: 0.035,
       }
   }
+}
+
+function computeTargetAtmosphere(): AtmosphereState {
+  const cond = weatherStore.effectiveCondition
+  const isDay = weatherStore.isDay
+  const enabled = weatherStore.isWeatherEnabled
+  const palette = activePalette || resolvePalette()
+
+  let rainAlpha = 0
+  let mistAlpha = 0
+  let snowAlpha = 0
+  let speedScale = 1.0
+  let topRgb: [number, number, number] = [...palette.glowTopRgb]
+  let topAlpha = palette.glowTopAlpha
+  let bottomRgb: [number, number, number] = [...palette.glowBottomRgb]
+  let bottomAlpha = palette.glowBottomAlpha
+
+  if (enabled) {
+    switch (cond) {
+      case 'rain':
+        rainAlpha = 0.18
+        mistAlpha = 0.03
+        speedScale = 0.85
+        topRgb = [59, 130, 246] // Rainy cool cobalt
+        topAlpha = 0.05
+        bottomRgb = [100, 116, 139] // Slate mist
+        bottomAlpha = 0.035
+        break
+
+      case 'thunderstorm':
+        rainAlpha = 0.22
+        mistAlpha = 0.05
+        speedScale = 1.25
+        topRgb = [99, 102, 241] // Electric indigo
+        topAlpha = 0.065
+        bottomRgb = [59, 130, 246]
+        bottomAlpha = 0.045
+        break
+
+      case 'cloudy':
+        mistAlpha = 0.075
+        speedScale = 0.75
+        topRgb = [148, 163, 184] // Overcast pearl
+        topAlpha = 0.038
+        bottomRgb = [100, 116, 139]
+        bottomAlpha = 0.03
+        break
+
+      case 'snow':
+        snowAlpha = 0.22
+        mistAlpha = 0.04
+        speedScale = 0.65
+        topRgb = [224, 242, 254] // Icy snow crystalline
+        topAlpha = 0.045
+        bottomRgb = [186, 230, 253]
+        bottomAlpha = 0.035
+        break
+
+      case 'clear':
+      default:
+        if (isDay) {
+          topRgb = [245, 158, 11] // Warm honey daylight
+          topAlpha = 0.035
+          bottomRgb = palette.glowBottomRgb
+          bottomAlpha = palette.glowBottomAlpha
+        } else {
+          topRgb = [129, 140, 248] // Cosmic starlight twilight
+          topAlpha = 0.045
+          bottomRgb = [99, 102, 241]
+          bottomAlpha = 0.03
+        }
+        break
+    }
+  }
+
+  return {
+    rainAlpha,
+    mistAlpha,
+    snowAlpha,
+    thunderFlashAlpha: 0,
+    particleSpeedScale: speedScale,
+    glowTopRgb: topRgb,
+    glowTopAlpha: topAlpha,
+    glowBottomRgb: bottomRgb,
+    glowBottomAlpha: bottomAlpha,
+  }
+}
+
+function updateAtmosphereTarget() {
+  targetAtmosphere = computeTargetAtmosphere()
 }
 
 function handleResize() {
@@ -121,24 +271,50 @@ function handleResize() {
   }
 }
 
-function createParticles() {
+function createElements() {
   const isMobile = window.innerWidth < 768
   const isTablet = window.innerWidth < 1200
-  const count = isMobile ? 32 : (isTablet ? 50 : 70)
+  const count = isMobile ? 32 : isTablet ? 50 : 70
   particles = []
 
   for (let i = 0; i < count; i++) {
     particles.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      // Calm, gentle float velocity (sub-pixel drift)
       vx: (Math.random() - 0.5) * 0.24,
       vy: (Math.random() - 0.5) * 0.24,
       size: Math.random() * 1.6 + 1.1,
       baseAlpha: Math.random() * 0.45 + 0.35,
       pulsePhase: Math.random() * Math.PI * 2,
       pulseSpeed: Math.random() * 0.012 + 0.008,
-      colorType: Math.random() > 0.78 ? 1 : 0, // ~22% accent particles
+      colorType: Math.random() > 0.78 ? 1 : 0,
+    })
+  }
+
+  // Pre-allocate 55 delicate rain drops
+  rainDrops = []
+  const rainCount = isMobile ? 30 : 55
+  for (let i = 0; i < rainCount; i++) {
+    rainDrops.push({
+      x: Math.random() * (width + 200) - 100,
+      y: Math.random() * height,
+      length: Math.random() * 18 + 14,
+      speed: Math.random() * 8 + 14,
+      alpha: Math.random() * 0.35 + 0.25,
+    })
+  }
+
+  // Pre-allocate 40 snowflakes
+  snowFlakes = []
+  const snowCount = isMobile ? 22 : 40
+  for (let i = 0; i < snowCount; i++) {
+    snowFlakes.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2.2 + 1.2,
+      speedY: Math.random() * 0.8 + 0.4,
+      speedX: (Math.random() - 0.5) * 0.5,
+      phase: Math.random() * Math.PI * 2,
     })
   }
 }
@@ -153,51 +329,137 @@ function handleMouseLeave() {
   mouseY = -1000
 }
 
+function lerp(current: number, target: number, rate = 0.022): number {
+  return current + (target - current) * rate
+}
+
 function draw() {
   if (!ctx) return
   ctx.clearRect(0, 0, width, height)
 
-  // 1. Draw Subtle Ambient Aura Light Wells in Background
-  if (activePalette.glowTopLeft) {
-    const radiusTop = Math.max(width, height) * 0.45
-    const gradTop = ctx.createRadialGradient(width * 0.15, height * 0.15, 0, width * 0.15, height * 0.15, radiusTop)
-    gradTop.addColorStop(0, activePalette.glowTopLeft)
-    gradTop.addColorStop(1, 'transparent')
-    ctx.fillStyle = gradTop
-    ctx.fillRect(0, 0, width, height)
+  // 1. Smoothly interpolate atmospheric properties towards target (Gentle 2.5s - 3s easing)
+  currentAtmosphere.rainAlpha = lerp(currentAtmosphere.rainAlpha, targetAtmosphere.rainAlpha)
+  currentAtmosphere.mistAlpha = lerp(currentAtmosphere.mistAlpha, targetAtmosphere.mistAlpha)
+  currentAtmosphere.snowAlpha = lerp(currentAtmosphere.snowAlpha, targetAtmosphere.snowAlpha)
+  currentAtmosphere.particleSpeedScale = lerp(currentAtmosphere.particleSpeedScale, targetAtmosphere.particleSpeedScale)
+  currentAtmosphere.glowTopAlpha = lerp(currentAtmosphere.glowTopAlpha, targetAtmosphere.glowTopAlpha)
+  currentAtmosphere.glowBottomAlpha = lerp(currentAtmosphere.glowBottomAlpha, targetAtmosphere.glowBottomAlpha)
+
+  for (let c = 0; c < 3; c++) {
+    currentAtmosphere.glowTopRgb[c] = lerp(currentAtmosphere.glowTopRgb[c], targetAtmosphere.glowTopRgb[c])
+    currentAtmosphere.glowBottomRgb[c] = lerp(currentAtmosphere.glowBottomRgb[c], targetAtmosphere.glowBottomRgb[c])
   }
 
-  if (activePalette.glowBottomRight) {
-    const radiusBottom = Math.max(width, height) * 0.42
-    const gradBottom = ctx.createRadialGradient(width * 0.85, height * 0.85, 0, width * 0.85, height * 0.85, radiusBottom)
-    gradBottom.addColorStop(0, activePalette.glowBottomRight)
-    gradBottom.addColorStop(1, 'transparent')
-    ctx.fillStyle = gradBottom
-    ctx.fillRect(0, 0, width, height)
+  // 2. Ambient Lighting Auroras with Interpolated Colors
+  const topCol = `rgba(${Math.round(currentAtmosphere.glowTopRgb[0])}, ${Math.round(currentAtmosphere.glowTopRgb[1])}, ${Math.round(currentAtmosphere.glowTopRgb[2])}, ${currentAtmosphere.glowTopAlpha.toFixed(4)})`
+  const bottomCol = `rgba(${Math.round(currentAtmosphere.glowBottomRgb[0])}, ${Math.round(currentAtmosphere.glowBottomRgb[1])}, ${Math.round(currentAtmosphere.glowBottomRgb[2])}, ${currentAtmosphere.glowBottomAlpha.toFixed(4)})`
+
+  const radiusTop = Math.max(width, height) * 0.45
+  const gradTop = ctx.createRadialGradient(width * 0.15, height * 0.15, 0, width * 0.15, height * 0.15, radiusTop)
+  gradTop.addColorStop(0, topCol)
+  gradTop.addColorStop(1, 'transparent')
+  ctx.fillStyle = gradTop
+  ctx.fillRect(0, 0, width, height)
+
+  const radiusBottom = Math.max(width, height) * 0.42
+  const gradBottom = ctx.createRadialGradient(width * 0.85, height * 0.85, 0, width * 0.85, height * 0.85, radiusBottom)
+  gradBottom.addColorStop(0, bottomCol)
+  gradBottom.addColorStop(1, 'transparent')
+  ctx.fillStyle = gradBottom
+  ctx.fillRect(0, 0, width, height)
+
+  // 3. Optional Thunderstorm Ambient Pulse
+  if (weatherStore.effectiveCondition === 'thunderstorm' && weatherStore.isWeatherEnabled) {
+    thunderTimer++
+    if (thunderTimer > 600 && Math.random() < 0.008) {
+      thunderTimer = 0
+      thunderFlashRemaining = 8
+    }
+    if (thunderFlashRemaining > 0) {
+      thunderFlashRemaining--
+      ctx.fillStyle = `rgba(255, 255, 255, ${0.035 * (thunderFlashRemaining / 8)})`
+      ctx.fillRect(0, 0, width, height)
+    }
   }
 
-  // 2. Particle Constellation Network
+  // 4. Subtle Drifting Overcast Mist Clouds
+  if (currentAtmosphere.mistAlpha > 0.005) {
+    mistOffset += 0.25
+    ctx.save()
+    const mistGrad = ctx.createLinearGradient(0, 0, width, height)
+    mistGrad.addColorStop(0, `rgba(200, 215, 235, ${currentAtmosphere.mistAlpha * 0.6})`)
+    mistGrad.addColorStop(0.5, `rgba(160, 185, 215, ${currentAtmosphere.mistAlpha * 0.9})`)
+    mistGrad.addColorStop(1, `rgba(200, 215, 235, ${currentAtmosphere.mistAlpha * 0.4})`)
+    ctx.fillStyle = mistGrad
+    ctx.fillRect(0, 0, width, height)
+    ctx.restore()
+  }
+
+  // 5. Delicate Falling Rain Streaks
+  if (currentAtmosphere.rainAlpha > 0.005) {
+    ctx.save()
+    ctx.lineWidth = 0.85
+    const angleX = 1.6
+    for (let i = 0; i < rainDrops.length; i++) {
+      const drop = rainDrops[i]
+      drop.y += drop.speed
+      drop.x += angleX
+
+      if (drop.y > height + 20) {
+        drop.y = -20
+        drop.x = Math.random() * (width + 150) - 75
+      }
+
+      ctx.strokeStyle = `rgba(186, 215, 250, ${drop.alpha * currentAtmosphere.rainAlpha})`
+      ctx.beginPath()
+      ctx.moveTo(drop.x, drop.y)
+      ctx.lineTo(drop.x + angleX * (drop.length / drop.speed), drop.y + drop.length)
+      ctx.stroke()
+    }
+    ctx.restore()
+  }
+
+  // 6. Gentle Drifting Snowflakes
+  if (currentAtmosphere.snowAlpha > 0.005) {
+    ctx.save()
+    for (let i = 0; i < snowFlakes.length; i++) {
+      const flake = snowFlakes[i]
+      flake.phase += 0.02
+      flake.y += flake.speedY
+      flake.x += flake.speedX + Math.sin(flake.phase) * 0.4
+
+      if (flake.y > height + 10) {
+        flake.y = -10
+        flake.x = Math.random() * width
+      }
+
+      ctx.beginPath()
+      ctx.arc(flake.x, flake.y, flake.size, 0, Math.PI * 2)
+      ctx.fillStyle = `rgba(255, 255, 255, ${currentAtmosphere.snowAlpha})`
+      ctx.fill()
+    }
+    ctx.restore()
+  }
+
+  // 7. Particle Constellation Network
   const lineMaxDist = 135
   const mouseRadius = 145
+  const speedScale = currentAtmosphere.particleSpeedScale
 
   for (let i = 0; i < particles.length; i++) {
     const p = particles[i]
 
-    // Position updates with gentle sub-pixel drift
-    p.x += p.vx
-    p.y += p.vy
+    p.x += p.vx * speedScale
+    p.y += p.vy * speedScale
 
-    // Gentle organic breathing pulse
     p.pulsePhase += p.pulseSpeed
     const currentAlpha = p.baseAlpha + Math.sin(p.pulsePhase) * 0.12
 
-    // Smooth edge wrap with generous buffer
     if (p.x < -30) p.x = width + 30
     if (p.x > width + 30) p.x = -30
     if (p.y < -30) p.y = height + 30
     if (p.y > height + 30) p.y = -30
 
-    // Gentle spring-damped mouse interaction
     const dxMouse = mouseX - p.x
     const dyMouse = mouseY - p.y
     const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse)
@@ -209,7 +471,6 @@ function draw() {
       p.vy -= (dyMouse / distMouse) * force * 0.45
       renderAlpha = Math.min(1, renderAlpha + (1 - distMouse / mouseRadius) * 0.4)
 
-      // Delicate tether line to mouse cursor
       const mouseLineAlpha = (1 - distMouse / mouseRadius) * (activePalette.lineAlpha * 1.25)
       ctx.beginPath()
       ctx.moveTo(p.x, p.y)
@@ -219,22 +480,18 @@ function draw() {
       ctx.stroke()
     }
 
-    // Apply gentle velocity damping to keep floating calm
     p.vx *= 0.99
     p.vy *= 0.99
 
-    // Maintain subtle baseline drift
     if (Math.abs(p.vx) < 0.05) p.vx += (Math.random() - 0.5) * 0.02
     if (Math.abs(p.vy) < 0.05) p.vy += (Math.random() - 0.5) * 0.02
 
-    // Draw particle with glow
     const rgb = p.colorType === 1 ? activePalette.accentRgb : activePalette.primaryRgb
     ctx.beginPath()
     ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
     ctx.fillStyle = `rgba(${rgb}, ${renderAlpha})`
     ctx.fill()
 
-    // Connect constellation lines
     for (let j = i + 1; j < particles.length; j++) {
       const p2 = particles[j]
       const dx = p.x - p2.x
@@ -247,7 +504,7 @@ function draw() {
         ctx.moveTo(p.x, p.y)
         ctx.lineTo(p2.x, p2.y)
         ctx.strokeStyle = `rgba(${activePalette.lineRgb}, ${lineAlpha})`
-        ctx.lineWidth = 0.75
+        ctx.lineWidth = 0.6
         ctx.stroke()
       }
     }
@@ -258,7 +515,6 @@ function draw() {
 
 function startAnimation() {
   if (typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // Single static render for accessibility
     draw()
     return
   }
@@ -284,7 +540,17 @@ function handleVisibilityChange() {
 
 function updateTheme() {
   activePalette = resolvePalette()
+  updateAtmosphereTarget()
 }
+
+// Watch for weather and preview condition updates
+watch(
+  [() => weatherStore.effectiveCondition, () => weatherStore.isDay, () => weatherStore.isWeatherEnabled],
+  () => {
+    updateAtmosphereTarget()
+  },
+  { immediate: true },
+)
 
 onMounted(() => {
   const canvas = canvasRef.value
@@ -294,14 +560,17 @@ onMounted(() => {
 
   activePalette = resolvePalette()
   handleResize()
-  createParticles()
+  createElements()
+  updateAtmosphereTarget()
+
+  // Initialize initial atmosphere matching target directly on startup
+  Object.assign(currentAtmosphere, targetAtmosphere)
 
   window.addEventListener('resize', handleResize, { passive: true })
   window.addEventListener('mousemove', handleMouseMove, { passive: true })
   document.addEventListener('mouseleave', handleMouseLeave)
   document.addEventListener('visibilitychange', handleVisibilityChange)
 
-  // Watch for theme changes on html element
   themeObserver = new MutationObserver(() => {
     updateTheme()
   })
