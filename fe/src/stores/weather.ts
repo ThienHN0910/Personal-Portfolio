@@ -28,6 +28,9 @@ export const useWeatherStore = defineStore('weather', () => {
       const savedEnabled = localStorage.getItem(STORAGE_WEATHER_ENABLED_KEY)
       if (savedEnabled !== null) {
         isWeatherEnabled.value = savedEnabled === 'true'
+      } else {
+        isWeatherEnabled.value = true
+        localStorage.setItem(STORAGE_WEATHER_ENABLED_KEY, 'true')
       }
       const savedLastFetch = localStorage.getItem(STORAGE_WEATHER_LAST_FETCH_KEY)
       if (savedLastFetch) {

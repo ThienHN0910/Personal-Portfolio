@@ -95,12 +95,17 @@ onUnmounted(() => {
 
       <!-- Live Sync / Preview Indicator Dot -->
       <span
-        v-if="weatherStore.previewOverride"
+        v-if="!weatherStore.isWeatherEnabled"
+        class="w-1.5 h-1.5 rounded-full bg-ink-tertiary/60 flex-shrink-0"
+        title="Adaptive canvas disabled"
+      />
+      <span
+        v-else-if="weatherStore.previewOverride"
         class="w-1.5 h-1.5 rounded-full bg-pastel-amber-text flex-shrink-0"
         title="Preview mode active"
       />
       <span
-        v-else-if="weatherStore.isWeatherEnabled"
+        v-else
         class="w-1.5 h-1.5 rounded-full bg-pastel-green-text flex-shrink-0 animate-pulse-soft"
         title="Live 1-hour IP sync active"
       />
