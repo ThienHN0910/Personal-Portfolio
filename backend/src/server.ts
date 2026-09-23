@@ -31,7 +31,48 @@ if (fs.existsSync(backendEnvPath)) {
 const app = express()
 const port = Number(process.env.PORT || 3000)
 
-app.use(cors({ origin: true, credentials: true }))
+const allowedOrigins = [
+  'https://thienhn.io.vn',
+  'https://thienhn0910.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000',
+]
+
+if (process.env.CORS_ORIGIN) {
+  process.env.CORS_ORIGIN.split(',').forEach((o) => {
+    const trimmed = o.trim().replace(/\/$/, '')
+    if (trimmed && !allowedOrigins.includes(trimmed)) {
+      allowedOrigins.push(trimmed)
+    }
+  })
+}
+
+if (process.env.FRONTEND_URL) {
+  const trimmed = process.env.FRONTEND_URL.trim().replace(/\/$/, '')
+  if (trimmed && !allowedOrigins.includes(trimmed)) {
+    allowedOrigins.push(trimmed)
+  }
+}
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true)
+      const cleanOrigin = origin.trim().replace(/\/$/, '')
+      if (
+        allowedOrigins.includes(cleanOrigin) ||
+        cleanOrigin.endsWith('.vercel.app') ||
+        cleanOrigin.endsWith('thienhn.io.vn')
+      ) {
+        return callback(null, cleanOrigin)
+      }
+      return callback(null, cleanOrigin)
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  })
+)
 app.use(express.json({ limit: '10mb' }))
 app.use(express.urlencoded({ extended: true }))
 
