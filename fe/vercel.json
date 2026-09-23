@@ -29,8 +29,7 @@
     { "source": "/projects/69d5d063105f061fd4c185b5", "destination": "/projects/simplemp3-app-desktop", "permanent": true },
     { "source": "/projects/69d59748ed7c4366ab6520f0", "destination": "/projects/universal-travel-coop-2player", "permanent": true }
   ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
