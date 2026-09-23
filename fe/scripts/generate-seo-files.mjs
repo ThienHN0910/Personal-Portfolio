@@ -33,13 +33,13 @@ function resolveSiteUrl() {
     ...parseEnvFile(resolve(projectRoot, '.env.production.local')),
   }
 
-  const candidate = process.env.VITE_SITE_URL || envFileValues.VITE_SITE_URL || 'http://localhost:5173'
+  const candidate = process.env.VITE_SITE_URL || envFileValues.VITE_SITE_URL || 'https://thienhn.io.vn'
 
   try {
     const url = new URL(candidate)
     return url.origin
   } catch {
-    return 'http://localhost:5173'
+    return 'https://thienhn.io.vn'
   }
 }
 

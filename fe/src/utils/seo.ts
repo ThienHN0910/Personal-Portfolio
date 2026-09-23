@@ -23,6 +23,17 @@ const DEFAULT_KEYWORDS =
   'Hồ Ngọc Thiện, ThienHN, Ho Ngoc Thien, Full Stack Engineer, Web Developer, Vue.js, Node.js, TypeScript, React, Portfolio, Software Architecture'
 
 function resolveSiteOrigin(): string {
+  // 1. In browser runtime, dynamically adopt the active origin (Host-Aware Self-Referencing Canonical).
+  // This guarantees that https://thienhn.io.vn and https://thienhn0910.vercel.app remain 100% independent,
+  // without cross-domain link rot or broken canonical tags if the custom domain is ever discontinued.
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    const origin = window.location.origin
+    if (origin && origin !== 'null' && !origin.startsWith('file:')) {
+      return origin
+    }
+  }
+
+  // 2. In SSR / build-time / fallback, use configured VITE_SITE_URL or canonical default
   const configured = import.meta.env.VITE_SITE_URL?.trim()
   if (configured) {
     try {
@@ -32,23 +43,33 @@ function resolveSiteOrigin(): string {
     }
   }
 
-  if (typeof window !== 'undefined') {
-    return window.location.origin
-  }
-
-  return 'https://example.com'
+  return 'https://thienhn.io.vn'
 }
 
 function toAbsoluteUrl(value: string): string {
+  const origin = resolveSiteOrigin()
   if (!value) {
-    return new URL('/', resolveSiteOrigin()).toString()
+    return new URL('/', origin).toString()
   }
 
   try {
-    return new URL(value).toString()
+    const parsed = new URL(value)
+    // External assets (Cloudinary CDN, Gravatar, Unsplash, social embeds) preserve their host
+    const isInternalHost =
+      parsed.hostname.includes('vercel.app') ||
+      parsed.hostname.includes('io.vn') ||
+      parsed.hostname.includes('localhost') ||
+      parsed.hostname === '127.0.0.1'
+
+    if (!isInternalHost && (parsed.protocol === 'http:' || parsed.protocol === 'https:')) {
+      return parsed.toString()
+    }
+
+    // Internal URLs/pages rebase to the active origin
+    return new URL(parsed.pathname + parsed.search + parsed.hash, origin).toString()
   } catch {
     const normalizedPath = value.startsWith('/') ? value : `/${value}`
-    return new URL(normalizedPath, resolveSiteOrigin()).toString()
+    return new URL(normalizedPath, origin).toString()
   }
 }
 
