@@ -2,8 +2,16 @@ import axios from 'axios'
 import { getToken } from './auth'
 
 function resolveApiBaseUrl(): string {
-  const configuredBase = import.meta.env.VITE_API_BASE_URL
+  // When running in production browser on custom domain or Vercel,
+  // route through same-origin reverse proxy /api to completely eliminate cross-origin CORS limitations.
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname
+    if (host !== 'localhost' && host !== '127.0.0.1') {
+      return '/api'
+    }
+  }
 
+  const configuredBase = import.meta.env.VITE_API_BASE_URL || '/api'
   return configuredBase
 }
 

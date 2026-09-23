@@ -31,6 +31,18 @@ if (fs.existsSync(backendEnvPath)) {
 const app = express()
 const port = Number(process.env.PORT || 3000)
 
+// Disable ETag generation to prevent 304 Not Modified without CORS headers on Vercel Edge
+app.disable('etag')
+app.set('etag', false)
+
+// Always force no-cache on API responses so stale 304s are never returned
+app.use((_req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
+  next()
+})
+
 const allowedOrigins = [
   'https://thienhn.io.vn',
   'https://thienhn0910.vercel.app',
