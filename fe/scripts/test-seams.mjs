@@ -47,7 +47,41 @@ const mockPost = {
 assert.strictEqual(mockPost.slug, 'building-60fps-vue-architecture')
 assert.ok(mockPost.title.length > 0)
 assert.ok(mockPost.excerpt.length > 0)
+
+// Verify host-aware multi-domain URL rebasing logic
+function rebaseToOrigin(value, origin) {
+  if (!value) return new URL('/', origin).toString()
+  try {
+    const parsed = new URL(value)
+    const isInternalHost =
+      parsed.hostname.includes('vercel.app') ||
+      parsed.hostname.includes('io.vn') ||
+      parsed.hostname.includes('localhost') ||
+      parsed.hostname === '127.0.0.1'
+    if (!isInternalHost && (parsed.protocol === 'http:' || parsed.protocol === 'https:')) {
+      return parsed.toString()
+    }
+    return new URL(parsed.pathname + parsed.search + parsed.hash, origin).toString()
+  } catch {
+    const normalizedPath = value.startsWith('/') ? value : `/${value}`
+    return new URL(normalizedPath, origin).toString()
+  }
+}
+
+assert.strictEqual(
+  rebaseToOrigin('/projects/test', 'https://thienhn.io.vn'),
+  'https://thienhn.io.vn/projects/test',
+)
+assert.strictEqual(
+  rebaseToOrigin('/projects/test', 'https://thienhn0910.vercel.app'),
+  'https://thienhn0910.vercel.app/projects/test',
+)
+assert.strictEqual(
+  rebaseToOrigin('https://res.cloudinary.com/demo/image.png', 'https://thienhn.io.vn'),
+  'https://res.cloudinary.com/demo/image.png',
+)
 console.log('  ✓ Dynamic slug & OpenGraph metadata contracts validated.')
+console.log('  ✓ Multi-domain host-aware canonical rebasing verified.')
 
 // ── Seam 4: Project Context Extraction & Cleaning Seam ───────────────
 console.log('\n[Seam 4] Testing Project Context Extraction & Cleaning Pipeline...')

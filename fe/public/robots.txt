@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /auth/callback
 
-Sitemap: https://thienhn0910.vercel.app/sitemap.xml
+Sitemap: https://thienhn.io.vn/sitemap.xml

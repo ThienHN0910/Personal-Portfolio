@@ -41,11 +41,11 @@ function readEnv() {
 }
 
 function resolveSiteUrl(env) {
-  const candidate = env.VITE_SITE_URL || 'http://localhost:5173'
+  const candidate = env.VITE_SITE_URL || 'https://thienhn.io.vn'
   try {
     return new URL(candidate).origin
   } catch {
-    return 'http://localhost:5173'
+    return 'https://thienhn.io.vn'
   }
 }
 
