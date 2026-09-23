@@ -43,7 +43,13 @@ function readEnv() {
 function resolveSiteUrl(env) {
   const candidate = env.VITE_SITE_URL || 'https://thienhn.io.vn'
   try {
-    return new URL(candidate).origin
+    const origin = new URL(candidate).origin
+    // Vercel deployment URLs (*.vercel.app) are staging/preview/legacy fallbacks.
+    // The official canonical domain for static indexing & sitemaps is https://thienhn.io.vn
+    if (origin.includes('vercel.app')) {
+      return 'https://thienhn.io.vn'
+    }
+    return origin
   } catch {
     return 'https://thienhn.io.vn'
   }

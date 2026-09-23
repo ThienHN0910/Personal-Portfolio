@@ -398,7 +398,7 @@ import { useBlogStore } from '@/stores/blog'
 import { useProjectsStore } from '@/stores/projects'
 import type { BlogPost } from '@/types'
 import { sanitizeRichContent } from '@/utils/richContent'
-import { applySeo } from '@/utils/seo'
+import { applySeo, resolveSiteOrigin } from '@/utils/seo'
 import { getBlogDetailSeoMeta } from '@/utils/seoPriority'
 import { getRelatedArticlesForPost, getRelatedProjectsForPost } from '@/utils/relatedRecommender'
 
@@ -422,7 +422,7 @@ const isCopied = ref(false)
 
 const currentUrl = computed(() => {
   if (typeof window !== 'undefined') return window.location.href
-  return `https://thienhn0910.vercel.app/blog/${post.value?.slug || ''}`
+  return `${resolveSiteOrigin()}/blog/${post.value?.slug || ''}`
 })
 
 const { lightbox, closeLightbox, scheduleEnhance } = useRichContentEnhancer(articleBodyRef)

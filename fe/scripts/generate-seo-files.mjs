@@ -25,6 +25,21 @@ function parseEnvFile(filePath) {
   }
 }
 
+export function normalizeSiteUrl(urlStr) {
+  if (!urlStr) return 'https://thienhn.io.vn'
+  try {
+    const origin = new URL(urlStr).origin
+    // Vercel deployment URLs (*.vercel.app) are staging/preview/legacy fallbacks.
+    // The official canonical domain for static indexing & sitemaps is https://thienhn.io.vn
+    if (origin.includes('vercel.app')) {
+      return 'https://thienhn.io.vn'
+    }
+    return origin
+  } catch {
+    return 'https://thienhn.io.vn'
+  }
+}
+
 function resolveSiteUrl() {
   const envFileValues = {
     ...parseEnvFile(resolve(projectRoot, '.env')),
@@ -34,13 +49,7 @@ function resolveSiteUrl() {
   }
 
   const candidate = process.env.VITE_SITE_URL || envFileValues.VITE_SITE_URL || 'https://thienhn.io.vn'
-
-  try {
-    const url = new URL(candidate)
-    return url.origin
-  } catch {
-    return 'https://thienhn.io.vn'
-  }
+  return normalizeSiteUrl(candidate)
 }
 
 function resolveApiBaseUrl(siteUrl) {

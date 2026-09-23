@@ -22,7 +22,7 @@ const DEFAULT_IMAGE = '/logo0004Croped.png'
 const DEFAULT_KEYWORDS =
   'Hồ Ngọc Thiện, ThienHN, Ho Ngoc Thien, Full Stack Engineer, Web Developer, Vue.js, Node.js, TypeScript, React, Portfolio, Software Architecture'
 
-function resolveSiteOrigin(): string {
+export function resolveSiteOrigin(): string {
   // 1. In browser runtime, dynamically adopt the active origin (Host-Aware Self-Referencing Canonical).
   // This guarantees that https://thienhn.io.vn and https://thienhn0910.vercel.app remain 100% independent,
   // without cross-domain link rot or broken canonical tags if the custom domain is ever discontinued.
@@ -37,7 +37,11 @@ function resolveSiteOrigin(): string {
   const configured = import.meta.env.VITE_SITE_URL?.trim()
   if (configured) {
     try {
-      return new URL(configured).origin
+      const origin = new URL(configured).origin
+      if (origin.includes('vercel.app')) {
+        return 'https://thienhn.io.vn'
+      }
+      return origin
     } catch {
       // Ignore invalid env value and continue with safe fallback.
     }

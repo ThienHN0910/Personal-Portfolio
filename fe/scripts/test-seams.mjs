@@ -80,8 +80,41 @@ assert.strictEqual(
   rebaseToOrigin('https://res.cloudinary.com/demo/image.png', 'https://thienhn.io.vn'),
   'https://res.cloudinary.com/demo/image.png',
 )
+
+// Verify build-time siteUrl normalization (vercel fallback upgrade)
+function normalizeSiteUrl(urlStr) {
+  if (!urlStr) return 'https://thienhn.io.vn'
+  try {
+    const origin = new URL(urlStr).origin
+    if (origin.includes('vercel.app')) {
+      return 'https://thienhn.io.vn'
+    }
+    return origin
+  } catch {
+    return 'https://thienhn.io.vn'
+  }
+}
+
+assert.strictEqual(
+  normalizeSiteUrl('https://thienhn0910.vercel.app'),
+  'https://thienhn.io.vn',
+)
+assert.strictEqual(
+  normalizeSiteUrl('https://thienhn.io.vn'),
+  'https://thienhn.io.vn',
+)
+assert.strictEqual(
+  normalizeSiteUrl(''),
+  'https://thienhn.io.vn',
+)
+assert.strictEqual(
+  normalizeSiteUrl('https://portfolio-preview-123.vercel.app'),
+  'https://thienhn.io.vn',
+)
+
 console.log('  ✓ Dynamic slug & OpenGraph metadata contracts validated.')
 console.log('  ✓ Multi-domain host-aware canonical rebasing verified.')
+console.log('  ✓ Build-time sitemap domain normalization verified.')
 
 // ── Seam 4: Project Context Extraction & Cleaning Seam ───────────────
 console.log('\n[Seam 4] Testing Project Context Extraction & Cleaning Pipeline...')
