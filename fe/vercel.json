@@ -1,5 +1,16 @@
 {
   "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "thienhn0910.vercel.app"
+        }
+      ],
+      "destination": "https://thienhn.io.vn/$1",
+      "statusCode": 301
+    },
     { "source": "/blog/6a1e8d7779f5ac57f024b9e3", "destination": "/blog/assisstantbot-telegram-auto-deploy-devlog", "permanent": true },
     { "source": "/blog/6a0f16098fdcdb2b144df13b", "destination": "/blog/breakthroughcv-overview", "permanent": true },
     { "source": "/blog/6a0eff9fb33b92ffb4ee5b51", "destination": "/blog/chat-bot-fb-overview", "permanent": true },
