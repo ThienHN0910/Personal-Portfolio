@@ -1,0 +1,170 @@
+<h2 class="project-h2" data-aos="fade-up">Dev Assistant Bot — Telegram Server Automation &amp; Multi-Target Deployment Suite</h2>
+<div>
+  <p class="project-lead" data-aos="fade-up">
+    <strong>Dev Assistant Bot</strong> is an interactive DevOps assistant, multi-target cloud deployment orchestrator, and real-time monitoring suite engineered with <strong>Node.js, Telegraf, and Vue 3</strong>. Tailored specifically for memory-constrained cloud environments (Google Cloud Platform 1 vCPU / 1 GB RAM e2-micro/f1-micro), the platform orchestrates remote hardware telemetry, automated Nginx virtual hosting, multi-cloud deployments across VPS, Vercel, and Render, dynamic Cloudflare DNS routing (<code>*.thienhn.io.vn</code>), and a centralized Vue 3 administrative dashboard secured by Google OAuth 2.0.
+  </p>
+
+  <div class="project-architecture-callout" data-aos="fade-up">
+    <div class="flex items-center gap-2 mb-2">
+      <span class="project-hero-badge">ARCHITECTURAL HIGHLIGHTS</span>
+      <span class="article-badge article-badge--green">0 MB RAM OVERHEAD</span>
+      <span class="article-badge article-badge--amber">CLOUDFLARE DNS AUTOMATION</span>
+      <span class="article-badge">MULTI-TARGET ORCHESTRATION</span>
+    </div>
+    <ul class="article-list">
+      <li><strong>OOM-Safe Log Streaming:</strong> Streams PM2 error logs using an optimized <code>tail -n 20</code> OS pipe, consuming <strong>0 MB Node.js runtime memory</strong> and eliminating Out-Of-Memory (OOM) kernel terminations on 1GB VPS hosts.</li>
+      <li><strong>Intelligent Multi-Target Deployments:</strong> Discovers ZIP archives or analyzes public GitHub repositories via <strong>Smart Repo Inspector</strong>, classifying architectures into Pure Static (VPS Nginx), Frontend SPA (Vercel Cloud), Backend API (Render/VPS), or Monorepo (Parallel Vercel + Render).</li>
+      <li><strong>Automated Cloudflare DNS Routing:</strong> Dynamically provisions and binds subdomains (e.g., <code>&lt;project&gt;.thienhn.io.vn</code>) using Cloudflare API v4 (Type A for VPS, Type CNAME for Vercel/Render) and automatically reclaims DNS records upon project deletion.</li>
+      <li><strong>Central Web Dashboard (Vue 3 + Google OAuth 2.0):</strong> Visualizes real-time CPU, RAM, Disk, and PM2 health telemetry, manages active deployments across all platforms, and enforces single-email Google OAuth verification (<code>hnt.vn.vn@gmail.com</code>).</li>
+      <li><strong>In-Situ TTFB &amp; Remote PageSpeed Auditing:</strong> Dissects network latency breakdowns via native <code>curl -w</code> (DNS, TCP, TTFB, Total) and retrieves Lighthouse Mobile scores remotely via Google PageSpeed Insights API with zero local CPU/RAM footprint.</li>
+      <li><strong>Strict 200MB RAM Ceiling &amp; Whitelist Security:</strong> Enforces <code>--max-memory-restart 200M</code> daemon limits, Telegram ID whitelist verification, and restricted shell alias execution.</li>
+    </ul>
+  </div>
+
+  <h3 class="project-h3" data-aos="fade-up">🖥️ Module 1: Host Health Suite &amp; Hardware Telemetry</h3>
+  <p class="project-p" data-aos="fade-up">
+    The bot provides a rapid hardware telemetry monitoring suite responding within milliseconds over Telegram, enabling developers to monitor infrastructure health and diagnose bottlenecks without initiating SSH sessions:
+  </p>
+
+  <ul class="article-list" data-aos="fade-up">
+    <li><code>/status</code>: Real-time telemetry report detailing CPU load (%), physical RAM utilization (used / total), SWAP allocation, and available root disk storage (<code>/</code>).</li>
+    <li><code>/ps</code>: Queries the Top 5 processes consuming the highest RAM and CPU percentages for rapid bottleneck diagnosis.</li>
+    <li><code>/uptime</code> &amp; <code>/ip</code>: Inspects cumulative host uptime, last boot timestamp, and active public IPv4 address.</li>
+    <li><code>/logs</code>: Inspects the last 20 lines of PM2 error logs safely via OS pipes without buffering large log files into Node.js runtime memory.</li>
+    <li><code>/cleancache</code>: Flushes OS file system caches safely and resets PM2 operational logs (<code>pm2 flush</code>).</li>
+    <li><code>/restart</code>: Triggers a graceful PM2 process restart with pre-execution message acknowledgment and memory limits.</li>
+    <li><code>/notes</code>: Appends critical runtime commands, configurations, or quick thoughts directly into a local persistent <code>notes.txt</code> storage.</li>
+  </ul>
+
+  <figure class="project-figure" data-aos="fade-up" style="margin: 20px 0; text-align: center;">
+    <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1788673147/portfolio/projects/content/zr2ccwkuxvrisuak2ais.png" alt="Telegram /status Hardware Telemetry Report">
+    <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+      <i>Figure 1: Real-time VPS hardware telemetry report (/status) delivered directly via Telegram.</i>
+    </figcaption>
+  </figure>
+
+  <h3 class="project-h3" data-aos="fade-up">🚨 Module 2: Proactive Threshold Watchdog</h3>
+  <p class="project-p" data-aos="fade-up">
+    To prevent server freezing caused by memory exhaustion or storage overflow, a <strong>Background Watchdog Worker</strong> runs every <strong>5 minutes</strong>:
+  </p>
+  <ul class="article-list" data-aos="fade-up">
+    <li>Dispatches priority emergency alerts directly to Telegram when <strong>RAM &gt; 85%</strong> or <strong>Root Disk &gt; 90%</strong>.</li>
+    <li>Implements a <strong>30-minute notification cooldown</strong> to prevent alert flooding during prolonged high-load operations.</li>
+  </ul>
+
+  <h3 class="project-h3" data-aos="fade-up">🚀 Module 3: Multi-Target Deployment Suite &amp; Smart Repo Inspector</h3>
+  <p class="project-p" data-aos="fade-up">
+    Moving beyond basic single-server scripting, the deployment suite supports both <strong>Telegram Bot (1-touch)</strong> and <strong>Web Dashboard</strong> interfaces with dual input sources: ZIP archive uploads and public GitHub repositories.
+  </p>
+
+  <div class="project-spec-table-wrapper" data-aos="fade-up">
+    <table class="project-spec-table">
+      <thead>
+        <tr>
+          <th>Repository Category</th>
+          <th>Detection Criteria</th>
+          <th>Deployment Target</th>
+          <th>RAM Preservation Mechanism</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>static_pure</strong></td>
+          <td>Direct <code>index.html</code> in root, no build command</td>
+          <td>VPS Nginx</td>
+          <td>Zero-clone GitHub zipball download + directory flattening</td>
+        </tr>
+        <tr>
+          <td><strong>frontend_spa</strong></td>
+          <td>React, Vue, Vite, Next.js packages</td>
+          <td>Vercel Cloud</td>
+          <td>Offloads heavy Webpack/Vite bundling to Vercel CDN edge</td>
+        </tr>
+        <tr>
+          <td><strong>backend_api</strong></td>
+          <td>Express, Fastify, NestJS, server entrypoint</td>
+          <td>Render Cloud / VPS PM2</td>
+          <td>Managed container runtime or sandboxed PM2 internal port</td>
+        </tr>
+        <tr>
+          <td><strong>monorepo</strong></td>
+          <td>Dual <code>frontend/</code> &amp; <code>backend/</code> structures</td>
+          <td>Parallel Vercel + Render</td>
+          <td>Simultaneous decoupled deployment via Cloudflare subdomains</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <figure class="project-figure" data-aos="fade-up" style="margin: 20px 0; text-align: center;">
+    <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329188/portfolio/projects/telebot/telegram_deploy_weblist_vps.png" alt="Telegram 1-touch ZIP deploy and web list">
+    <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+      <i>Figure 2: 1-Touch ZIP deployment via Telegram with automatic Cloudflare subdomain provisioning and /web_list management.</i>
+    </figcaption>
+  </figure>
+
+  <h3 class="project-h3" data-aos="fade-up">🌐 Module 4: Cloudflare DNS Subdomain Automation</h3>
+  <p class="project-p" data-aos="fade-up">
+    Eliminating manual DNS dashboard configuration, the bot communicates directly with the Cloudflare API v4:
+  </p>
+  <ul class="article-list" data-aos="fade-up">
+    <li><strong>Automatic Record Provisioning:</strong> Creates subdomains formatted as <code>&lt;project&gt;.thienhn.io.vn</code>. For VPS-hosted sandboxes, it binds a <strong>Type A</strong> record to the detected public IPv4. For Vercel or Render deployments, it creates a <strong>Type CNAME</strong> record targeting <code>cname.vercel-dns.com</code> or Render service domains.</li>
+    <li><strong>Zero-Orphan DNS Reclamation:</strong> Executing <code>/web_remove &lt;name&gt;</code> or clicking Undeploy in the Dashboard cleans up the Nginx virtual host, terminates the PM2 process, and automatically invokes the Cloudflare API to delete the corresponding DNS record.</li>
+  </ul>
+
+  <figure class="project-figure" data-aos="fade-up" style="margin: 20px 0; text-align: center;">
+    <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329193/portfolio/projects/telebot/test_subdomain_deployed_website.jpg" alt="Live deployed sandbox on custom subdomain">
+    <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+      <i>Figure 3: Verified production application live on test.thienhn.io.vn provisioned entirely via the automated pipeline.</i>
+    </figcaption>
+  </figure>
+
+  <h3 class="project-h3" data-aos="fade-up">📊 Module 5: Central Web Dashboard (Vue 3 + Google OAuth 2.0)</h3>
+  <p class="project-p" data-aos="fade-up">
+    In addition to Telegram chat commands, the suite features a dedicated Single Page Application dashboard served at <code>bot.thienhn.io.vn</code> built with Vue 3, Tailwind CSS, and Google Identity Services:
+  </p>
+  <ul class="article-list" data-aos="fade-up">
+    <li><strong>Real-time Telemetry Dashboard:</strong> Visualizes CPU utilization, RAM usage gauges, disk consumption, and host uptime (131+ days continuous operation).</li>
+    <li><strong>Deployment Manager:</strong> Displays all active services with platform indicators (VPS, Vercel, Render), live HTTPS hyperlinks, Cloudflare DNS mapping types, and one-click removal buttons.</li>
+    <li><strong>GitHub Repository Deploy Modal:</strong> Analyzes public repositories in real time, provides architectural recommendations, and permits custom subdomain customization.</li>
+    <li><strong>Identity Whitelist Gate:</strong> Enforces Google OAuth 2.0 verification where only the administrator's authenticated email (<code>hnt.vn.vn@gmail.com</code>) receives stateless JWT session tokens.</li>
+  </ul>
+
+  <figure class="project-figure" data-aos="fade-up" style="margin: 20px 0; text-align: center;">
+    <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329191/portfolio/projects/telebot/dev_assistant_dashboard_overview.png" alt="Dev Assistant Dashboard Overview">
+    <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+      <i>Figure 4: Central Web Dashboard at bot.thienhn.io.vn displaying real-time server vitals and deployed service catalog.</i>
+    </figcaption>
+  </figure>
+
+  <figure class="project-figure" data-aos="fade-up" style="margin: 20px 0; text-align: center;">
+    <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329190/portfolio/projects/telebot/dev_assistant_dashboard_github_modal.png" alt="GitHub Deploy Modal in Dashboard">
+    <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+      <i>Figure 5: Smart Repo Inspector analyzing a GitHub repository and presenting platform recommendation with subdomain configuration.</i>
+    </figcaption>
+  </figure>
+
+  <h3 class="project-h3" data-aos="fade-up">⚡ Module 6: In-Situ TTFB Benchmarking &amp; Remote PageSpeed Audits (/perf)</h3>
+  <p class="project-p" data-aos="fade-up">
+    Auditing web performance directly on low-spec hardware without CPU choking is achieved via two zero-overhead paradigms:
+  </p>
+  <ul class="article-list" data-aos="fade-up">
+    <li><strong>In-Situ TTFB Breakdown via <code>curl -w</code> (0 MB RAM):</strong> Deconstructs network timings with microsecond precision: DNS Resolution, TCP Handshake, <strong>Time To First Byte (TTFB)</strong>, and Total Duration.</li>
+    <li><strong>Google PageSpeed Insights API Integration:</strong> Queries Google's remote API to calculate Lighthouse Mobile scores (FCP, LCP, TBT, CLS) without executing memory-heavy Chromium headless instances on the host.</li>
+  </ul>
+
+  <h3 class="project-h3" data-aos="fade-up">🔒 Module 7: Zero-Leakage Security, 200MB RAM Ceiling &amp; Autonomous Upgrades</h3>
+  <ul class="article-list" data-aos="fade-up">
+    <li><strong>200MB RAM Hard Ceiling:</strong> Configured with <code>--max-memory-restart 200M</code> in PM2, ensuring the bot runtime never creeps past memory thresholds.</li>
+    <li><strong>Multi-Factor Authorization:</strong> Single-user Telegram ID whitelist on the bot interface, coupled with Google OAuth email verification on the web dashboard.</li>
+    <li><strong>Restricted Shell Execution:</strong> The <code>/sh</code> command executes only pre-validated aliases registered in <code>config/whitelist.js</code>, preventing arbitrary code injection.</li>
+    <li><strong>Self-Healing Upgrades (<code>/update</code>):</strong> Pulls updates from GitHub, audits dependencies, validates syntax (<code>npm run check:syntax</code>), runs unit test suites, and executes a clean PM2 process reload autonomously.</li>
+  </ul>
+
+  <figure class="project-figure" data-aos="fade-up" style="margin: 20px 0; text-align: center;">
+    <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329195/portfolio/projects/telebot/telegram_update_menu_keyboard.png" alt="Telegram update and keyboard interface">
+    <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+      <i>Figure 6: Autonomous /update workflow with zero-downtime PM2 reload and persistent custom interactive keyboard.</i>
+    </figcaption>
+  </figure>
+</div>
