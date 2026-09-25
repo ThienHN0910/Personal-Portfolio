@@ -1,0 +1,180 @@
+<div class="article-lead" data-aos="fade-up">
+  Managing remote cloud infrastructure typically demands opening an SSH terminal, navigating deep directory structures, manually configuring Nginx reverse proxies, provisioning DNS records, and running diagnostics. On memory-constrained cloud environments (such as Google Cloud Platform's e2-micro/f1-micro free tier with 1 vCPU and 1 GB RAM), executing heavy management daemons or build tools often triggers the Linux Out-Of-Memory (OOM) killer. <strong>Dev Assistant Bot</strong> is an interactive DevOps assistant, multi-target cloud deployment orchestrator, and real-time monitoring suite engineered with <strong>Node.js, Telegraf, and Vue 3</strong>, specifically optimized for zero-overhead server orchestration.
+</div>
+
+<div class="article-callout" data-aos="fade-up">
+  <div class="flex items-center gap-2 mb-2">
+    <span class="article-badge article-badge--green">0 MB NODE BUFFER</span>
+    <span class="article-badge article-badge--amber">CLOUDFLARE DNS AUTOMATION</span>
+    <span class="article-badge">MULTI-TARGET ORCHESTRATION</span>
+    <span class="article-badge">VUE 3 DASHBOARD</span>
+  </div>
+  <ul class="article-list">
+    <li><strong>OOM-Safe Log Streaming:</strong> Streams PM2 error logs via an optimized <code>child_process</code> OS pipe executing <code>tail -n 20</code>, consuming <strong>0 MB Node.js heap memory</strong> and remaining immune to kernel OOM terminations.</li>
+    <li><strong>Smart Repo Inspection &amp; Multi-Target Deployments:</strong> Inspects GitHub repositories and ZIP archives, routing pure static web to VPS Nginx, frontend SPAs to Vercel, and backend APIs to Render or VPS.</li>
+    <li><strong>Cloudflare DNS Subdomain Automation:</strong> Automatically provisions and tears down <code>*.thienhn.io.vn</code> Type A and CNAME records via Cloudflare API v4.</li>
+    <li><strong>Central Web Dashboard:</strong> Real-time hardware telemetry and service lifecycle management at <code>bot.thienhn.io.vn</code> with Google OAuth 2.0 whitelist protection.</li>
+    <li><strong>Microsecond TTFB &amp; Remote PageSpeed Audits:</strong> Deconstructs network latency via native <code>curl -w</code> and queries the Google PageSpeed Insights API remotely without launching resource-heavy headless browsers.</li>
+  </ul>
+</div>
+
+<h2 class="article-h2" data-aos="fade-up">1. The 1GB RAM Dilemma: Avoiding Linux OOM-Killer Terminations</h2>
+<p class="article-p" data-aos="fade-up">
+  Cloud providers frequently offer low-spec virtual private servers under free-tier quotas (e.g., GCP e2-micro with 1GB RAM). In these environments, memory is the primary limiting resource. When an application log file grows to hundreds of megabytes, executing a naive Node.js read operation like <code>fs.readFileSync('/root/.pm2/logs/app-error.log')</code> buffers the entire file into the V8 JavaScript heap.
+</p>
+<p class="article-p" data-aos="fade-up">
+  On a 1GB host running a web application, Node.js, and Nginx, this sudden heap spike pushes system memory utilization past the physical threshold. The Linux kernel responds by invoking the Out-Of-Memory Killer (<code>oom-killer</code>), immediately terminating the Node.js process and causing complete service downtime.
+</p>
+
+<h2 class="article-h2" data-aos="fade-up">2. OOM-Safe Log Streaming via OS-Level Tail Piping</h2>
+<p class="article-p" data-aos="fade-up">
+  To guarantee that log inspections never consume V8 runtime heap, Dev Assistant Bot delegates log parsing directly to the Linux operating system kernel using a spawned <code>tail -n 20</code> child process:
+</p>
+
+<pre class="article-codeblock" data-aos="fade-up"><code>import { spawn } from 'node:child_process';
+
+export function streamTailLogs(logFilePath: string): Promise&lt;string&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    // Spawns OS-level tail directly; Node.js never buffers the underlying log file
+    const tail = spawn('tail', ['-n', '20', logFilePath]);
+    let output = '';
+
+    tail.stdout.on('data', (chunk) =&gt; {
+      output += chunk.toString();
+    });
+
+    tail.stderr.on('data', (errChunk) =&gt; {
+      console.error('Tail stderr:', errChunk.toString());
+    });
+
+    tail.on('close', (code) =&gt; {
+      if (code === 0) {
+        // Enforce Telegram message length limit (4096 characters)
+        resolve(output.slice(-3800) || 'Log file is currently empty.');
+      } else {
+        reject(new Error(`tail exited with code ${code}`));
+      }
+    });
+  });
+}</code></pre>
+
+<p class="article-p" data-aos="fade-up">
+  By delegating file seeking to the Linux <code>tail</code> utility, the kernel seeks directly to the end of the file descriptor without loading historical log data into memory. The memory footprint inside Node.js remains constant at <strong>0 MB overhead</strong>, regardless of whether the log file is 10 KB or 10 GB.
+</p>
+
+<figure class="article-figure" data-aos="fade-up" style="margin: 24px 0; text-align: center;">
+  <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1788673147/portfolio/projects/content/zr2ccwkuxvrisuak2ais.png" alt="Telegram /status Telemetry Report">
+  <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+    <i>Figure 1: Real-time telemetry report (/status) delivered directly to Telegram with sub-second latency.</i>
+  </figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">3. Multi-Target Deployment Pipeline &amp; Smart Repo Inspector</h2>
+<p class="article-p" data-aos="fade-up">
+  Running builds (e.g. <code>npm run build</code> with Vite, Webpack, or Next.js) directly on a 1GB VPS will predictably cause memory exhaustion. To solve this, the orchestrator incorporates a <strong>Smart Repo Inspector</strong> that inspects the repository root and routes each application to its optimal platform:
+</p>
+
+<ol class="article-list" data-aos="fade-up">
+  <li><strong>Pure Static Web (<code>static_pure</code>):</strong> Sites with root <code>index.html</code> requiring no compilation are deployed directly to VPS Nginx. Rather than executing a heavy <code>git clone</code> that duplicates Git history, the bot fetches a lightweight GitHub zipball and flattens the directory structure.</li>
+  <li><strong>Frontend SPAs (<code>frontend_spa</code>):</strong> React, Vue, or Vite SPAs are deployed directly to <strong>Vercel Cloud</strong> via REST API, completely offloading heavy compilation cycles away from the VPS host.</li>
+  <li><strong>Backend APIs (<code>backend_api</code>):</strong> Node.js/Express APIs are provisioned on Render or deployed locally on the VPS managed by PM2 behind an isolated internal port.</li>
+  <li><strong>Monorepos (<code>monorepo</code>):</strong> Automatically splits frontend and backend components, deploying the frontend to Vercel and backend to Render simultaneously.</li>
+</ol>
+
+<figure class="article-figure" data-aos="fade-up" style="margin: 24px 0; text-align: center;">
+  <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329188/portfolio/projects/telebot/telegram_deploy_weblist_vps.png" alt="Telegram 1-touch deployment and web list">
+  <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+    <i>Figure 2: 1-Touch deployment via Telegram showing automated archive extraction, Cloudflare DNS binding, and live service listing.</i>
+  </figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">4. Automated Cloudflare DNS Provisioning &amp; Subdomain Routing</h2>
+<p class="article-p" data-aos="fade-up">
+  Each deployment dynamically provisions a custom subdomain (e.g., <code>https://portfolio.thienhn.io.vn</code> or <code>https://test.thienhn.io.vn</code>) by orchestrating Cloudflare API v4:
+</p>
+
+<pre class="article-codeblock" data-aos="fade-up"><code>// Excerpt from lib/providers/cloudflare.js
+export async function createDnsRecord({ name, type, content, proxied = false }) {
+  const url = `https://api.cloudflare.com/client/v4/zones/${process.env.CLOUDFLARE_ZONE_ID}/dns_records`;
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.CLOUDFLARE_API_TOKEN}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      type, // 'A' for VPS Public IP, 'CNAME' for Vercel/Render
+      name: `${name}.${process.env.BASE_DOMAIN}`,
+      content,
+      ttl: 1, // Auto TTL
+      proxied
+    })
+  });
+  return response.json();
+}</code></pre>
+
+<p class="article-p" data-aos="fade-up">
+  When an application is undeployed via <code>/web_remove &lt;name&gt;</code> or the Web Dashboard, the corresponding DNS record ID is retrieved and deleted immediately, ensuring no orphan records accumulate in the Cloudflare DNS zone.
+</p>
+
+<figure class="article-figure" data-aos="fade-up" style="margin: 24px 0; text-align: center;">
+  <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329193/portfolio/projects/telebot/test_subdomain_deployed_website.jpg" alt="Live application deployed on custom subdomain">
+  <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+    <i>Figure 3: Live application accessible via automated Cloudflare DNS routing on test.thienhn.io.vn.</i>
+  </figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">5. Central Web Dashboard: Vue 3 + Tailwind CSS &amp; Google OAuth 2.0</h2>
+<p class="article-p" data-aos="fade-up">
+  Complementing the Telegram conversational interface, the Central Web Dashboard served at <code>bot.thienhn.io.vn</code> provides visual control for multi-target deployments:
+</p>
+
+<ul class="article-list" data-aos="fade-up">
+  <li><strong>Real-time Telemetry:</strong> Dashboard displays live CPU percentage, RAM allocation bars, root disk storage, and cumulative uptime without page reload.</li>
+  <li><strong>GitHub Analysis &amp; Deployment Modal:</strong> Developers paste a public GitHub URL, review the detected architecture (e.g. <code>static_pure</code>), select between VPS and Vercel, specify a custom subdomain, and deploy with one click.</li>
+  <li><strong>Google OAuth 2.0 Security Gate:</strong> Authentication verifies Google ID tokens server-side, enforcing a strict whitelist: only requests authenticated as <code>hnt.vn.vn@gmail.com</code> are granted administrative session cookies.</li>
+</ul>
+
+<figure class="article-figure" data-aos="fade-up" style="margin: 24px 0; text-align: center;">
+  <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329191/portfolio/projects/telebot/dev_assistant_dashboard_overview.png" alt="Dev Assistant Dashboard Main Screen">
+  <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+    <i>Figure 4: Central Web Dashboard overview presenting hardware telemetry and the live deployed services catalog.</i>
+  </figcaption>
+</figure>
+
+<figure class="article-figure" data-aos="fade-up" style="margin: 24px 0; text-align: center;">
+  <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329190/portfolio/projects/telebot/dev_assistant_dashboard_github_modal.png" alt="Dashboard GitHub Deploy Modal">
+  <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+    <i>Figure 5: GitHub deployment modal analyzing repository contents and configuring Cloudflare DNS subdomain routing.</i>
+  </figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">6. Low-Overhead Performance Profiling (/perf)</h2>
+<p class="article-p" data-aos="fade-up">
+  Auditing web performance directly from a low-spec host typically encounters severe bottlenecks: running a headless Chromium browser for Lighthouse audits consumes &gt; 500 MB RAM, freezing the server. Dev Assistant Bot resolves this via a dual-mode benchmarking engine:
+</p>
+
+<ul class="article-list" data-aos="fade-up">
+  <li><strong>In-Situ TTFB Breakdown via <code>curl -w</code> (0 MB RAM):</strong> Executes native curl with timing formatters, breaking down network latency with microsecond accuracy:
+    <pre class="article-codeblock"><code>curl -s -w "DNS: %{time_namelookup}s | Connect: %{time_connect}s | TTFB: %{time_starttransfer}s | Total: %{time_total}s\n" -o /dev/null http://localhost:8081</code></pre>
+  </li>
+  <li><strong>Cloud Delegation for Lighthouse Audits:</strong> Instead of running local browser instances, <code>/perf</code> delegates mobile audits to the <strong>Google PageSpeed Insights API</strong>. Google's cloud infrastructure evaluates First Contentful Paint (FCP), Largest Contentful Paint (LCP), and Cumulative Layout Shift (CLS), returning structured metrics to the bot with 0 local CPU cost.</li>
+</ul>
+
+<h2 class="article-h2" data-aos="fade-up">7. Security Hardening &amp; PM2 RAM Ceiling</h2>
+<p class="article-p" data-aos="fade-up">
+  Because the bot executes administrative shell operations on the host, security and resource constraints are strictly enforced:
+</p>
+<ul class="article-list" data-aos="fade-up">
+  <li><strong>200MB RAM Ceiling:</strong> Running with <code>--max-memory-restart 200M</code> ensures that any inadvertent memory leak causes a graceful daemon recycle rather than server kernel freeze.</li>
+  <li><strong>Sender ID Whitelist Middleware:</strong> Every incoming Telegram update passes through authorization middleware comparing <code>ctx.from.id</code> against the configured <code>AUTHORIZED_TELEGRAM_ID</code>. Unauthorized interactions are dropped and logged.</li>
+  <li><strong>Whitelisted Shell Runner:</strong> Arbitrary shell input is strictly prohibited. The <code>/sh</code> command accepts only pre-registered aliases defined in <code>config/whitelist.js</code>, eliminating Remote Code Execution (RCE) vectors.</li>
+  <li><strong>Self-Healing Updates (<code>/update</code>):</strong> Pulls updates from GitHub, runs dependency updates, verifies syntax (<code>npm run check:syntax</code>), and triggers a clean PM2 process reload autonomously.</li>
+</ul>
+
+<figure class="article-figure" data-aos="fade-up" style="margin: 24px 0; text-align: center;">
+  <img style="border-radius: 8px; border: 1px solid var(--stroke); box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 100%; height: auto;" src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1790329195/portfolio/projects/telebot/telegram_update_menu_keyboard.png" alt="Telegram autonomous update and keyboard">
+  <figcaption style="font-size: 11px; color: var(--ink-tertiary); margin-top: 8px;">
+    <i>Figure 6: Telegram /update execution and interactive persistent keyboard layout.</i>
+  </figcaption>
+</figure>
