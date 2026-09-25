@@ -153,3 +153,8 @@ vite.config.ts.timestamp-*
 
 .vercel
 .env*.local
+
+# Local one-off scripts, scratch experiments, and data payloads
+backend/src/scripts/local/
+backend/src/scripts/scratch/
+backend/src/scripts/data/
