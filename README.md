@@ -11,14 +11,22 @@ A full-stack portfolio monorepo with a Vue frontend and an Express backend.
   - Dynamic CSS custom properties (`--canvas`, `--bone`, `--surface`, `--ink`, `--stroke`, `--pastel-...`)
   - Floating Navbar Theme Switcher Pill with live swatch preview and popover selector
   - Zero-breakage CKEditor rich content compatibility
-- **10 Masterclass Technical Publications**: Deep long-form articles with architecture diagrams, benchmarks, security guides, and production pitfalls
+- **Technical Publications**: Deep long-form articles on production architecture, security, and engineering tradeoffs
 - **Decoupled Case Study Architecture**: Independent architectural dossiers with System Spec Rail, 60fps GPU acceleration, and smart cross-linking recommender
 - **Unified AI Synthesis Engine**: Automated content enhancement adhering strictly to the Semantic Class Catalog
 - **Automated Seam Verification Suite**: 6-point deterministic boundary testing
-- **Snapshot Static SEO Prerender**: 25 pre-rendered pages with dynamic OpenGraph / Twitter metadata tags
+- **Snapshot Static SEO Prerender**: Pre-rendered pages with dynamic OpenGraph / Twitter metadata tags
 - Shared CKEditor 5 with DOMPurify XSS sanitization
 - CV PDF upload and embedded viewer with PDF.js
 - Cloudinary global CDN asset pipeline with automatic format and compression negotiation (`f_auto,q_auto`)
+
+## Featured Case Study and Article
+
+- [Sentinel Bot — live Discord community analytics and shared games](https://thienhn.io.vn/projects/sentinel-bot-discord-community-analytics): the Case Study, with production screenshots and a [live dashboard](https://sentinel-dashboard.thienhn.io.vn/).
+- [Engineering Sentinel: shared Discord–web games, live analytics, and secure guild control](https://thienhn.io.vn/blog/engineering-sentinel-discord-web-state-machines): the technical Article covering concurrency, OAuth2, analytics, and reminder delivery.
+- [Sentinel source and setup guide](https://github.com/ThienHN0910/sentinel-bot): commands, deployment notes, and implementation.
+
+The Case Study and Article are stored in MongoDB. Their versioned content and idempotent publishing script live in `backend/content/sentinel-*.html` and `backend/src/scripts/publish-sentinel.ts`; run the script from `backend/` with `npx tsx src/scripts/publish-sentinel.ts` after configuring `backend/.env`.
 
 ## Tech Stack
 
