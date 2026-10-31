@@ -18,8 +18,26 @@
             ✕
           </button>
 
-          <!-- Main Image Frame -->
-          <div class="relative overflow-hidden rounded-xl border border-stroke bg-bone shadow-2xl max-h-[80vh] flex items-center justify-center">
+          <!-- Main Media Frame (Video Player or Zoomed Image) -->
+          <div
+            v-if="videoEmbedUrl"
+            class="relative w-full aspect-video rounded-xl overflow-hidden border border-stroke bg-black shadow-2xl flex items-center justify-center"
+          >
+            <iframe
+              :src="
+                videoEmbedUrl.includes('?')
+                  ? `${videoEmbedUrl}&autoplay=1&rel=0&modestbranding=1`
+                  : `${videoEmbedUrl}?autoplay=1&rel=0&modestbranding=1`
+              "
+              class="w-full h-full border-0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen
+            />
+          </div>
+          <div
+            v-else
+            class="relative overflow-hidden rounded-xl border border-stroke bg-bone shadow-2xl max-h-[80vh] flex items-center justify-center"
+          >
             <img
               :src="src"
               :alt="alt"
@@ -28,7 +46,10 @@
           </div>
 
           <!-- Caption -->
-          <p v-if="caption" class="text-xs font-mono text-ink-secondary text-center max-w-2xl px-4 py-1.5 rounded-full bg-bone/90 border border-stroke">
+          <p
+            v-if="caption"
+            class="text-xs font-mono text-ink-secondary text-center max-w-2xl px-4 py-1.5 rounded-full bg-bone/90 border border-stroke"
+          >
             {{ caption }}
           </p>
         </div>
@@ -45,6 +66,7 @@ const props = defineProps<{
   src: string
   alt?: string
   caption?: string
+  videoEmbedUrl?: string
 }>()
 
 const emit = defineEmits<{

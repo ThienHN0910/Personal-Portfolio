@@ -1,0 +1,174 @@
+<div class="article-lead" data-aos="fade-up">
+  In my university graduation capstone project at FPT University Da Nang (Fall 2026), my team set out to conquer the most notorious bottleneck in Static Application Security Testing (SAST): <strong>the false-positive alert flood</strong>. Conventional regex scanners flag suspicious keywords indiscriminately, leaving engineering teams overwhelmed with harmless noise. ACVIS solves this through a rigorous 5-tier architecture combining native in-process Tree-sitter AST parsing, 768-dimensional Gemini vector embeddings in MongoDB Atlas, and deterministic Non-Destructive Testing (NDT) exploit verification.
+</div>
+<figure class="media" data-aos="fade-up">
+  <oembed url="https://youtu.be/QgDfrqyCWlg"></oembed>
+</figure>
+
+
+<div class="article-callout spotlight-card" data-aos="fade-up">
+  <span class="article-badge">.NET 8 CLEAN ARCHITECTURE</span>
+  <span class="article-badge article-badge--green">TREE-SITTER AST</span>
+  <span class="article-badge article-badge--amber">FASTAPI NDT SANDBOX</span>
+  <span class="article-badge article-badge--red">MONGODB RAG VECTOR</span>
+  <p class="article-p">
+    This technical deep dive explores the core architectural decisions behind ACVIS, referencing 62 formal Architectural Decision Records (ADRs) and over 1,120 automated backend unit and integration tests. Live deployment spans our <a href="https://acvis-beryl.vercel.app" target="_blank" rel="noopener noreferrer">Vue 3 Single Page Application</a>, MonsterASP .NET 8 WebAPI, and FastAPI Python Exploit Runner.
+  </p>
+</div>
+
+<h2 class="article-h2" data-aos="fade-up">1. In-Process Tree-Sitter AST Parsing &amp; Data-Flow Taint Tracking</h2>
+<p class="article-p" data-aos="fade-up">
+  Traditional regex-based scanners cannot comprehend syntactic hierarchy or execution scopes. Running external command-line tools for every file scanned in a multi-project repository introduces prohibitive process-spawn overhead. To deliver sub-second static analysis, ACVIS communicates directly with Tree-sitter native C libraries via .NET 8 P/Invoke bindings (<code>TreeSitterPhpParserService.cs</code>).
+</p>
+<p class="article-p" data-aos="fade-up">
+  The static engine navigates the Abstract Syntax Tree in memory, identifying untrusted sources (e.g. <code>$_GET</code>, <code>$_POST</code>, request parameters) and tracking their movement across assignments, function arguments, and string concatenations until they reach potentially dangerous execution sinks (e.g. raw SQL queries, file read operations, or DOM outputs).
+</p>
+
+<pre class="article-codeblock" data-aos="fade-up" data-cursor="code"><code>// Intra-Procedural Data-Flow Taint Tracking with Sanitizer Downgrade (ADR-0026)
+public ScanFinding EvaluateTaintPropagation(AstNode sourceNode, AstNode sinkNode, List&lt;AstNode&gt; intermediateNodes) {
+    bool isSanitized = intermediateNodes.Any(node =&gt; _sanitizerCatalog.IsKnownSanitizer(node.FunctionName));
+    
+    if (isSanitized) {
+        // Automatically downgrade to Informational rather than raising a critical blocker
+        return new ScanFinding(Severity.Info, FindingStatus.Sanitized, "Untrusted input correctly sanitized before reaching sink.");
+    }
+    
+    return new ScanFinding(Severity.High, FindingStatus.Unmitigated, "Direct untrusted data propagation from source to sink without sanitization.");
+}</code></pre>
+
+<p class="article-p" data-aos="fade-up">
+  Under ADR-0026, when an untrusted input flow passes through recognized sanitizers (such as prepared PDO statement bindings, <code>intval()</code>, or <code>htmlspecialchars()</code>), ACVIS automatically downgrades the finding to <code>Info / Sanitized</code>. This single mechanism reduced false-positive flags in our evaluation benchmarks by over 65%.
+</p>
+
+<figure class="article-figure" data-aos="fade-up" data-cursor="view">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821507/portfolio/projects/acvis/acvis_finding_dataflow.png" alt="ACVIS Data-Flow Trace visualization showing step-by-step untrusted variable propagation" width="1200" height="750" loading="lazy">
+  <figcaption>Figure 1: Intra-procedural Data-Flow Taint Trace mapping untrusted input propagation from source to sink.</figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">2. 768-Dimensional Vector Embeddings &amp; Tiered RAG Thresholds (ADR-0030 &amp; ADR-0045)</h2>
+<p class="article-p" data-aos="fade-up">
+  ACVIS maintains an extensive security catalog of detection rules mapped to CWE, OWASP, and CVE standards in MongoDB Atlas (<code>vulnerability_rules</code>). Whenever a new rule is published or submitted through community governance, an asynchronous background worker (<code>RuleVectorizationWorker</code>) converts its syntactic signature, description, and remediation guidance into a <strong>768-dimensional dense vector</strong> using Google Gemini embeddings.
+</p>
+<p class="article-p" data-aos="fade-up">
+  Invoking large generative models for every line of code across large pull requests is cost-prohibitive, introduces severe latency, and quickly hits rate limits. To solve this, ACVIS implements a <strong>Tiered Vector Threshold Architecture</strong>:
+</p>
+
+<div class="article-grid-12" data-aos="fade-up">
+  <div class="article-col-4">
+    <div class="article-callout spotlight-card">
+      <h3 class="article-h3">&lt; 0.75 Similarity</h3>
+      <span class="article-badge article-badge--amber">STANDARD PIPELINE</span>
+      <p class="article-p">Below semantic confidence threshold. Bypasses RAG short-circuiting and routes through standard Tree-sitter AST taint tracking.</p>
+    </div>
+  </div>
+  <div class="article-col-4">
+    <div class="article-callout spotlight-card">
+      <h3 class="article-h3">0.75 to 0.84</h3>
+      <span class="article-badge">TOP-10 GUIDANCE</span>
+      <p class="article-p">Moderate confidence. Retrieves the Top-10 most similar vulnerability rules from MongoDB to provide structured context for the AI scanner.</p>
+    </div>
+  </div>
+  <div class="article-col-4">
+    <div class="article-callout spotlight-card">
+      <h3 class="article-h3">&ge; 0.85 Similarity</h3>
+      <span class="article-badge article-badge--green">SHORT-CIRCUIT PASS</span>
+      <p class="article-p">High confidence match. Assigns the CWE and Rule ID immediately, bypassing redundant static steps, and feeds directly into exploit generation.</p>
+    </div>
+  </div>
+</div>
+
+<p class="article-p" data-aos="fade-up">
+  During webhook scans on multi-file commits, rapid burst queries easily triggered HTTP 429 quota exhaustion against the Gemini API. We resolved this by building an in-memory <strong>Channel Rate Pacer</strong> using .NET 8's <code>System.Threading.Channels.Channel&lt;GeminiWorkItem&gt;</code>. The worker enforces a minimum spacing of 4.2 seconds between requests (guaranteeing throughput stays under the 14 RPM ceiling) combined with exponential backoff and randomized jitter.
+</p>
+
+<figure class="article-figure" data-aos="fade-up" data-cursor="view">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821511/portfolio/projects/acvis/acvis_knowledge_rules.png" alt="ACVIS Security Catalog showing vector similarity search and CWE rule details" width="1200" height="750" loading="lazy">
+  <figcaption>Figure 2: Security Catalog displaying 768-dimensional vector rules and semantic search filters.</figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">3. Non-Destructive Testing (NDT) Sandbox &amp; Tri-State Exit Code Oracle</h2>
+<p class="article-p" data-aos="fade-up">
+  The most critical design decision in ACVIS was determining how to dynamically verify findings without damaging the target application. Per ADR-0052, executing dynamic Python scripts generated on the fly was strictly prohibited. Instead, the verification runner relies exclusively on deterministic NDT templates for the 5 supported CWE classes:
+</p>
+<ul class="article-list" data-aos="fade-up">
+  <li><strong>CWE-89 (SQL Injection):</strong> Multi-round Boolean differentials (<code>AND 1=1</code> vs <code>AND 1=2</code>) and syntax error reflections. Zero destructive writes (no <code>DROP</code>, <code>DELETE</code>, <code>INSERT</code>, or <code>UPDATE</code>).</li>
+  <li><strong>CWE-22 (Path Traversal):</strong> Read-only file probes checking for known operating system landmarks (<code>/etc/passwd</code> or <code>win.ini</code>). Never mutates or removes remote files.</li>
+  <li><strong>CWE-639 (IDOR / BOLA):</strong> Cross-tenant identity checks strictly enforcing read-only HTTP <code>GET</code> requests across separated test identities.</li>
+  <li><strong>CWE-798 (Hardcoded Secrets):</strong> Active read-only dry-run authentication against official identity provider APIs (GitHub, Slack) with full in-memory token masking (<code>***REDACTED***</code>).</li>
+  <li><strong>CWE-79 (Cross-Site Scripting):</strong> Pure HTTP DOM reflection probe with Content-Security-Policy (CSP) evaluation. Serverless lack of headless browsers classifies reflection as Inconclusive to avoid false execution claims.</li>
+</ul>
+
+<p class="article-p" data-aos="fade-up">
+  The verification sandbox reports outcomes through a standardized <strong>Tri-State Exit Code Oracle</strong>:
+</p>
+
+<table class="article-table" data-aos="fade-up">
+  <thead>
+    <tr>
+      <th>Oracle Exit Code</th>
+      <th>Status Definition</th>
+      <th>Impact on Pull Request Merge Gate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Exit Code 0</strong></td>
+      <td>Confirmed Vulnerability</td>
+      <td><strong>Blocks Merge:</strong> Incontrovertible exploit indicator observed; fails GitHub Check Run.</td>
+    </tr>
+    <tr>
+      <td><strong>Exit Code 1</strong></td>
+      <td>Mitigated / Safe</td>
+      <td><strong>Passes:</strong> Target parameter responded correctly without triggering vulnerability indicator.</td>
+    </tr>
+    <tr>
+      <td><strong>Exit Code 2</strong></td>
+      <td>Inconclusive / Notice</td>
+      <td><strong>Passes (Notice Only):</strong> Staging unreachable, parameter missing, CSP active, or 8s budget expired.</td>
+    </tr>
+  </tbody>
+</table>
+
+<figure class="article-figure" data-aos="fade-up" data-cursor="view">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821508/portfolio/projects/acvis/acvis_finding_exploit.png" alt="ACVIS Dynamic Exploit Verification terminal showing exit code 0 and ground-truth proof" width="1200" height="750" loading="lazy">
+  <figcaption>Figure 3: Live exploit verification terminal output demonstrating ground-truth confirmation and Exit Code 0.</figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">4. Polyglot Persistence &amp; Overcoming Free-Tier Cloud Limits (ADR-0056)</h2>
+<p class="article-p" data-aos="fade-up">
+  Operating a full-scale DevSecOps system within free-tier cloud constraints required surgical architecture choices. Supabase PostgreSQL provides 500MB of free storage. In early webhook testing, saving full Git commit diffs directly in the <code>scan_jobs</code> table quickly consumed tens of megabytes due to PostgreSQL's TOAST table overhead on large JSON/text payloads.
+</p>
+<p class="article-p" data-aos="fade-up">
+  Under ADR-0056, we re-architected the storage layer into a polyglot model:
+</p>
+<ul class="article-list" data-aos="fade-up">
+  <li><strong>PostgreSQL (Supabase):</strong> Stores strictly structured relational entities (Users, Repositories, ScanJobs, ScanResults, WebhookDeliveries, Billing) across 15 tables with Code-First EF Core migrations.</li>
+  <li><strong>MongoDB Atlas (M0):</strong> Offloads commit diff payloads (<code>scan_job_diffs</code>) with a 30-day TTL index, shrinking the PostgreSQL row size in <code>scan_jobs</code> from ~5MB down to ~180 bytes.</li>
+  <li><strong>Granular Cache TTL:</strong> Vulnerability detail documents in <code>vuln_detail_cache</code> expire automatically after 90 days.</li>
+  <li><strong>Upstash Redis L2:</strong> Caches frequently accessed policy rules and proposal scores to minimize MongoDB Atlas network roundtrips.</li>
+</ul>
+
+<figure class="article-figure" data-aos="fade-up" data-cursor="view">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821510/portfolio/projects/acvis/acvis_finding_patch.png" alt="ACVIS Remediation Patch split diff viewer showing code before and after AI repair" width="1200" height="750" loading="lazy">
+  <figcaption>Figure 4: Automated Remediation Patch Viewer rendering side-by-side split code diffs.</figcaption>
+</figure>
+
+<h2 class="article-h2" data-aos="fade-up">5. Closing the Loop: Automated Patches &amp; Security Merge Gates</h2>
+<p class="article-p" data-aos="fade-up">
+  Detecting a vulnerability is insufficient; developers require actionable, copy-ready fixes. When a vulnerability is confirmed with Exit Code 0, ACVIS feeds Gemini a tightly constrained 200-line context window containing the vulnerable method and its verified taint propagation trace. The engine synthesizes a unified code diff rendered cleanly in Vue 3 via <code>PatchDiffViewer.vue</code>.
+</p>
+<p class="article-p" data-aos="fade-up">
+  Simultaneously, the GitHub Checks integration attaches line-level annotations directly to the developer's Pull Request. If a confirmed vulnerability is detected, the check run concludes as <code>failure</code>, blocking the pull request from merging until the issue is resolved or an authorized Repository Owner or Admin executes an explicit override.
+</p>
+
+<blockquote class="article-pullquote" data-aos="fade-up">
+  "By anchoring generative AI to native Tree-sitter AST data-flow traces and non-destructive dynamic proof, ACVIS replaces alert fatigue with indisputable evidence and instantaneous remediation."
+</blockquote>
+
+<h2 class="article-h2" data-aos="fade-up">Reflections on Engineering Leadership</h2>
+<p class="article-p" data-aos="fade-up">
+  Guiding a 5-engineer team through 1,122 backend tests, 62 ADRs, and 2 major academic evaluation milestones taught me that software excellence is fundamentally about establishing clear boundaries and unambiguous invariants. Whether it is enforcing a 100% Non-Destructive Testing guarantee, keeping token consumption within a 14 RPM channel ceiling, or offloading diffs to prevent database exhaustion, rigorous systems design transforms ambitious prototypes into production-grade engineering platforms.
+</p>
+<p class="article-p" data-aos="fade-up">
+  Full source code, architectural decision records, and technical documentation are available in the <a href="https://github.com/ThienHN0910/ACVIS" target="_blank" rel="noopener noreferrer">ACVIS repository</a>. You can also explore the live <a href="https://acvis-beryl.vercel.app" target="_blank" rel="noopener noreferrer">Production Application</a> and the companion <a href="/projects/acvis-automated-code-vulnerability-identification-system">Case Study</a>.
+</p>

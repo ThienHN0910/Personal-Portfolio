@@ -30,12 +30,12 @@ async function main(): Promise<void> {
       { $set: {
         slug: caseSlug,
         title: 'Sentinel Bot — Live Discord Community Analytics & Shared Games',
-        description: 'A Discord bot and live Vue dashboard for community activity, voice participation, server management, reminders, and two-player games shared between Discord and the web.',
+        description: 'A real-time Discord community platform and live Vue dashboard featuring chat & voice analytics, DNE economy, atomic escrow betting, zero-trace confessions, and cross-surface mini-games.',
         context: caseContext,
         duration: '2026 · ongoing',
-        priority: 5,
+        priority: 8,
         categories: ['Web App', 'Multiplatform'],
-        technologies: ['TypeScript', 'Discord.js', 'Fastify', 'Vue 3', 'MongoDB', 'PM2', 'Vercel'],
+        technologies: ['TypeScript', 'Discord.js', 'Fastify', 'Vue 3', 'MongoDB', 'PM2', 'Vercel', 'WebSockets', 'Tailwind CSS'],
         imageUrl: homeImage,
         githubUrl: 'https://github.com/ThienHN0910/sentinel-bot',
         liveUrl: 'https://sentinel-dashboard.thienhn.io.vn',
@@ -49,17 +49,28 @@ async function main(): Promise<void> {
       { $set: {
         slug: articleSlug,
         title: 'Engineering Sentinel: Shared Discord–Web Games, Live Analytics, and Secure Guild Control',
-        excerpt: 'How Sentinel coordinates Discord and Vue through MongoDB version checks, short-lived OAuth sessions, paged analytics, and bounded reminder delivery.',
+        excerpt: 'How Sentinel coordinates Discord and Vue through MongoDB optimistic concurrency, atomic escrow wagering, zero-trace confessions, and isolated OAuth sessions.',
         content: articleContent,
         coverImage: dashboardImage,
         categories: ['Backend', 'Full Stack'],
-        tags: ['Discord.js', 'TypeScript', 'Fastify', 'Vue 3', 'MongoDB', 'OAuth2', 'Optimistic Concurrency'],
+        tags: [
+          'Discord.js',
+          'TypeScript',
+          'Fastify',
+          'Vue 3',
+          'MongoDB',
+          'OAuth2',
+          'Optimistic Concurrency',
+          'Escrow Ledger',
+          'State Machine',
+          'WebSockets',
+        ],
         published: true,
       } },
       { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true },
     )
 
-    console.log(JSON.stringify({ project: project.slug, article: article.slug, published: article.published }))
+    console.log(JSON.stringify({ project: project.slug, article: article.slug, published: article.published }, null, 2))
   } finally {
     await mongoose.disconnect()
   }
