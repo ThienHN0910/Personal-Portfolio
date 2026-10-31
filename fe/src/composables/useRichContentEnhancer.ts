@@ -5,6 +5,7 @@ export interface LightboxState {
   src: string
   alt: string
   caption: string
+  videoEmbedUrl?: string
 }
 
 export function useRichContentEnhancer(containerRef: Ref<HTMLElement | null>) {
@@ -13,6 +14,7 @@ export function useRichContentEnhancer(containerRef: Ref<HTMLElement | null>) {
     src: '',
     alt: '',
     caption: '',
+    videoEmbedUrl: '',
   })
 
   function enhanceRichContent(): void {
@@ -83,9 +85,10 @@ export function useRichContentEnhancer(containerRef: Ref<HTMLElement | null>) {
       pre.appendChild(toolbar)
     })
 
-    // 2. Enhance Images with Zoom Lightbox & Cursor
+    // 2. Enhance Images with Zoom Lightbox & Cursor (skip inside video facade)
     const images = container.querySelectorAll('img')
     images.forEach((img) => {
+      if (img.closest('.video-facade')) return
       if (img.dataset.zoomEnhanced === 'true') return
       img.dataset.zoomEnhanced = 'true'
       img.classList.add('cursor-zoom-in', 'transition-transform', 'hover:scale-[1.01]')
@@ -100,13 +103,78 @@ export function useRichContentEnhancer(containerRef: Ref<HTMLElement | null>) {
           src: img.src,
           alt: img.alt || 'Zoomed media view',
           caption,
+          videoEmbedUrl: '',
         }
+      })
+    })
+
+    // 3. Enhance Video Facades with Play-in-Place & Cinema Lightbox
+    const videoFacades = container.querySelectorAll<HTMLElement>('.video-facade')
+    videoFacades.forEach((facade) => {
+      if (facade.dataset.enhanced === 'true') return
+      facade.dataset.enhanced = 'true'
+
+      const videoId = facade.dataset.videoId || ''
+      const embedUrl = facade.dataset.embedUrl || ''
+      const wrapper = facade.querySelector<HTMLElement>('.video-facade__ratio')
+      const img = facade.querySelector<HTMLImageElement>('.video-facade__poster')
+      const expandBtn = facade.querySelector<HTMLButtonElement>('.video-facade__expand')
+
+      if (img && videoId) {
+        img.addEventListener('error', () => {
+          if (img.src.includes('maxresdefault.jpg')) {
+            img.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+          }
+        })
+      }
+
+      if (expandBtn) {
+        expandBtn.addEventListener('click', (e) => {
+          e.stopPropagation()
+          if (!embedUrl) return
+          lightbox.value = {
+            isOpen: true,
+            src: '',
+            alt: 'Video Walkthrough',
+            caption: 'Video Walkthrough — Full HD 1080p Telemetry',
+            videoEmbedUrl: embedUrl,
+          }
+        })
+      }
+
+      facade.addEventListener('click', () => {
+        if (!wrapper || facade.classList.contains('is-playing') || !embedUrl) return
+        facade.classList.add('is-playing')
+
+        const iframe = document.createElement('iframe')
+        const autoplayUrl = embedUrl.includes('?')
+          ? `${embedUrl}&autoplay=1&rel=0&modestbranding=1`
+          : `${embedUrl}?autoplay=1&rel=0&modestbranding=1`
+
+        iframe.setAttribute('src', autoplayUrl)
+        iframe.setAttribute('title', 'Video Walkthrough')
+        iframe.setAttribute('allowfullscreen', 'true')
+        iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin')
+        iframe.setAttribute(
+          'allow',
+          'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+        )
+        iframe.className = 'w-full h-full border-0 absolute inset-0'
+
+        wrapper.innerHTML = ''
+        wrapper.appendChild(iframe)
       })
     })
   }
 
   function closeLightbox(): void {
-    lightbox.value.isOpen = false
+    lightbox.value = {
+      isOpen: false,
+      src: '',
+      alt: '',
+      caption: '',
+      videoEmbedUrl: '',
+    }
   }
 
   function scheduleEnhance(): void {

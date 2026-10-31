@@ -230,6 +230,7 @@
               :src="lightbox.src"
               :alt="lightbox.alt"
               :caption="lightbox.caption"
+              :video-embed-url="lightbox.videoEmbedUrl"
               @close="closeLightbox"
             />
 
