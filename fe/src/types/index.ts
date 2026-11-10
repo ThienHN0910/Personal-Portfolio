@@ -36,6 +36,7 @@ export interface ContactMessage {
   email: string
   subject: string
   message: string
+  isRead?: boolean
   createdAt?: string
 }
 

@@ -156,21 +156,26 @@ async function handleSubmit() {
     return
   }
 
-  await contactStore.sendMessage({
-    ...form,
-    cfTurnstileResponse: turnstileToken.value
-  })
+  try {
+    await contactStore.sendMessage({
+      ...form,
+      cfTurnstileResponse: turnstileToken.value
+    })
 
-  if (contactStore.success) {
-    form.name = ''
-    form.email = ''
-    form.subject = ''
-    form.message = ''
-  }
-
-  if ((window as any).turnstile && turnstileWidgetId.value !== null) {
-    (window as any).turnstile.reset(turnstileWidgetId.value)
-    turnstileToken.value = ''
+    if (contactStore.success) {
+      form.name = ''
+      form.email = ''
+      form.subject = ''
+      form.message = ''
+    }
+  } catch {
+    // contactStore.error already holds the message shown in the form.
+  } finally {
+    // A Turnstile token is single-use: always reset so the user can retry without reloading.
+    if ((window as any).turnstile && turnstileWidgetId.value !== null) {
+      (window as any).turnstile.reset(turnstileWidgetId.value)
+      turnstileToken.value = ''
+    }
   }
 }
 

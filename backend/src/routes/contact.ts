@@ -7,6 +7,8 @@ import Contact from '../models/Contact'
 
 const router = Router()
 
+const MAX_UNREAD_MESSAGES = 20
+
 router.get('/', async (req, res) => {
   const user = requireAdmin(req, res)
   if (!user) return
@@ -62,9 +64,9 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ success: false, error: 'CAPTCHA verification failed' })
     }
 
-    // Check queue limit
+    // Check queue limit (the owner frees slots by marking messages read in Admin > Messages)
     const unreadCount = await Contact.countDocuments({ isRead: false })
-    if (unreadCount >= 20) {
+    if (unreadCount >= MAX_UNREAD_MESSAGES) {
       return res.status(400).json({ success: false, error: 'Hệ thống đang quá tải (hàng đợi đã đầy 20 tin). Vui lòng thử lại sau.' })
     }
 
@@ -75,6 +77,23 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('Contact post error:', err)
     return res.status(500).json({ success: false, error: 'Failed to send message' })
+  }
+})
+
+router.patch('/:id/read', async (req, res) => {
+  const user = requireAdmin(req, res)
+  if (!user) return
+
+  await connectToDatabase()
+
+  try {
+    const isRead = (req.body as { isRead?: unknown })?.isRead !== false
+    const message = await Contact.findByIdAndUpdate(req.params.id, { isRead }, { new: true })
+    if (!message) return res.status(404).json({ success: false, error: 'Not found' })
+
+    return res.status(200).json({ success: true, data: message })
+  } catch {
+    return res.status(500).json({ success: false, error: 'Failed to update message' })
   }
 })
 

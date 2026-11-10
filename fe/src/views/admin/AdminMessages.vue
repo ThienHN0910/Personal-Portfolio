@@ -3,21 +3,40 @@
     <div class="container">
       <AdminSectionHeader kicker="Inbox" title-before="Contact " title-highlight="Messages" />
 
-      <LoadingSpinner v-if="loading" />
+      <p v-if="messages.length" class="text-gray-400 text-sm mb-4">
+        {{ unreadCount }} unread / {{ messages.length }} total.
+        <span v-if="unreadCount >= unreadLimit" class="text-red-400">
+          The contact form is closed until you mark messages as read.
+        </span>
+      </p>
+      <p v-if="contactStore.error" role="alert" class="text-red-400 text-sm mb-4">{{ contactStore.error }}</p>
+
+      <LoadingSpinner v-if="loading && !messages.length" />
 
       <div v-else-if="messages.length" class="space-y-4">
         <div
           v-for="msg in messages"
           :key="msg._id"
           class="admin-panel p-6"
+          :class="{ 'border-l-4 border-blue-400': !msg.isRead }"
         >
           <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-3">
             <div>
-              <h3 class="font-bold text-white">{{ msg.name }}</h3>
+              <h3 class="font-bold text-white">
+                {{ msg.name }}
+                <span v-if="!msg.isRead" class="ml-2 align-middle text-xs font-medium text-blue-400">New</span>
+              </h3>
               <a :href="`mailto:${msg.email}`" class="text-blue-400 text-sm hover:underline">{{ msg.email }}</a>
             </div>
             <div class="flex items-center gap-3">
               <span class="text-gray-500 text-xs">{{ formatDate(msg.createdAt) }}</span>
+              <button
+                class="btn btn--sm"
+                :aria-label="msg.isRead ? 'Mark as unread' : 'Mark as read'"
+                @click="contactStore.setRead(msg._id!, !msg.isRead)"
+              >
+                {{ msg.isRead ? 'Mark unread' : 'Mark read' }}
+              </button>
               <button class="btn btn--danger btn--sm inline-flex items-center gap-1.5" @click="handleDelete(msg._id!)">
                 <IconGlyph name="trash" :size="12" />
                 Delete
@@ -65,6 +84,9 @@ const dateFormatter = new Intl.DateTimeFormat('en-US', {
 const contactStore = useContactStore()
 const loading = computed(() => contactStore.loading)
 const messages = computed(() => contactStore.messages)
+const unreadCount = computed(() => messages.value.filter((m) => !m.isRead).length)
+// Mirrors MAX_UNREAD_MESSAGES in backend/src/routes/contact.ts
+const unreadLimit = 20
 const { isOpen: isDeleteDialogOpen, request: requestDelete, cancel: cancelDelete, consume: consumeDelete } = useConfirmDialog()
 
 async function handleDelete(id: string) {
