@@ -36,6 +36,17 @@ export function requireAuth(req: Request, res: Response): AuthUser | null {
   }
 }
 
+/** Non-failing check used by public routes that reveal extra data to the owner. */
+export function isAdminRequest(req: Request): boolean {
+  const authHeader = req.headers.authorization
+  if (!authHeader?.startsWith('Bearer ')) return false
+  try {
+    return verifyToken(authHeader.slice(7)).role === 'admin'
+  } catch {
+    return false
+  }
+}
+
 export function requireAdmin(req: Request, res: Response): AuthUser | null {
   const user = requireAuth(req, res)
   if (!user) return null

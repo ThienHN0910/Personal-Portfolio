@@ -4,7 +4,12 @@ import { requireAdmin } from '../lib/auth'
 
 const router = Router()
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+// Created lazily: route modules are imported before server.ts runs dotenv.config().
+let genAI: GoogleGenerativeAI | null = null
+function getGenAI(): GoogleGenerativeAI {
+  genAI ??= new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
+  return genAI
+}
 
 const DESIGN_SYSTEM_RULES = `
 CRITICAL DESIGN SYSTEM & STYLING RULES:
@@ -88,7 +93,7 @@ router.post('/improve-content', async (req, res) => {
     }
 
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
-    const model = genAI.getGenerativeModel({ model: modelName })
+    const model = getGenAI().getGenerativeModel({ model: modelName })
 
     let templateInstruction = UNIFIED_MASTER_SYNTHESIS_PROMPT
 
@@ -133,7 +138,7 @@ router.post('/generate-metadata', async (req, res) => {
     }
 
     const modelName = process.env.GEMINI_MODEL || 'gemini-2.0-flash'
-    const model = genAI.getGenerativeModel({ model: modelName })
+    const model = getGenAI().getGenerativeModel({ model: modelName })
 
     const prompt = `You are an expert technical editor and SEO specialist.
 Analyze the following title and content of a software engineering article or case study:
