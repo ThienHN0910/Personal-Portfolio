@@ -22,30 +22,7 @@
       <div v-else-if="activeTab === 'home'" class="admin-panel p-6">
         <h2 class="text-xl font-bold text-white mb-6">Home Page</h2>
         <form @submit.prevent="saveHome">
-          <div class="form-group">
-            <label>Hero Title</label>
-            <input v-model="homeForm.heroTitle" type="text" placeholder="Hi, I'm" />
-          </div>
-          <div class="form-group">
-            <label>Hero Subtitle</label>
-            <input v-model="homeForm.heroSubtitle" type="text" placeholder="Full Stack Developer" />
-          </div>
-          <div class="form-group">
-            <label>Hero Description</label>
-            <textarea v-model="homeForm.heroDescription" rows="3" placeholder="Brief introduction..." />
-          </div>
-          <div class="form-group">
-            <label>CTA Button Text</label>
-            <input v-model="homeForm.ctaText" type="text" placeholder="View My Work" />
-          </div>
-          <div class="form-group">
-            <label>CTA Button Link</label>
-            <input v-model="homeForm.ctaLink" type="text" placeholder="/projects" />
-          </div>
-          <div class="form-group">
-            <label>Profile Image URL</label>
-            <ImageDropUpload v-model="homeForm.profileImage" folder="portfolio/home" />
-          </div>
+          <AboutHomeEditor v-model="homeForm" />
           <button type="submit" class="btn btn--primary" :disabled="homeStore.loading">Save Home</button>
         </form>
       </div>
@@ -54,293 +31,16 @@
       <div v-else-if="activeTab === 'about'" class="admin-panel p-6">
         <h2 class="text-xl font-bold text-white mb-6">About Page</h2>
         <form @submit.prevent="saveAbout">
-          <div class="form-group">
-            <label>Name</label>
-            <input v-model="aboutForm.name" type="text" placeholder="Your name" />
-          </div>
-          <div class="form-group">
-            <label>Title</label>
-            <input v-model="aboutForm.title" type="text" placeholder="Full Stack Developer" />
-          </div>
-          <div class="form-group">
-            <label>Bio / Architectural Summary</label>
-            <textarea v-model="aboutForm.bio" rows="5" placeholder="Tell your story..." />
-          </div>
-
-          <h3 class="text-white font-semibold mb-4 mt-6">Availability &amp; Profile Telemetry</h3>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 rounded-xl bg-slate-900/50 border border-white/10">
-            <div class="form-group mb-0">
-              <label>Availability Badge Status</label>
-              <input v-model="aboutForm.availabilityStatus" type="text" placeholder="Available for Architecture & Engineering" />
-            </div>
-            <div class="form-group mb-0">
-              <label>Telemetry Location</label>
-              <input v-model="aboutForm.telemetry.location" type="text" placeholder="Ho Chi Minh City, VN" />
-            </div>
-            <div class="form-group mb-0">
-              <label>Telemetry Timezone</label>
-              <input v-model="aboutForm.telemetry.timezone" type="text" placeholder="GMT+7 (Indochina)" />
-            </div>
-            <div class="form-group mb-0">
-              <label>Telemetry Focus</label>
-              <input v-model="aboutForm.telemetry.focus" type="text" placeholder="Distributed Systems & UI Architecture" />
-            </div>
-            <div class="form-group mb-0 md:col-span-2">
-              <label>Telemetry Production Status</label>
-              <input v-model="aboutForm.telemetry.status" type="text" placeholder="Production Active" />
-            </div>
-          </div>
-
-          <h3 class="text-white font-semibold mb-4 mt-6">Architectural Pillars &amp; Core Tenets</h3>
-          <div class="space-y-4 mb-6">
-            <div
-              v-for="(pillar, index) in aboutForm.pillars"
-              :key="pillar._editorId"
-              class="border border-white/10 rounded-xl p-4 bg-slate-900/40 space-y-3"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="form-group mb-0">
-                  <label>Pillar Tag</label>
-                  <input v-model="pillar.tag" type="text" placeholder="PILLAR 01 · ⚡ TYPE SAFETY" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Pillar Title</label>
-                  <input v-model="pillar.title" type="text" placeholder="Contract-First Systems" />
-                </div>
-              </div>
-              <div class="form-group mb-0">
-                <label>Description</label>
-                <textarea v-model="pillar.description" rows="2" placeholder="Explain the core technical philosophy..." />
-              </div>
-              <div class="flex justify-end">
-                <button
-                  type="button"
-                  class="btn btn--danger btn--sm"
-                  :disabled="aboutForm.pillars.length === 1"
-                  @click="removePillar(index)"
-                >
-                  Remove Pillar
-                </button>
-              </div>
-            </div>
-          </div>
-          <button type="button" class="btn btn--secondary mb-6" @click="addPillar">+ Add Architectural Pillar</button>
-
-          <h3 class="text-white font-semibold mb-4 mt-2">Contact Info</h3>
-          <div class="form-group">
-            <label>Email</label>
-            <input v-model="aboutForm.contactInfo.email" type="email" placeholder="you@email.com" />
-          </div>
-          <div class="form-group">
-            <label>Phone</label>
-            <input v-model="aboutForm.contactInfo.phone" type="text" placeholder="+84 ..." />
-          </div>
-          <div class="form-group">
-            <label>Location</label>
-            <input v-model="aboutForm.contactInfo.location" type="text" placeholder="Ho Chi Minh City, Vietnam" />
-          </div>
-          <div class="form-group">
-            <label>Website</label>
-            <input v-model="aboutForm.contactInfo.website" type="url" placeholder="https://yourdomain.com" />
-          </div>
-
-          <div class="form-group">
-            <label>Skills (comma separated)</label>
-            <input v-model="skillsInput" type="text" placeholder="Vue, TypeScript, Node.js, MongoDB" />
-          </div>
-
-          <h3 class="text-white font-semibold mb-4 mt-2">Experience</h3>
-          <div class="space-y-5 mb-5">
-            <div
-              v-for="(exp, index) in aboutForm.experience"
-              :key="exp._editorId"
-              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
-                <div class="form-group mb-0">
-                  <label>Company</label>
-                  <input v-model="exp.company" type="text" placeholder="Company" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Position</label>
-                  <input v-model="exp.position" type="text" placeholder="Position" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Start Date</label>
-                  <input v-model="exp.startDate" type="text" placeholder="Jan 2022" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>End Date</label>
-                  <input v-model="exp.endDate" type="text" placeholder="Present" />
-                </div>
-              </div>
-
-              <div class="form-group mb-0">
-                <label>Description</label>
-                <FullRichEditor v-model="exp.description" :editor-key="exp._editorId" />
-              </div>
-
-              <div class="mt-3 flex justify-end">
-                <button
-                  type="button"
-                  class="btn btn--danger btn--sm"
-                  :disabled="aboutForm.experience.length === 1"
-                  @click="removeExperience(index)"
-                >
-                  Remove Experience
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" class="btn btn--secondary mb-5" @click="addExperience">+ Add Experience</button>
-
-          <h3 class="text-white font-semibold mb-4 mt-2">Education</h3>
-          <div class="space-y-5 mb-5">
-            <div
-              v-for="(edu, index) in aboutForm.education"
-              :key="edu._editorId"
-              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="form-group mb-0">
-                  <label>Institution</label>
-                  <input v-model="edu.institution" type="text" placeholder="University / Academy" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Degree</label>
-                  <input v-model="edu.degree" type="text" placeholder="Bachelor / Master / Diploma" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Field</label>
-                  <input v-model="edu.field" type="text" placeholder="Computer Science" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>GPA</label>
-                  <input v-model="edu.gpa" type="text" placeholder="3.75/4.0" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Start Date</label>
-                  <input v-model="edu.startDate" type="text" placeholder="Sep 2018" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>End Date</label>
-                  <input v-model="edu.endDate" type="text" placeholder="Jun 2022" />
-                </div>
-              </div>
-
-              <div class="mt-3 flex justify-end">
-                <button
-                  type="button"
-                  class="btn btn--danger btn--sm"
-                  :disabled="aboutForm.education.length === 1"
-                  @click="removeEducation(index)"
-                >
-                  Remove Education
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" class="btn btn--secondary mb-5" @click="addEducation">+ Add Education</button>
-
-          <h3 class="text-white font-semibold mb-4 mt-2">Licenses &amp; Certifications</h3>
-          <div class="space-y-5 mb-5">
-            <div
-              v-for="(item, index) in aboutForm.licensesCertifications"
-              :key="item._editorId"
-              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="form-group mb-0">
-                  <label>Name</label>
-                  <input v-model="item.name" type="text" placeholder="AWS Certified Developer" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Issuer</label>
-                  <input v-model="item.issuer" type="text" placeholder="Amazon Web Services" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Issue Date</label>
-                  <input v-model="item.issueDate" type="text" placeholder="Jan 2025" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Expiration Date</label>
-                  <input v-model="item.expirationDate" type="text" placeholder="Jan 2028" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Credential ID</label>
-                  <input v-model="item.credentialId" type="text" placeholder="ABC-12345" />
-                </div>
-                <div class="form-group mb-0">
-                  <label>Credential URL</label>
-                  <input v-model="item.credentialUrl" type="text" placeholder="https://verify.example.com/..." />
-                </div>
-              </div>
-
-              <div class="mt-3 flex justify-end">
-                <button
-                  type="button"
-                  class="btn btn--danger btn--sm"
-                  :disabled="aboutForm.licensesCertifications.length === 1"
-                  @click="removeLicenseCertification(index)"
-                >
-                  Remove Item
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" class="btn btn--secondary mb-5" @click="addLicenseCertification">+ Add License/Certification</button>
-
-          <div class="form-group">
-            <label>Avatar URL</label>
-            <ImageDropUpload v-model="aboutForm.avatarUrl" folder="portfolio/about" />
-          </div>
-          <div class="form-group">
-            <label>Resume PDF</label>
-            <FileDropUpload
-              v-model="aboutForm.resumeUrl"
-              folder="portfolio/cv"
-              resource-type="raw"
-              accept="application/pdf"
-              title="Keo tha CV PDF vao day hoac bam de chon file"
-              hint="PDF, toi da 8MB"
-            />
-          </div>
-
-          <h3 class="text-white font-semibold mb-4 mt-2">Social Links</h3>
-          <div class="space-y-4 mb-5">
-            <div
-              v-for="(link, index) in aboutForm.socialLinks"
-              :key="link._editorId"
-              class="border border-white/10 rounded-xl p-4 bg-slate-900/40"
-            >
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div class="form-group mb-0">
-                  <label>Label</label>
-                  <input v-model="link.label" type="text" placeholder="GitHub, LinkedIn, Portfolio..." />
-                </div>
-                <div class="form-group mb-0">
-                  <label>URL</label>
-                  <input v-model="link.url" type="text" placeholder="https://..." />
-                </div>
-              </div>
-
-              <div class="mt-3 flex justify-end">
-                <button
-                  type="button"
-                  class="btn btn--danger btn--sm"
-                  :disabled="aboutForm.socialLinks.length === 1"
-                  @click="removeSocialLink(index)"
-                >
-                  Remove Link
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <button type="button" class="btn btn--secondary mb-5" @click="addSocialLink">+ Add Social Link</button>
+          <AboutIntroEditor v-model="aboutForm" />
+          <AboutSkillMatrixEditor v-model="skillsInput" />
+          <AboutWorkChronologyEditor v-model="aboutForm.experience" />
+          <AboutEducationEditor v-model="aboutForm.education" />
+          <AboutLicensesCertificationsEditor v-model="aboutForm.licensesCertifications" />
+          <AboutMediaEditor
+            v-model:avatar-url="aboutForm.avatarUrl"
+            v-model:resume-url="aboutForm.resumeUrl"
+          />
+          <AboutSocialLinksEditor v-model="aboutForm.socialLinks" />
           <button type="submit" class="btn btn--primary" :disabled="aboutStore.loading">Save About</button>
         </form>
       </div>
@@ -354,13 +54,31 @@
 import { ref, reactive, onMounted, watch } from 'vue'
 
 import AdminSectionHeader from '@/components/admin/AdminSectionHeader.vue'
-import FullRichEditor from '@/components/admin/FullRichEditor.vue'
-import FileDropUpload from '@/components/ui/FileDropUpload.vue'
+import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
+import AboutHomeEditor from '@/components/admin/about/AboutHomeEditor.vue'
+import AboutIntroEditor from '@/components/admin/about/AboutIntroEditor.vue'
+import AboutSkillMatrixEditor from '@/components/admin/about/AboutSkillMatrixEditor.vue'
+import AboutWorkChronologyEditor from '@/components/admin/about/AboutWorkChronologyEditor.vue'
+import AboutEducationEditor from '@/components/admin/about/AboutEducationEditor.vue'
+import AboutLicensesCertificationsEditor from '@/components/admin/about/AboutLicensesCertificationsEditor.vue'
+import AboutMediaEditor from '@/components/admin/about/AboutMediaEditor.vue'
+import AboutSocialLinksEditor from '@/components/admin/about/AboutSocialLinksEditor.vue'
+import {
+  type ExperienceForm,
+  type EducationForm,
+  type LicenseCertificationForm,
+  type SocialLinkForm,
+  type PillarForm,
+  createEditorId,
+  createEmptyExperience,
+  createEmptyEducation,
+  createEmptyLicenseCertification,
+  createEmptySocialLink,
+  defaultPillars,
+} from '@/components/admin/about/types'
 import { useHomeStore } from '@/stores/home'
 import { useAboutStore } from '@/stores/about'
-import ImageDropUpload from '@/components/ui/ImageDropUpload.vue'
-import LoadingSpinner from '@/components/ui/LoadingSpinner.vue'
-import type { Education, Experience, LicenseCertification, SocialLink } from '@/types'
+import type { SocialLink } from '@/types'
 import { sortExperiencesDescending } from '@/utils/experienceSort'
 
 const homeStore = useHomeStore()
@@ -374,74 +92,6 @@ const skillsInput = ref('')
 const tabs = [
   { id: 'home', label: 'Home Page' },
   { id: 'about', label: 'About Page' },
-]
-
-type ExperienceForm = Experience & { _editorId: string }
-type EducationForm = Education & { _editorId: string }
-type LicenseCertificationForm = LicenseCertification & { _editorId: string }
-type SocialLinkForm = SocialLink & { _editorId: string }
-type PillarForm = { _editorId: string; tag: string; title: string; description: string }
-
-function createEditorId(): string {
-  return `row-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
-}
-
-function createEmptyPillar(tag = '', title = '', description = ''): PillarForm {
-  return {
-    _editorId: createEditorId(),
-    tag,
-    title,
-    description,
-  }
-}
-
-function createEmptyExperience(): ExperienceForm {
-  return {
-    _editorId: createEditorId(),
-    company: '',
-    position: '',
-    startDate: '',
-    endDate: '',
-    description: '',
-  }
-}
-
-function createEmptySocialLink(): SocialLinkForm {
-  return {
-    _editorId: createEditorId(),
-    label: '',
-    url: '',
-  }
-}
-
-function createEmptyEducation(): EducationForm {
-  return {
-    _editorId: createEditorId(),
-    institution: '',
-    degree: '',
-    field: '',
-    gpa: '',
-    startDate: '',
-    endDate: '',
-  }
-}
-
-function createEmptyLicenseCertification(): LicenseCertificationForm {
-  return {
-    _editorId: createEditorId(),
-    name: '',
-    issuer: '',
-    issueDate: '',
-    expirationDate: '',
-    credentialId: '',
-    credentialUrl: '',
-  }
-}
-
-const defaultPillars: PillarForm[] = [
-  createEmptyPillar('PILLAR 01 · ⚡ TYPE SAFETY', 'Contract-First Systems', 'End-to-end typing from database schemas to client state, preventing runtime mismatches and contract drift.'),
-  createEmptyPillar('PILLAR 02 · ⚡ 60FPS UI', 'Sub-100ms Interactions', 'GPU-composited transforms, lightweight reactive trees, and optimized asset delivery for tactile micro-interactions.'),
-  createEmptyPillar('PILLAR 03 · ⚡ RESILIENCE', 'Fault-Tolerant Seams', 'Graceful API degradation, robust fallbacks, and automated seam tests protecting critical system boundaries.'),
 ]
 
 const homeForm = reactive({
@@ -664,51 +314,6 @@ async function saveAbout() {
     socialLinks,
   })
   showSaved()
-}
-
-function addPillar(): void {
-  aboutForm.pillars.push(createEmptyPillar())
-}
-
-function removePillar(index: number): void {
-  if (aboutForm.pillars.length === 1) return
-  aboutForm.pillars.splice(index, 1)
-}
-
-function addExperience(): void {
-  aboutForm.experience.push(createEmptyExperience())
-}
-
-function removeExperience(index: number): void {
-  if (aboutForm.experience.length === 1) return
-  aboutForm.experience.splice(index, 1)
-}
-
-function addSocialLink(): void {
-  aboutForm.socialLinks.push(createEmptySocialLink())
-}
-
-function removeSocialLink(index: number): void {
-  if (aboutForm.socialLinks.length === 1) return
-  aboutForm.socialLinks.splice(index, 1)
-}
-
-function addEducation(): void {
-  aboutForm.education.push(createEmptyEducation())
-}
-
-function removeEducation(index: number): void {
-  if (aboutForm.education.length === 1) return
-  aboutForm.education.splice(index, 1)
-}
-
-function addLicenseCertification(): void {
-  aboutForm.licensesCertifications.push(createEmptyLicenseCertification())
-}
-
-function removeLicenseCertification(index: number): void {
-  if (aboutForm.licensesCertifications.length === 1) return
-  aboutForm.licensesCertifications.splice(index, 1)
 }
 
 function showSaved() {
