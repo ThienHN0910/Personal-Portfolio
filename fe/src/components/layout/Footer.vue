@@ -123,7 +123,7 @@ const socialIconLinks = computed(() => getFooterIconLinks(about.value))
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
-  { to: '/projects', label: 'Projects' },
+  { to: '/projects', label: 'Case Studies' },
   { to: '/blog', label: 'Articles' },
   { to: '/cv', label: 'CV' },
   { to: '/contact', label: 'Contact' },
