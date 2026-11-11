@@ -152,44 +152,51 @@ router.get('/grouped-ips', async (req, res) => {
       ]
     }
 
-    const pipeline: any[] = [
+    // One pass: group per IP without the raw visit history, then count + paginate via $facet.
+    // History is loaded afterwards only for the IPs on the requested page (previously the whole
+    // collection was grouped twice with every visit pushed into memory).
+    const [facet] = await VisitorLog.aggregate([
       { $match: matchFilter },
       { $sort: { createdAt: -1 } },
       {
         $group: {
           _id: '$ip',
-          ip: { $first: '$ip' },
           totalViews: { $sum: 1 },
           firstSeen: { $min: '$createdAt' },
           lastSeen: { $max: '$createdAt' },
           companiesRaw: { $addToSet: '$fromCompany' },
           ipInfo: { $first: '$ipInfo' },
           latestUserAgent: { $first: '$userAgent' },
-          history: {
-            $push: {
-              _id: '$_id',
-              path: '$path',
-              referrer: '$referrer',
-              userAgent: '$userAgent',
-              fromCompany: '$fromCompany',
-              createdAt: '$createdAt',
-            },
-          },
         },
       },
       { $sort: { lastSeen: -1 } },
-    ]
+      {
+        $facet: {
+          total: [{ $count: 'count' }],
+          page: [{ $skip: (page - 1) * limit }, { $limit: limit }],
+        },
+      },
+    ])
 
-    const fullAgg = await VisitorLog.aggregate(pipeline)
-    const totalDistinctIps = fullAgg.length
+    const totalDistinctIps: number = facet?.total?.[0]?.count ?? 0
+    const pageGroups: any[] = facet?.page ?? []
 
-    const paginatedPipeline = [
-      ...pipeline,
-      { $skip: (page - 1) * limit },
-      { $limit: limit },
-    ]
-
-    const results = await VisitorLog.aggregate(paginatedPipeline)
+    const pageIps = pageGroups.map((g) => g._id)
+    const visits = pageIps.length
+      ? await VisitorLog.find(
+          { ...matchFilter, ip: { $in: pageIps } },
+          { path: 1, referrer: 1, userAgent: 1, fromCompany: 1, createdAt: 1, ip: 1 },
+        )
+          .sort({ createdAt: -1 })
+          .lean()
+      : []
+    const historyByIp = new Map<string, any[]>()
+    for (const visit of visits as any[]) {
+      const { ip, ...entry } = visit
+      if (!historyByIp.has(ip)) historyByIp.set(ip, [])
+      historyByIp.get(ip)!.push(entry)
+    }
+    const results = pageGroups.map((g) => ({ ...g, history: historyByIp.get(g._id) ?? [] }))
 
     const formattedData = results.map((item) => {
       const companies = (item.companiesRaw || []).filter((c: string) => c && c.trim() !== '')

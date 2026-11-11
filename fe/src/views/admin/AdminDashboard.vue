@@ -96,8 +96,8 @@ const stats = computed(() => [
 ])
 
 const adminLinks = [
-  { to: '/admin/projects', label: 'Manage Projects', description: 'Add, edit, delete projects' },
-  { to: '/admin/blog', label: 'Manage Blog', description: 'Write and publish posts' },
+  { to: '/admin/projects', label: 'Manage Case Studies', description: 'Add, edit, delete projects' },
+  { to: '/admin/blog', label: 'Manage Articles', description: 'Write and publish posts' },
   { to: '/admin/categories', label: 'Categories', description: 'Organize project and blog categories' },
   { to: '/admin/messages', label: 'View Messages', description: 'Read contact submissions' },
   { to: '/admin/about', label: 'Edit Content', description: 'Update about & home page' },

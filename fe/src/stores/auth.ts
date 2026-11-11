@@ -54,12 +54,16 @@ export const useAuthStore = defineStore('auth', () => {
     if (!parsed.id || !parsed.email || !parsed.name) {
       throw new Error('Missing required user fields in auth token')
     }
+    // Single-owner site: tokens issued before owner-only login may carry role 'user'.
+    if (parsed.role !== 'admin') {
+      throw new Error('This account is not allowed to sign in')
+    }
 
     return {
       id: parsed.id,
       email: parsed.email,
       name: parsed.name,
-      role: parsed.role === 'admin' ? 'admin' : 'user',
+      role: 'admin',
       avatar: parsed.avatar,
     }
   }

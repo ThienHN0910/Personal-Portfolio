@@ -127,13 +127,16 @@ router.get('/callback', async (req, res) => {
     }
 
     const adminEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase()
-    const role = userInfo.email.toLowerCase() === adminEmail ? 'admin' : 'user'
+    // Single-owner platform: only the ADMIN_EMAIL Google account may sign in.
+    if (!adminEmail || userInfo.email.trim().toLowerCase() !== adminEmail) {
+      return res.redirect(`${frontendBaseUrl}/auth/callback?error=unauthorized_account`)
+    }
 
     const token = generateToken({
       id: googleUserId,
       email: userInfo.email,
       name: userInfo.name,
-      role,
+      role: 'admin',
     })
 
     return res.redirect(`${frontendBaseUrl}/auth/callback?token=${encodeURIComponent(token)}`)

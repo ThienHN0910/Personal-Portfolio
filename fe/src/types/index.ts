@@ -36,6 +36,7 @@ export interface ContactMessage {
   email: string
   subject: string
   message: string
+  isRead?: boolean
   createdAt?: string
 }
 
@@ -161,7 +162,7 @@ export interface User {
   email: string
   name: string
   avatar?: string
-  role: 'admin' | 'user'
+  role: 'admin'
 }
 
 export interface AuthState {

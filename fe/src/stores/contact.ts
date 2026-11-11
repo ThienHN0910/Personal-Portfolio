@@ -58,5 +58,19 @@ export const useContactStore = defineStore('contact', () => {
     }
   }
 
-  return { messages, loading, error, success, sendMessage, fetchMessages, deleteMessage }
+  async function setRead(id: string, isRead: boolean) {
+    error.value = null
+    const target = messages.value.find((m) => m._id === id)
+    const previous = target?.isRead
+    if (target) target.isRead = isRead // optimistic update
+    try {
+      await api.patch(`/contact/${id}/read`, { isRead })
+    } catch (err) {
+      if (target) target.isRead = previous
+      error.value = 'Failed to update message'
+      console.error(err)
+    }
+  }
+
+  return { messages, loading, error, success, sendMessage, fetchMessages, deleteMessage, setRead }
 })

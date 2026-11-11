@@ -12,7 +12,7 @@
             </span>
             <div class="flex items-center gap-2">
               <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-bone border border-stroke text-ink-secondary tabular-nums">
-                {{ blogStore.posts.length }} Articles Published
+                {{ totalPosts }} Articles Published
               </span>
               <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-green text-pastel-green-text uppercase font-medium">
                 Technical Dispatches
@@ -34,7 +34,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-stroke text-xs font-mono">
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Total Articles</span>
-              <span class="text-ink text-sm font-medium block tabular-nums">{{ blogStore.posts.length }} Publications</span>
+              <span class="text-ink text-sm font-medium block tabular-nums">{{ totalPosts }} Publications</span>
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Focus Areas</span>
@@ -84,7 +84,7 @@
             >
               <span>All Topics</span>
               <span class="text-[10px] px-1.5 py-0.2 rounded-full tabular-nums" :class="activeCategory === '' ? 'bg-surface/20 text-surface' : 'bg-canvas text-ink-tertiary'">
-                {{ blogStore.posts.length }}
+                {{ totalPosts }}
               </span>
             </button>
             <button
@@ -103,6 +103,23 @@
 
       <!-- ── Articles Grid: Asymmetric Broken Bento ──────────────────── -->
       <LoadingSpinner v-if="initialLoading" />
+
+      <!-- Error State: request failed and nothing is loaded yet -->
+      <div v-else-if="blogStore.error && !blogStore.posts.length" class="editorial-card" role="alert">
+        <div class="editorial-card__inner p-12 sm:p-16 text-center text-ink-tertiary space-y-4 max-w-lg mx-auto">
+          <p class="text-lg text-ink font-serif font-light">Could not load articles</p>
+          <p class="text-xs text-ink-secondary font-mono leading-relaxed">
+            The server did not respond. Check your connection and try again.
+          </p>
+          <button
+            type="button"
+            class="px-4 py-2 rounded-md bg-ink text-surface text-xs font-mono font-medium active:scale-95 transition-all"
+            @click="loadPosts(true)"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
 
       <div
         v-else-if="blogStore.posts.length"
@@ -184,6 +201,9 @@ const searchQuery = ref('')
 const activeCategory = ref('')
 const initialLoading = ref(true)
 const loadingMore = ref(false)
+// Full catalog size from the API (the list itself only holds the loaded pages).
+const catalogTotal = ref<number | null>(null)
+const totalPosts = computed(() => catalogTotal.value ?? blogStore.posts.length)
 const hasMorePosts = ref(true)
 const currentPage = ref(1)
 const pageSize = 6
@@ -252,6 +272,7 @@ async function loadPosts(reset = false): Promise<void> {
   if (pagination) {
     currentPage.value = pagination.page
     hasMorePosts.value = pagination.hasMore
+    catalogTotal.value = pagination.total
   } else {
     hasMorePosts.value = false
   }
@@ -273,6 +294,7 @@ async function loadNextPage(): Promise<void> {
   if (pagination) {
     currentPage.value = pagination.page
     hasMorePosts.value = pagination.hasMore
+    catalogTotal.value = pagination.total
   } else {
     hasMorePosts.value = false
   }

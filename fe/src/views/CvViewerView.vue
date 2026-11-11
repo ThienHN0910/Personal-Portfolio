@@ -121,13 +121,34 @@ const renderedPages = new Set<number>()
 const renderingPages = new Set<number>()
 let pageObserver: IntersectionObserver | null = null
 let activePdf: any = null
+let activePdfUrl = ''
+let resizeTimer: ReturnType<typeof setTimeout> | null = null
 
-function resetPageState(): void {
+function resetPageState(clearPdf = true): void {
   renderedPages.clear()
   renderingPages.clear()
   pageObserver?.disconnect()
   pageObserver = null
-  activePdf = null
+  if (clearPdf) {
+    activePdf = null
+    activePdfUrl = ''
+  }
+}
+
+let lastRenderWidth = 0
+
+function handleResize(): void {
+  // Mobile browsers fire resize when the address bar shows/hides; only width affects layout.
+  if (window.innerWidth === lastRenderWidth) return
+  if (resizeTimer) {
+    clearTimeout(resizeTimer)
+  }
+  resizeTimer = setTimeout(() => {
+    lastRenderWidth = window.innerWidth
+    if (resumeUrl.value && !loading.value) {
+      void renderPdf(resumeUrl.value)
+    }
+  }, 200)
 }
 
 async function renderPage(pageNumber: number, wrapper: HTMLDivElement): Promise<void> {
@@ -137,7 +158,9 @@ async function renderPage(pageNumber: number, wrapper: HTMLDivElement): Promise<
 
   try {
     const page = await activePdf.getPage(pageNumber)
-    const viewport = page.getViewport({ scale: 1.25 })
+    const containerWidth = pagesContainer.value?.clientWidth || (window.innerWidth - 32)
+    const scale = Math.min(1.25, containerWidth / page.getViewport({ scale: 1 }).width)
+    const viewport = page.getViewport({ scale })
     const contextCanvas = document.createElement('canvas')
     contextCanvas.width = viewport.width
     contextCanvas.height = viewport.height
@@ -173,16 +196,19 @@ async function renderPdf(url: string): Promise<void> {
 
   if (!pagesContainer.value) return
   pagesContainer.value.innerHTML = ''
-  resetPageState()
+  resetPageState(false)
 
   try {
-    const pdfjsLib = await getPdfJs()
-    const loadingTask = pdfjsLib.getDocument({
-      url,
-      withCredentials: false,
-    })
+    if (!activePdf || activePdfUrl !== url) {
+      const pdfjsLib = await getPdfJs()
+      const loadingTask = pdfjsLib.getDocument({
+        url,
+        withCredentials: false,
+      })
 
-    activePdf = await loadingTask.promise
+      activePdf = await loadingTask.promise
+      activePdfUrl = url
+    }
     totalPages.value = activePdf.numPages
 
     if ('IntersectionObserver' in window) {
@@ -228,6 +254,9 @@ async function renderPdf(url: string): Promise<void> {
 }
 
 onMounted(async () => {
+  lastRenderWidth = window.innerWidth
+  window.addEventListener('resize', handleResize)
+
   await Promise.all([
     aboutStore.fetchAboutData(),
     homeStore.homeData ? Promise.resolve() : homeStore.fetchHomeData(),
@@ -251,6 +280,11 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  resetPageState()
+  if (resizeTimer) {
+    clearTimeout(resizeTimer)
+    resizeTimer = null
+  }
+  window.removeEventListener('resize', handleResize)
+  resetPageState(true)
 })
 </script>

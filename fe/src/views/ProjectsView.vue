@@ -12,7 +12,7 @@
             </span>
             <div class="flex items-center gap-2">
               <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-bone border border-stroke text-ink-secondary tabular-nums">
-                {{ projectsStore.projects.length }} Case Studies Indexed
+                {{ totalProjects }} Case Studies Indexed
               </span>
               <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pastel-amber text-pastel-amber-text uppercase font-medium">
                 Production Ready
@@ -34,7 +34,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-stroke text-xs font-mono">
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Catalog Total</span>
-              <span class="text-ink text-sm font-medium block tabular-nums">{{ projectsStore.projects.length }} Architectures</span>
+              <span class="text-ink text-sm font-medium block tabular-nums">{{ totalProjects }} Architectures</span>
             </div>
             <div class="p-3 rounded-lg bg-bone border border-stroke space-y-1">
               <span class="text-[10px] text-ink-tertiary uppercase">Primary Stack</span>
@@ -88,7 +88,7 @@
             >
               <span>All Cases</span>
               <span class="text-[10px] px-1.5 py-0.2 rounded-full tabular-nums" :class="activeCategory === '' ? 'bg-surface/20 text-surface' : 'bg-canvas text-ink-tertiary'">
-                {{ projectsStore.projects.length }}
+                {{ totalProjects }}
               </span>
             </button>
             <button
@@ -107,6 +107,23 @@
 
       <!-- ── Projects Grid Showcase: Asymmetric Broken Bento ─────────── -->
       <LoadingSpinner v-if="initialLoading" />
+
+      <!-- Error State: request failed and nothing is loaded yet -->
+      <div v-else-if="projectsStore.error && !projectsStore.projects.length" class="editorial-card" role="alert">
+        <div class="editorial-card__inner p-12 sm:p-16 text-center text-ink-tertiary space-y-4 max-w-lg mx-auto">
+          <p class="text-lg text-ink font-serif font-light">Could not load case studies</p>
+          <p class="text-xs text-ink-secondary font-mono leading-relaxed">
+            The server did not respond. Check your connection and try again.
+          </p>
+          <button
+            type="button"
+            class="px-4 py-2 rounded-md bg-ink text-surface text-xs font-mono font-medium active:scale-95 transition-all"
+            @click="loadProjects(true)"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
 
       <div
         v-else-if="projectsStore.projects.length"
@@ -190,6 +207,9 @@ const searchQuery = ref('')
 const activeCategory = ref('')
 const initialLoading = ref(true)
 const loadingMore = ref(false)
+// Full catalog size from the API (the list itself only holds the loaded pages).
+const catalogTotal = ref<number | null>(null)
+const totalProjects = computed(() => catalogTotal.value ?? projectsStore.projects.length)
 const hasMoreProjects = ref(true)
 const currentPage = ref(1)
 const pageSize = 9
@@ -241,6 +261,7 @@ async function loadProjects(reset = false): Promise<void> {
   if (pagination) {
     currentPage.value = pagination.page
     hasMoreProjects.value = pagination.hasMore
+    catalogTotal.value = pagination.total
   } else {
     hasMoreProjects.value = false
   }
@@ -262,6 +283,7 @@ async function loadNextPage(): Promise<void> {
   if (pagination) {
     currentPage.value = pagination.page
     hasMoreProjects.value = pagination.hasMore
+    catalogTotal.value = pagination.total
   } else {
     hasMoreProjects.value = false
   }

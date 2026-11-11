@@ -418,11 +418,13 @@ const staticPages: CommandItem[] = [
 
 // Quick actions
 const quickActions = computed<CommandItem[]>(() => {
-  const email = aboutStore.aboutData?.contactInfo?.email || 'thienhn0910@gmail.com'
+  const email = aboutStore.aboutData?.contactInfo?.email?.trim()
   const resumeUrl = aboutStore.aboutData?.resumeUrl
 
-  return [
-    {
+  const actions: CommandItem[] = []
+
+  if (email) {
+    actions.push({
       id: 'action-copy-email',
       title: 'Copy Email Address',
       subtitle: email,
@@ -436,7 +438,10 @@ const quickActions = computed<CommandItem[]>(() => {
           showToast('Failed to copy email to clipboard', 'error')
         }
       },
-    },
+    })
+  }
+
+  actions.push(
     {
       id: 'action-copy-link',
       title: 'Copy Current Page Link',
@@ -511,7 +516,9 @@ const quickActions = computed<CommandItem[]>(() => {
         window.open(link, '_blank')
       },
     },
-  ]
+  )
+
+  return actions
 })
 
 // Dynamic theme preset items

@@ -201,7 +201,7 @@ const router = createRouter({
 
 router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  if (to.meta.requiresAuth && !authStore.isAdmin) {
     next('/admin')
   } else {
     next()

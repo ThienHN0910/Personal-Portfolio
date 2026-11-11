@@ -21,7 +21,11 @@ export async function connectToDatabase(): Promise<typeof mongoose> {
   if (cached.conn) return cached.conn
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(mongodbUri, { bufferCommands: false })
+    cached.promise = mongoose.connect(mongodbUri, { bufferCommands: false }).catch((error) => {
+      // Do not cache a failed connection attempt; let the next request retry.
+      cached.promise = null
+      throw error
+    })
   }
 
   cached.conn = await cached.promise

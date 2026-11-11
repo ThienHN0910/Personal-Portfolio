@@ -5,7 +5,8 @@ export interface AuthUser {
   id: string
   email: string
   name: string
-  role: 'admin' | 'user'
+  /** Only the ADMIN_EMAIL owner can sign in; older tokens may still carry 'user'. */
+  role: 'admin'
 }
 
 function getJwtSecret(): string {
@@ -33,6 +34,17 @@ export function requireAuth(req: Request, res: Response): AuthUser | null {
   } catch {
     res.status(401).json({ success: false, error: 'Invalid token' })
     return null
+  }
+}
+
+/** Non-failing check used by public routes that reveal extra data to the owner. */
+export function isAdminRequest(req: Request): boolean {
+  const authHeader = req.headers.authorization
+  if (!authHeader?.startsWith('Bearer ')) return false
+  try {
+    return verifyToken(authHeader.slice(7)).role === 'admin'
+  } catch {
+    return false
   }
 }
 
