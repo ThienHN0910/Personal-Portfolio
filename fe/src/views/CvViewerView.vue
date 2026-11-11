@@ -180,7 +180,7 @@ async function renderPage(pageNumber: number, wrapper: HTMLDivElement): Promise<
 
     wrapper.innerHTML = ''
     const title = document.createElement('p')
-    title.className = 'text-xs font-mono text-slate-400 mb-3'
+    title.className = 'text-xs font-mono text-ink-secondary mb-3'
     title.textContent = `Page ${pageNumber} of ${totalPages.value}`
     wrapper.appendChild(title)
     wrapper.appendChild(contextCanvas)
@@ -228,15 +228,15 @@ async function renderPdf(url: string): Promise<void> {
 
     for (let pageNumber = 1; pageNumber <= activePdf.numPages; pageNumber += 1) {
       const wrapper = document.createElement('div')
-      wrapper.className = 'glass-panel p-4 overflow-x-auto border border-cyber-border/30'
+      wrapper.className = 'glass-panel p-4 overflow-x-auto border border-stroke-soft'
       wrapper.dataset.page = String(pageNumber)
 
       const title = document.createElement('p')
-      title.className = 'text-xs font-mono text-slate-400 mb-3'
+      title.className = 'text-xs font-mono text-ink-secondary mb-3'
       title.textContent = `Page ${pageNumber} (Loading...)`
 
       const skeleton = document.createElement('div')
-      skeleton.className = 'h-96 rounded-xl bg-slate-900 animate-pulse'
+      skeleton.className = 'h-96 rounded-xl bg-bone animate-pulse'
 
       wrapper.appendChild(title)
       wrapper.appendChild(skeleton)

@@ -223,7 +223,6 @@
   </Teleport>
 </template>
 
-
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
@@ -235,24 +234,13 @@ import { useAboutStore } from '@/stores/about'
 import { useThemeStore, THEME_PRESETS } from '@/stores/theme'
 import { useWeatherStore } from '@/stores/weather'
 import { useKeyboardShortcuts } from '@/composables/useKeyboardShortcuts'
+import {
+  useCommandPaletteSearch,
+  type CommandItem,
+  type GroupedCategory,
+} from '@/composables/useCommandPaletteSearch'
 
-export interface CommandItem {
-  id: string
-  title: string
-  subtitle?: string
-  category: 'recent' | 'page' | 'project' | 'article' | 'action' | 'theme' | 'weather'
-  badge?: string
-  shortcut?: string
-  swatchBg?: string
-  swatchBorder?: string
-  perform: () => void | Promise<void>
-}
-
-interface GroupedCategory {
-  category: string
-  title: string
-  items: CommandItem[]
-}
+export type { CommandItem, GroupedCategory }
 
 const { isOpen, closePalette } = useCommandPalette()
 const { showToast } = useToast()
@@ -265,72 +253,9 @@ const themeStore = useThemeStore()
 const weatherStore = useWeatherStore()
 const { openShortcuts } = useKeyboardShortcuts()
 
-const searchQuery = ref('')
 const selectedIndex = ref(0)
 const searchInputRef = ref<HTMLInputElement | null>(null)
 const resultsContainerRef = ref<HTMLDivElement | null>(null)
-
-// Recent searches
-const RECENT_KEY = 'portfolio_cmd_recent_searches'
-const recentSearches = ref<Array<{ query: string; timestamp: number }>>([])
-
-function loadRecentSearches() {
-  try {
-    const raw = localStorage.getItem(RECENT_KEY)
-    if (raw) {
-      recentSearches.value = JSON.parse(raw)
-    }
-  } catch {
-    recentSearches.value = []
-  }
-}
-
-function saveRecentSearch(query: string) {
-  const trimmed = query.trim()
-  if (!trimmed || trimmed.length < 2) return
-
-  const filtered = recentSearches.value.filter((r) => r.query.toLowerCase() !== trimmed.toLowerCase())
-  filtered.unshift({ query: trimmed, timestamp: Date.now() })
-  recentSearches.value = filtered.slice(0, 5)
-
-  try {
-    localStorage.setItem(RECENT_KEY, JSON.stringify(recentSearches.value))
-  } catch {
-    // Ignore storage errors
-  }
-}
-
-function clearRecentSearches() {
-  recentSearches.value = []
-  try {
-    localStorage.removeItem(RECENT_KEY)
-  } catch {
-    // Ignore storage errors
-  }
-  showToast('Search history cleared', 'info')
-}
-
-// Ensure stores are populated
-async function ensureDataLoaded() {
-  const promises: Promise<any>[] = []
-  if (!projectsStore.projects.length) promises.push(projectsStore.fetchProjects())
-  if (!blogStore.posts.length) promises.push(blogStore.fetchPosts())
-  if (!aboutStore.aboutData) promises.push(aboutStore.fetchAboutData())
-  if (promises.length) {
-    await Promise.allSettled(promises)
-  }
-}
-
-watch(isOpen, async (val) => {
-  if (val) {
-    searchQuery.value = ''
-    selectedIndex.value = 0
-    loadRecentSearches()
-    void ensureDataLoaded()
-    await nextTick()
-    searchInputRef.value?.focus()
-  }
-})
 
 // Static navigation pages
 const staticPages: CommandItem[] = [
@@ -663,165 +588,45 @@ const weatherItems = computed<CommandItem[]>(() => {
   ]
 })
 
-// Filtered grouped items
-const groupedItems = computed<GroupedCategory[]>(() => {
-  const q = searchQuery.value.trim().toLowerCase()
-  const groups: GroupedCategory[] = []
-
-  // If query is empty, show recent searches (if any), pages, and quick actions
-  if (!q) {
-    if (recentSearches.value.length > 0) {
-      groups.push({
-        category: 'recent',
-        title: 'Recent Searches',
-        items: recentSearches.value.map((r, idx) => ({
-          id: `recent-${idx}`,
-          title: r.query,
-          subtitle: 'Search query',
-          category: 'recent',
-          badge: 'History',
-          perform: () => {
-            searchQuery.value = r.query
-          },
-        })),
-      })
-    }
-
-    groups.push({
-      category: 'page',
-      title: 'Navigation',
-      items: staticPages,
-    })
-
-    groups.push({
-      category: 'action',
-      title: 'Quick Actions',
-      items: quickActions.value,
-    })
-
-    groups.push({
-      category: 'theme',
-      title: 'Theme & Appearance',
-      items: themeItems.value,
-    })
-
-    groups.push({
-      category: 'weather',
-      title: 'Weather & Atmosphere',
-      items: weatherItems.value,
-    })
-
-    if (projectItems.value.length > 0) {
-      groups.push({
-        category: 'project',
-        title: 'Featured Projects',
-        items: projectItems.value.slice(0, 4),
-      })
-    }
-
-    return groups
-  }
-
-  // Filter Themes
-  const isThemeSearch =
-    q.includes('theme') ||
-    q.includes('palette') ||
-    q.includes('color') ||
-    q.includes('mode') ||
-    q.includes('dark') ||
-    q.includes('light') ||
-    q.includes('cyber') ||
-    q.includes('sepia')
-
-  const matchedThemes = themeItems.value.filter(
-    (item) => isThemeSearch || item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
-  )
-  if (matchedThemes.length > 0) {
-    groups.push({
-      category: 'theme',
-      title: 'Theme & Appearance',
-      items: matchedThemes,
-    })
-  }
-
-  // Filter Weather
-  const isWeatherSearch =
-    q.includes('weather') ||
-    q.includes('thoi tiet') ||
-    q.includes('rain') ||
-    q.includes('mua') ||
-    q.includes('sun') ||
-    q.includes('storm') ||
-    q.includes('snow') ||
-    q.includes('cloud') ||
-    q.includes('ambient') ||
-    q.includes('atmosphere')
-
-  const matchedWeather = weatherItems.value.filter(
-    (item) => isWeatherSearch || item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
-  )
-  if (matchedWeather.length > 0) {
-    groups.push({
-      category: 'weather',
-      title: 'Weather & Atmosphere',
-      items: matchedWeather,
-    })
-  }
-
-  // Filter Quick Actions
-  const matchedActions = quickActions.value.filter(
-    (item) => item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
-  )
-  if (matchedActions.length > 0) {
-    groups.push({
-      category: 'action',
-      title: 'Actions',
-      items: matchedActions,
-    })
-  }
-
-  // Filter Pages
-  const matchedPages = staticPages.filter(
-    (item) => item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
-  )
-  if (matchedPages.length > 0) {
-    groups.push({
-      category: 'page',
-      title: 'Pages',
-      items: matchedPages,
-    })
-  }
-
-  // Filter Projects
-  const matchedProjects = projectItems.value.filter(
-    (item) => item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
-  )
-  if (matchedProjects.length > 0) {
-    groups.push({
-      category: 'project',
-      title: 'Projects',
-      items: matchedProjects,
-    })
-  }
-
-  // Filter Articles
-  const matchedArticles = blogItems.value.filter(
-    (item) => item.title.toLowerCase().includes(q) || item.subtitle?.toLowerCase().includes(q),
-  )
-  if (matchedArticles.length > 0) {
-    groups.push({
-      category: 'article',
-      title: 'Articles',
-      items: matchedArticles,
-    })
-  }
-
-  return groups
+const {
+  searchQuery,
+  groupedItems,
+  flatItems,
+  loadRecentSearches,
+  saveRecentSearch,
+  clearRecentSearches,
+} = useCommandPaletteSearch({
+  staticPages,
+  quickActions,
+  themeItems,
+  projectItems,
+  blogItems,
+  weatherItems,
+  onRecentCleared: () => {
+    showToast('Search history cleared', 'info')
+  },
 })
 
-// Flattened list for linear arrow navigation
-const flatItems = computed<CommandItem[]>(() => {
-  return groupedItems.value.flatMap((g) => g.items)
+// Ensure stores are populated
+async function ensureDataLoaded() {
+  const promises: Promise<any>[] = []
+  if (!projectsStore.projects.length) promises.push(projectsStore.fetchProjects())
+  if (!blogStore.posts.length) promises.push(blogStore.fetchPosts())
+  if (!aboutStore.aboutData) promises.push(aboutStore.fetchAboutData())
+  if (promises.length) {
+    await Promise.allSettled(promises)
+  }
+}
+
+watch(isOpen, async (val) => {
+  if (val) {
+    searchQuery.value = ''
+    selectedIndex.value = 0
+    loadRecentSearches()
+    void ensureDataLoaded()
+    await nextTick()
+    searchInputRef.value?.focus()
+  }
 })
 
 // Reset or bound selectedIndex whenever flatItems changes
