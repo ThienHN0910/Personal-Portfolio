@@ -36,9 +36,9 @@ async function getOrCreateCategorySettings() {
     JSON.stringify(normalizedProjectCategories) !== JSON.stringify(settings.projectCategories || []) ||
     JSON.stringify(normalizedBlogCategories) !== JSON.stringify(settings.blogCategories || [])
   ) {
+    // Normalise legacy shapes in the response only; a public GET must not write to the DB.
     settings.projectCategories = normalizedProjectCategories
     settings.blogCategories = normalizedBlogCategories
-    await settings.save()
   }
 
   return settings

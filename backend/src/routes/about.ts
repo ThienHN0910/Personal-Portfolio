@@ -227,11 +227,12 @@ router.get('/', async (_req, res) => {
       const licensesChanged = JSON.stringify(currentLicenses) !== JSON.stringify(normalizedLicenses)
       const socialLinksChanged = JSON.stringify(currentSocialLinks) !== JSON.stringify(normalizedSocialLinks)
 
+      // Normalise legacy shapes in the response only; a public GET must not write to the DB.
+      // The normalised form is persisted the next time the owner saves via PUT.
       if (educationChanged || licensesChanged || socialLinksChanged) {
         about.education = normalizedEducation
         about.licensesCertifications = normalizedLicenses
         about.socialLinks = normalizedSocialLinks
-        await about.save()
       }
     }
 
