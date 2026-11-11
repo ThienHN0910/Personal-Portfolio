@@ -162,7 +162,7 @@ export interface User {
   email: string
   name: string
   avatar?: string
-  role: 'admin' | 'user'
+  role: 'admin'
 }
 
 export interface AuthState {

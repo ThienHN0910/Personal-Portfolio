@@ -5,7 +5,8 @@ export interface AuthUser {
   id: string
   email: string
   name: string
-  role: 'admin' | 'user'
+  /** Only the ADMIN_EMAIL owner can sign in; older tokens may still carry 'user'. */
+  role: 'admin'
 }
 
 function getJwtSecret(): string {
