@@ -137,6 +137,12 @@ const router = createRouter({
           component: () => import('@/views/admin/AdminDashboard.vue'),
         },
         {
+          path: 'media',
+          name: 'admin-media',
+          component: () => import('@/views/admin/AdminMedia.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
           path: 'analytics',
           name: 'admin-analytics',
           component: () => import('@/views/admin/AdminAnalytics.vue'),

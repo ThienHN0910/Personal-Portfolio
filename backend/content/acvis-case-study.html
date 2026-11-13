@@ -16,7 +16,7 @@
 <p class="project-p" data-aos="fade-up">ACVIS was architected to solve both sides of this dilemma. As the Lead Architect of a 5-engineer capstone team, I designed a multi-phase verification pipeline: candidate code flows flagged during static syntax analysis are automatically converted into safe, passive HTTP probes that execute against staging environments. Only findings with undeniable, ground-truth evidence are allowed to trip the GitHub PR merge gate.</p>
 
 <figure class="project-figure" data-aos="fade-up" data-cursor="view">
-  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821505/portfolio/projects/acvis/acvis_finding_overview.png" alt="ACVIS Finding Overview inspection screen showing vulnerability taxonomy, severity badges, and status actions" width="1200" height="750" loading="lazy">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1794558470/portfolio/projects/acvis/acvis_dashboard_real.jpg" alt="ACVIS Finding Overview inspection screen showing vulnerability taxonomy, severity badges, and status actions" width="1200" height="750" loading="lazy">
   <figcaption>ACVIS Production Finding Overview: Inspected security finding mapped to CWE taxonomy with status actions and verification trace.</figcaption>
 </figure>
 
@@ -67,7 +67,7 @@
 <p class="project-p" data-aos="fade-up">The Data-Flow Taint Tracking Engine follows variables across intermediate assignments until they reach dangerous sinks such as database queries or file system calls. Crucially, per ADR-0026, when untrusted inputs pass through recognized sanitizer functions (such as parameterized PDO queries or casting helpers), the finding is automatically downgraded to <code>Info / Sanitized</code> rather than ringing alarm bells.</p>
 
 <figure class="project-figure" data-aos="fade-up" data-cursor="view">
-  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821507/portfolio/projects/acvis/acvis_finding_dataflow.png" alt="ACVIS Data-Flow Trace visualization showing untrusted input propagation from source to sink" width="1200" height="750" loading="lazy">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1794558473/portfolio/projects/acvis/acvis_dataflow_real.jpg" alt="ACVIS Data-Flow Trace visualization showing untrusted input propagation from source to sink" width="1200" height="750" loading="lazy">
   <figcaption>Intra-procedural Data-Flow Trace: Visualizing step-by-step variable propagation and sanitization states from source to sink.</figcaption>
 </figure>
 
@@ -104,7 +104,7 @@
 <p class="project-p" data-aos="fade-up">The sandbox communicates results through a standardized Tri-State Exit Code Oracle: <strong>Exit Code 0 (Confirmed Vulnerability)</strong> locks the PR merge gate; <strong>Exit Code 1 (Mitigated / Safe)</strong> confirms defense mechanisms hold; and <strong>Exit Code 2 (Inconclusive)</strong> logs network or configuration warnings without blocking engineering delivery.</p>
 
 <figure class="project-figure" data-aos="fade-up" data-cursor="view">
-  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821508/portfolio/projects/acvis/acvis_finding_exploit.png" alt="ACVIS Dynamic Exploit Verification tab showing terminal output and ground-truth oracle exit code" width="1200" height="750" loading="lazy">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1794558474/portfolio/projects/acvis/acvis_exploit_real.jpg" alt="ACVIS Dynamic Exploit Verification tab showing terminal output and ground-truth oracle exit code" width="1200" height="750" loading="lazy">
   <figcaption>Dynamic Exploit Sandbox Terminal: Live execution output with ground-truth oracle verification and tri-state exit code.</figcaption>
 </figure>
 
@@ -113,7 +113,7 @@
 <p class="project-p" data-aos="fade-up">Under ADR-0056, commit diff payloads were offloaded to MongoDB Atlas with an automated 30-day TTL expiration, reducing the average PostgreSQL row size in <code>scan_jobs</code> from ~5MB to just 180 bytes. Similarly, detailed vulnerability analysis documents in MongoDB's <code>vuln_detail_cache</code> expire after 90 days, guaranteeing stable database operations indefinitely without manual intervention.</p>
 
 <figure class="project-figure" data-aos="fade-up" data-cursor="view">
-  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821510/portfolio/projects/acvis/acvis_finding_patch.png" alt="ACVIS Remediation Patch split diff viewer showing suggested code fixes" width="1200" height="750" loading="lazy">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1794558475/portfolio/projects/acvis/acvis_remediation_real.png" alt="ACVIS Remediation Patch split diff viewer showing suggested code fixes" width="1200" height="750" loading="lazy">
   <figcaption>AI Remediation Patch Viewer: Side-by-side unified code diff synthesized within a strict 200-line context window.</figcaption>
 </figure>
 
@@ -121,7 +121,7 @@
 <p class="project-p" data-aos="fade-up">Security detection rules evolve continuously. ACVIS features a collaborative Dataset Proposal workflow where community contributors can author new detection patterns. To ensure consensus integrity without heavy table joins, the net consensus value is materialized as an indexed <code>CommunityScore</code> column in PostgreSQL, updated atomically. Once a proposal is approved or rejected, a strict Voting Lock (ADR-0031) freezes all community reactions, and a background vectorization worker computes 768-dimensional embeddings to immediately enhance scanning for all platform tenants.</p>
 
 <figure class="project-figure" data-aos="fade-up" data-cursor="view">
-  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1791821511/portfolio/projects/acvis/acvis_knowledge_rules.png" alt="ACVIS Security Catalog showing vector rules and CWE taxonomies" width="1200" height="750" loading="lazy">
+  <img src="https://res.cloudinary.com/dnoj9q5ha/image/upload/v1794558472/portfolio/projects/acvis/acvis_findings_real.jpg" alt="ACVIS Security Catalog showing vector rules and CWE taxonomies" width="1200" height="750" loading="lazy">
   <figcaption>Security Catalog &amp; Rule Governance: 768-dimensional vector rule catalog, tiered similarity matching, and CWE taxonomy.</figcaption>
 </figure>
 

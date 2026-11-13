@@ -13,6 +13,7 @@ import projectsRouter from './routes/projects'
 import categoriesRouter from './routes/categories'
 import themeRouter from './routes/theme'
 import uploadRouter from './routes/upload'
+import mediaRouter from './routes/media'
 import aiRouter from './routes/ai'
 import analyticsRouter from './routes/analytics'
 import weatherRouter from './routes/weather'
@@ -105,6 +106,7 @@ app.use('/api/projects', projectsRouter)
 app.use('/api/categories', categoriesRouter)
 app.use('/api/theme', themeRouter)
 app.use('/api/upload', uploadRouter)
+app.use('/api/media', mediaRouter)
 app.use('/api/ai', aiRouter)
 app.use('/api/analytics', analyticsRouter)
 app.use('/api/weather', weatherRouter)

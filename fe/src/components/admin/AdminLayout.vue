@@ -67,6 +67,7 @@ const sidebarOpen = ref(false)
 
 const navItems = [
   { to: '/admin', label: 'Dashboard', icon: 'dashboard' as const },
+  { to: '/admin/media', label: 'Media Library', icon: 'media' as const },
   { to: '/admin/analytics', label: 'Analytics & Logs', icon: 'dashboard' as const },
   { to: '/admin/projects', label: 'Case Studies', icon: 'projects' as const },
   { to: '/admin/blog', label: 'Articles', icon: 'blog' as const },
