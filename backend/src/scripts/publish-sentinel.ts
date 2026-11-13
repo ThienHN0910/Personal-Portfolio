@@ -18,8 +18,8 @@ const articleSlug = 'engineering-sentinel-discord-web-state-machines'
 const contentDir = join(__dirname, '../../content')
 const caseContext = readFileSync(join(contentDir, 'sentinel-case-study.html'), 'utf8').trim()
 const articleContent = readFileSync(join(contentDir, 'sentinel-article.html'), 'utf8').trim()
-const homeImage = 'https://res.cloudinary.com/dnoj9q5ha/image/upload/f_auto,q_auto,w_1200/v1790687139/portfolio/sentinel-bot/sentinel-home.png'
-const dashboardImage = 'https://res.cloudinary.com/dnoj9q5ha/image/upload/f_auto,q_auto,w_1200/v1790687135/portfolio/sentinel-bot/sentinel-dashboard.png'
+const homeImage = 'https://res.cloudinary.com/dnoj9q5ha/image/upload/f_auto,q_auto,w_1200/v1790687139/portfolio/projects/sentinel-bot/sentinel-home.png'
+const dashboardImage = 'https://res.cloudinary.com/dnoj9q5ha/image/upload/f_auto,q_auto,w_1200/v1790687135/portfolio/projects/sentinel-bot/sentinel-dashboard.png'
 
 async function main(): Promise<void> {
   if (!process.env.MONGODB_URI) throw new Error('MONGODB_URI is missing')

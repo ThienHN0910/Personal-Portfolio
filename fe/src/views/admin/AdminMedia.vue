@@ -174,6 +174,8 @@
                 <option value="portfolio">portfolio (Root)</option>
                 <option value="portfolio/projects">portfolio/projects</option>
                 <option value="portfolio/projects/acvis">portfolio/projects/acvis</option>
+                <option value="portfolio/projects/sentinel-bot">portfolio/projects/sentinel-bot</option>
+                <option value="portfolio/projects/telebot">portfolio/projects/telebot</option>
                 <option value="portfolio/blog">portfolio/blog</option>
                 <option value="portfolio/about">portfolio/about</option>
                 <option value="portfolio/home">portfolio/home</option>

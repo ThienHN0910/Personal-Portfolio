@@ -15,8 +15,18 @@ router.get('/folders', async (req, res) => {
   try {
     const cloudinary = getCloudinary()
     const result = await cloudinary.api.sub_folders('portfolio')
-    const folders = ['all', 'portfolio', ...result.folders.map((f: { path: string }) => f.path)]
-    return res.status(200).json({ success: true, data: folders })
+    const mainFolders = result.folders.map((f: { path: string }) => f.path)
+
+    let projectSubFolders: string[] = []
+    try {
+      const projRes = await cloudinary.api.sub_folders('portfolio/projects')
+      projectSubFolders = projRes.folders.map((f: { path: string }) => f.path)
+    } catch {
+      // Ignore if no project subfolders
+    }
+
+    const folders = ['all', 'portfolio', ...mainFolders, ...projectSubFolders]
+    return res.status(200).json({ success: true, data: Array.from(new Set(folders)) })
   } catch (error) {
     console.error('Error fetching folders:', error)
     return res.status(200).json({
@@ -121,13 +131,16 @@ router.post('/upload', async (req, res) => {
     }
 
     const cloudinary = getCloudinary()
+    const targetFolder = folder || 'portfolio'
     const uploadOptions: {
       folder: string
+      asset_folder: string
       resource_type: 'image'
       transformation: Array<{ quality: string; fetch_format: string }>
       public_id?: string
     } = {
-      folder: folder || 'portfolio',
+      folder: targetFolder,
+      asset_folder: targetFolder,
       resource_type: 'image',
       transformation: [{ quality: 'auto', fetch_format: 'auto' }],
     }

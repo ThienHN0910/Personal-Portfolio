@@ -61,12 +61,6 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://thienhn.io.vn/projects/sentinel-bot-discord-community-analytics</loc>
-    <lastmod>2026-11-13</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
     <loc>https://thienhn.io.vn/projects/picx-art-marketplace-website</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>weekly</changefreq>
@@ -92,6 +86,12 @@
   </url>
   <url>
     <loc>https://thienhn.io.vn/projects/breakthroughcv-aipowered-job-candidate-cv-optimization-platform</loc>
+    <lastmod>2026-11-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thienhn.io.vn/projects/sentinel-bot-discord-community-analytics</loc>
     <lastmod>2026-11-13</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
